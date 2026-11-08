@@ -21,7 +21,8 @@ extern "C" time_t time(time_t *out) {
 }
 int main() {
   // El calentamiento empieza al inicializar el sensor, no al encender el MCU.
-  fakeMillis=10000; PirSensor pir(27,60000); pir.begin();
+  // debounce=0: esta prueba avanza de a 1 ms; el filtro se prueba en test/ruben/.
+  fakeMillis=10000; PirSensor pir(27,60000,0); pir.begin();
   assert(!pir.update(60000));
   fakeLevel=1; assert(pir.update(70000));
   JsonDocument state; pir.report(state.to<JsonObject>());

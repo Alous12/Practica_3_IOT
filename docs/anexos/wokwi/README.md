@@ -1,11 +1,13 @@
-# Circuito en Wokwi (circuito.png)
+# Circuito en Wokwi (circuito-wokwi.png)
 
 Responsable: Ruben (hardware).
+
+El diagrama principal del informe es `docs/anexos/circuito.png` (incluye el condensador). Este diagrama de Wokwi es la versión simulable del mismo circuito y se guarda aparte como `circuito-wokwi.png`.
 
 1. Entrar a <https://wokwi.com> → **New project** → **ESP32**.
 2. En la pestaña `diagram.json` borrar todo y pegar el contenido de [`diagram.json`](diagram.json).
 3. Ordenar los cables con el mouse si se cruzan (no cambia las conexiones).
-4. Exportar la imagen: clic derecho sobre el lienzo → *Save as image* (o captura de pantalla) y guardarla como `docs/anexos/circuito.png`.
+4. Exportar la imagen (clic derecho sobre el lienzo → *Save as image*, o captura) y guardarla como `docs/anexos/circuito-wokwi.png`.
 
 | Componente | Pin | ESP32 | Color del cable |
 |---|---|---|---|
@@ -16,6 +18,4 @@ Responsable: Ruben (hardware).
 | Servo SG90 | PWM (naranja) | GPIO 13 (D13) | naranja |
 | Servo SG90 | GND (marrón) | GND | negro |
 
-**Condensador de 470 µF / 16 V.** Wokwi no tiene condensador electrolítico entre sus piezas estándar, así que no aparece en el diagrama. En el montaje físico va entre VIN (+) y GND (−), lo más cerca posible del servo. En el informe (§2.2) se indica que está solo en la protoboard.
-
-**Para simular (opcional).** El diagrama sirve con el código de [`firmware/tools/prueba_hardware`](../../../firmware/tools/prueba_hardware/src/main.cpp): en Wokwi, el PIR se activa con el botón *Simulate motion*.
+**Condensador de 470 µF / 16 V.** Wokwi no tiene condensador electrolítico entre sus piezas estándar, así que no aparece. En el montaje físico va entre VIN (+) y GND (−), junto al servo.
