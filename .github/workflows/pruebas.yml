@@ -1,5 +1,5 @@
-# Corre las pruebas de la Lambda y los contratos entre capas en cada push y pull request.
-# Si un cambio del firmware, del modelo de Alexa o de las políticas rompe la integración,
+# Verifica la integración de las tres capas en cada push y pull request.
+# Si un cambio del firmware, del modelo de Alexa o de las políticas rompe a otra capa,
 # el pull request queda marcado en rojo antes de fusionarlo.
 name: Pruebas
 
@@ -9,6 +9,7 @@ on:
 
 jobs:
   lambda:
+    name: Lambda y contratos (pytest)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,3 +21,37 @@ jobs:
           python-version: "3.13"
       - run: python -m pip install -r requirements-dev.txt
       - run: python -m pytest -v -rs
+
+  firmware:
+    name: Firmware (PlatformIO)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: pio-${{ hashFiles('platformio.ini') }}
+      - run: python -m pip install platformio
+
+      - name: Compilar el modo local (sin AWS)
+        run: pio run -e esp32dev
+
+      - name: Compilar el firmware de la demo (con la plantilla de secretos)
+        run: |
+          if [ ! -f include/secrets.example.h ] || [ ! -d src/net ]; then
+            echo "::error::Faltan src/net/ o include/secrets.example.h: el firmware de la demo no compila"
+            exit 1
+          fi
+          cp include/secrets.example.h include/secrets.h
+          pio run -e esp32dev-aws
+
+      - name: Prueba C++ del objeto inteligente (dobles de hardware)
+        run: |
+          g++ -std=c++17 -Wall -I test/luciana/stubs -I src -I include \
+              -I .pio/libdeps/esp32dev/ArduinoJson/src \
+              test/luciana/test_firmware.cpp src/sensors/PirSensor.cpp \
+              src/actuators/DoorLock.cpp src/app/SmartObject.cpp -o test_firmware
+          ./test_firmware

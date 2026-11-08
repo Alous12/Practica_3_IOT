@@ -29,8 +29,9 @@ ALEXA_MODEL = REPO_ROOT / "alexa" / "interaction-model.es-US.json"
 AWS_DIR = REPO_ROOT / "aws"
 HANDLERS_SRC = LAMBDA_DIR / "vigilante" / "handlers.py"
 
-# Ubicaciones posibles del firmware: carpeta firmware/ (estructura de la guía) o raíz (PlatformIO).
-FIRMWARE_DIRS = [REPO_ROOT / "firmware", REPO_ROOT]
+# El firmware vive en la raíz del repositorio (platformio.ini, src/, include/).
+# Se revisa también firmware/ (estructura de la guía) para detectar una copia duplicada.
+FIRMWARE_DIRS = [REPO_ROOT, REPO_ROOT / "firmware"]
 BUILTIN_INTENTS = {"AMAZON.CancelIntent", "AMAZON.HelpIntent", "AMAZON.StopIntent",
                    "AMAZON.NavigateHomeIntent", "AMAZON.FallbackIntent"}
 
@@ -57,12 +58,20 @@ def _handled_intents():
     return names
 
 
-def _firmware_file(relative):
+def _firmware_file(relative, must_contain=None):
+    """Primer archivo del firmware que existe (y contiene `must_contain`, si se indica)."""
     for base in FIRMWARE_DIRS:
         path = base / relative
-        if path.is_file():
+        if path.is_file() and (must_contain is None
+                               or must_contain in path.read_text(encoding="utf-8")):
             return path
     return None
+
+
+def _firmware_trees():
+    """Carpetas que contienen un firmware (src/ con código C++)."""
+    return [base for base in FIRMWARE_DIRS
+            if (base / "src").is_dir() and any((base / "src").rglob("*.cpp"))]
 
 
 def _defines(path):
@@ -151,12 +160,35 @@ def test_eventos_de_prueba_usan_intents_del_modelo():
 # Firmware  <->  Lambda (documento Shadow)
 # --------------------------------------------------------------------------------------------
 
+def test_hay_un_solo_firmware_en_el_repositorio():
+    """Dos árboles de firmware se desincronizan: solo uno se compila y el otro queda muerto."""
+    trees = _firmware_trees()
+    assert len(trees) <= 1, (
+        "Hay más de un firmware: {}. Debe quedar uno solo (la raíz, con platformio.ini)."
+        .format(", ".join(str(t.relative_to(REPO_ROOT)) or "." for t in trees)))
+    configs = [base / "include" / "config.h" for base in FIRMWARE_DIRS
+               if (base / "include" / "config.h").is_file()]
+    assert len(configs) <= 1, "Hay más de un config.h: {}".format(
+        ", ".join(str(c.relative_to(REPO_ROOT)) for c in configs))
+
+
 @pytest.fixture
 def firmware_config():
-    path = _firmware_file("include/config.h")
-    if path is None or "KEY_DOOR" not in path.read_text(encoding="utf-8"):
-        pytest.skip("El firmware (include/config.h) aún no está en el repositorio")
+    path = _firmware_file("include/config.h", must_contain="KEY_DOOR")
+    if path is None:
+        pytest.skip("El firmware (include/config.h con las claves del Shadow) no está en el repositorio")
     return _defines(path)
+
+
+def test_pines_del_circuito(firmware_config):
+    """Pines documentados en el circuito (§2.2): PIR en GPIO 27 y servo en GPIO 13."""
+    assert firmware_config["PIR_PIN"] == 27
+    assert firmware_config["SERVO_PIN"] == 13
+
+
+def test_tiempo_de_confirmacion_cabe_en_el_limite_de_la_lambda(firmware_config):
+    """La separación mínima entre reportes no debe impedir confirmar antes de que la Lambda se rinda."""
+    assert firmware_config["REPORT_MIN_GAP_MS"] / 1000 < Settings.confirm_timeout_s
 
 
 def test_claves_del_shadow_iguales_en_firmware_y_lambda(firmware_config):

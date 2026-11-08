@@ -27,6 +27,10 @@ __pycache__/
 .pytest_cache/
 .venv/
 
+# ===== Pruebas C++ del firmware (binarios generados con g++) =====
+*.exe
+*.o
+
 # ===== Sistema operativo =====
 .DS_Store
 Thumbs.db

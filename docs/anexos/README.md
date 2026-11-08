@@ -5,7 +5,8 @@ Evidencias referenciadas por el informe. Antes de guardar una captura, tapen el 
 | Archivo | Responsable | Contenido |
 |---|---|---|
 | `pytest-lambda.txt` | Alejandro | Salida de `python -m pytest -v` en `lambda/` |
-| `pytest-final.png` | Alejandro | Captura de pytest después de fusionar todas las ramas (58 passed) |
+| `pytest-final.png` | Alejandro | Captura de pytest con todas las correcciones (61 passed) |
+| `ci-verde.png` | Alejandro | Workflow de GitHub Actions en verde en `main` |
 | `aws-01` … `aws-13-*.png` | Alejandro | Configuración de AWS (lista en `docs/Informe_Ale.md`, anexo B) |
 | `alexa-01` … `alexa-05-*.png` | Alejandro | Configuración de la skill |
 | `alexa-sim-01` … `alexa-sim-16-*.png` | Alejandro | Guion del simulador con *Skill I/O* (JSON Input/Output) |

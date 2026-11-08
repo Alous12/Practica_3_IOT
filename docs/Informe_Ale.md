@@ -561,15 +561,17 @@ python -m venv .venv
 |---|---|---|
 | [`tests/test_skill.py`](../lambda/tests/test_skill.py) | 20 | Cada requerimiento por separado: RF4 (movimiento, última detección, calibración, sin reportes, desconexión), RF5/RF6 (cerrar, abrir, ya en ese estado, orden pendiente, estado), RF7–RF9 (vincular, rechazar inexistente o con formato inválido, cambiar, consultar, desvincular sí/no) y dos usuarios con Things distintos |
 | [`tests/test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) | 4 | El **guion completo del simulador** (A.2) como escenarios de extremo a extremo, más el segundo usuario aislado, la reconexión que aplica la orden pendiente (RNF5 desde la Lambda), la ayuda y la salida |
-| [`tests/test_contratos.py`](../lambda/tests/test_contratos.py) | 34 | **Integración entre capas**: modelo de Alexa ↔ manejadores (en ambos sentidos, y cada intent sin error), slot y confirmaciones del diálogo, eventos de prueba ↔ modelo, claves y valores del Shadow, prefijo y latido firmware ↔ Lambda, plantilla `secrets.example.h`, políticas IAM/IoT mínimas, tabla ↔ `LinkRepository`, punto de entrada, dependencias y ausencia de secretos en Git |
+| [`tests/test_contratos.py`](../lambda/tests/test_contratos.py) | 37 | **Integración entre capas**: modelo de Alexa ↔ manejadores (en ambos sentidos, y cada intent sin error), slot y confirmaciones del diálogo, eventos de prueba ↔ modelo, un solo firmware en el repositorio, claves y valores del Shadow, prefijo, pines, latido y tiempo de confirmación firmware ↔ Lambda, plantilla `secrets.example.h`, políticas IAM/IoT mínimas, tabla ↔ `LinkRepository`, punto de entrada, dependencias y ausencia de secretos en Git |
 
-**Resultado** (8 de noviembre de 2026, Python 3.13.3, pytest 9.2.0; salida completa en [`anexos/pytest-lambda.txt`](anexos/pytest-lambda.txt)):
+**Resultado** (Python 3.13.3, pytest 9.2.0; salida completa en [`anexos/pytest-lambda.txt`](anexos/pytest-lambda.txt)): **61 pruebas** en total.
 
-```
-======================== 53 passed, 5 skipped in 1.53s ========================
-```
+| Momento | Resultado | Observación |
+|---|---|---|
+| Solo la capa de la nube (8-nov) | 53 passed, 5 skipped | Las pruebas que comparan con el firmware se omiten porque el firmware aún no estaba en el repositorio |
+| Después de unir las tres ramas (8-nov) | 59 passed, 1 failed, 1 skipped | Las claves, valores, prefijo, pines y tiempos del firmware **coinciden** con la Lambda. Falla `test_hay_un_solo_firmware_en_el_repositorio` (había dos copias del firmware, en la raíz y en `firmware/`) y se omite la de `secrets.example.h` (faltaba la capa `net/`) |
+| Versión final | [COMPLETAR: 61 passed] | Evidencia: `anexos/pytest-final.png` |
 
-Las 5 pruebas omitidas comparan el `config.h` y el `secrets.example.h` del firmware. Se activan solas cuando la capa del objeto inteligente se fusiona en el repositorio (buscan en `firmware/include/` y en `include/`). Se validaron antes con el firmware del proyecto: **34/34 pruebas de contrato pasan**. Después de fusionar todas las ramas, el resultado esperado es **58 passed**. Esa ejecución final es la evidencia `anexos/pytest-final.png`.
+Además, **GitHub Actions** ([`.github/workflows/pruebas.yml`](../.github/workflows/pruebas.yml)) ejecuta en cada *push* y *pull request* estas pruebas, compila los dos entornos del firmware (`esp32dev` y `esp32dev-aws`, este último con la plantilla de secretos) y corre la prueba C++ del objeto inteligente. Así, ninguna rama puede romper la integración sin que se note antes de fusionarla.
 
 **Errores encontrados por las pruebas y corregidos:**
 
@@ -578,6 +580,9 @@ Las 5 pruebas omitidas comparan el `config.h` y el `secrets.example.h` del firmw
 | 16 de 20 pruebas fallaban al copiar el código al repositorio | Las pruebas tomaban el código del Thing de `events/02_vincular.json`, archivo que se edita con el código real para probar en la consola de Lambda | El arnés fija siempre el código de la prueba; los eventos se pueden editar sin romper las pruebas |
 | `AMAZON.NavigateHomeIntent` sin manejador | Intent obligatorio del modelo no registrado en la Lambda | Se agregó a `CancelOrStopIntentHandler` |
 | `.gitignore` inicial del repositorio sin reglas para `secrets.h`, `*.pem`, `*.key`, `*.zip` | Plantilla por defecto de PlatformIO | Se agregaron las reglas; `test_gitignore_excluye_secretos` evita que se pierdan |
+| Dos firmwares distintos al unir las ramas (raíz y `firmware/`), con interfaces `Sensor`/`Actuator` incompatibles | Cada capa partió de una versión diferente del plan | Un solo firmware en la raíz, con las mejoras del PIR integradas (Ruben); `test_hay_un_solo_firmware_en_el_repositorio` impide que vuelva a pasar |
+| El firmware de la demo (`esp32dev-aws`) no compilaba al unir las ramas | Faltaba la capa `net/` y `secrets.example.h` | Se agrega la capa de comunicación (Luciana); el workflow compila ese entorno en cada *pull request* |
+| La prueba de contratos leía el `config.h` equivocado y se omitía | Buscaba primero en `firmware/include/`, que no tenía las claves del Shadow | Ahora usa el `config.h` que contiene las claves y falla si hay dos |
 
 ### A.2 Guion del simulador de Alexa (con capturas de *Skill I/O*)
 
