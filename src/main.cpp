@@ -1,7 +1,7 @@
 /**
- * Capa de Luciana: RF1 PIR, RF2 reportes y RF3 servo.
+ * Integración y comunicación de Luciana: WiFi, MQTT/TLS y Shadow.
  * esp32dev: prueba LOCAL por serie; NO se conecta a AWS ni usa Alexa.
- * esp32dev-aws: requiere los archivos net/ y secrets.h de Alejandro.
+ * esp32dev-aws: requiere los archivos net/ y secrets.h de comunicación de Luciana.
  */
 #include <Arduino.h>
 #include <esp_system.h>
@@ -50,7 +50,7 @@ LocalShadowPort channel;
 }  // namespace
 #else
 #if !__has_include("net/ShadowClient.h") || !__has_include("net/WifiConnection.h") || !__has_include("net/TimeSync.h") || !__has_include("secrets.h")
-#error "Falta la capa de Alejandro: net/ y secrets.h. Use esp32dev para prueba local."
+#error "Complete include/secrets.h desde secrets.example.h para compilar la demo AWS."
 #endif
 #include "net/ShadowClient.h"
 #include "net/WifiConnection.h"
