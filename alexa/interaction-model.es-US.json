@@ -1,0 +1,192 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "vigilante inteligente",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "VincularDispositivoIntent",
+          "slots": [
+            {
+              "name": "codigo",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{codigo}",
+                "el código es {codigo}",
+                "es {codigo}"
+              ]
+            }
+          ],
+          "samples": [
+            "vincula mi dispositivo con el código {codigo}",
+            "vincula mi dispositivo",
+            "vincular mi dispositivo",
+            "vincula el dispositivo {codigo}",
+            "vincular con el código {codigo}",
+            "mi código es {codigo}",
+            "el código de mi dispositivo es {codigo}",
+            "registra mi dispositivo con el código {codigo}",
+            "cambia mi dispositivo al código {codigo}",
+            "cambia la vinculación al código {codigo}",
+            "cambiar de dispositivo"
+          ]
+        },
+        {
+          "name": "ConsultarVinculacionIntent",
+          "slots": [],
+          "samples": [
+            "qué dispositivo tengo vinculado",
+            "cuál es mi dispositivo",
+            "qué código tiene mi dispositivo",
+            "tengo un dispositivo vinculado"
+          ]
+        },
+        {
+          "name": "DesvincularDispositivoIntent",
+          "slots": [],
+          "samples": [
+            "desvincula mi dispositivo",
+            "desvincular mi dispositivo",
+            "elimina la vinculación",
+            "borra mi dispositivo",
+            "olvida mi dispositivo",
+            "quita mi dispositivo"
+          ]
+        },
+        {
+          "name": "ConsultarMovimientoIntent",
+          "slots": [],
+          "samples": [
+            "hay movimiento",
+            "se detecta movimiento",
+            "detectó algo el sensor",
+            "hay alguien cerca",
+            "hay algún intruso",
+            "hubo movimiento",
+            "qué dice el sensor",
+            "estado del sensor",
+            "cuántas detecciones hubo",
+            "alguien se acercó al objeto"
+          ]
+        },
+        {
+          "name": "CerrarPuertaIntent",
+          "slots": [],
+          "samples": [
+            "cierra la puerta",
+            "cerrar la puerta",
+            "bloquea la puerta",
+            "asegura la puerta",
+            "pon el seguro",
+            "cierra con llave"
+          ]
+        },
+        {
+          "name": "AbrirPuertaIntent",
+          "slots": [],
+          "samples": [
+            "abre la puerta",
+            "abrir la puerta",
+            "desbloquea la puerta",
+            "quita el seguro"
+          ]
+        },
+        {
+          "name": "EstadoPuertaIntent",
+          "slots": [],
+          "samples": [
+            "la puerta está cerrada",
+            "la puerta está abierta",
+            "cómo está la puerta",
+            "estado de la puerta",
+            "está cerrada la puerta",
+            "está abierta la puerta"
+          ]
+        }
+      ],
+      "types": []
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "VincularDispositivoIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "codigo",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": true,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.Vincular.codigo",
+                "confirmation": "Confirm.Slot.Vincular.codigo"
+              }
+            }
+          ]
+        },
+        {
+          "name": "DesvincularDispositivoIntent",
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.Desvincular"
+          },
+          "slots": []
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Elicit.Slot.Vincular.codigo",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Cuál es el código de seis dígitos que muestra tu dispositivo?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Dime el código de seis dígitos de tu dispositivo."
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Slot.Vincular.codigo",
+        "variations": [
+          {
+            "type": "SSML",
+            "value": "<speak>Entendí el código <say-as interpret-as=\"digits\">{codigo}</say-as>. ¿Es correcto?</speak>"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.Desvincular",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Seguro que quieres desvincular tu dispositivo?"
+          }
+        ]
+      }
+    ]
+  }
+}

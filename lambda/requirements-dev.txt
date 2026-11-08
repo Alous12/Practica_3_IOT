@@ -1,0 +1,4 @@
+# Solo para correr las pruebas unitarias en su computadora (no se suben a Lambda).
+-r requirements.txt
+boto3
+pytest

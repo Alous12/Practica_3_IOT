@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ShadowYRegistroDeLosVigilantes",
+      "Effect": "Allow",
+      "Action": [
+        "iot:GetThingShadow",
+        "iot:UpdateThingShadow",
+        "iot:DescribeThing"
+      ],
+      "Resource": "arn:aws:iot:us-east-2:<ACCOUNT_ID>:thing/vigilante-*"
+    },
+    {
+      "Sid": "TablaDeVinculaciones",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-2:<ACCOUNT_ID>:table/vigilante_vinculaciones"
+    }
+  ]
+}

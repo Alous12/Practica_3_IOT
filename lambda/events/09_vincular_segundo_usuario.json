@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": false,
+    "sessionId": "amzn1.echo-api.session.prueba",
+    "application": {
+      "applicationId": "amzn1.ask.skill.REEMPLAZAR_POR_SU_SKILL_ID"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.SEGUNDO_USUARIO"
+    }
+  },
+  "context": {
+    "System": {
+      "application": {
+        "applicationId": "amzn1.ask.skill.REEMPLAZAR_POR_SU_SKILL_ID"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.SEGUNDO_USUARIO"
+      },
+      "apiEndpoint": "https://api.amazonalexa.com"
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.prueba",
+    "timestamp": "2026-11-07T10:00:00Z",
+    "locale": "es-US",
+    "intent": {
+      "name": "VincularDispositivoIntent",
+      "confirmationStatus": "NONE",
+      "slots": {
+        "codigo": {
+          "name": "codigo",
+          "value": "654321",
+          "confirmationStatus": "CONFIRMED"
+        }
+      }
+    },
+    "dialogState": "COMPLETED"
+  }
+}

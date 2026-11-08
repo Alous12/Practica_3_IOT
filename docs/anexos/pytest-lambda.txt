@@ -1,0 +1,73 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\alemv\Documents\PlatformIO\Projects\Practica_3_IOT\lambda\.venv\Scripts\python.exe
+rootdir: C:\Users\alemv\Documents\PlatformIO\Projects\Practica_3_IOT\lambda
+configfile: pytest.ini
+testpaths: tests
+collecting ... collected 58 items
+
+tests/test_contratos.py::test_modelo_de_alexa_es_valido_e_invocacion_correcta PASSED [  1%]
+tests/test_contratos.py::test_cada_intent_del_modelo_tiene_manejador_en_la_lambda PASSED [  3%]
+tests/test_contratos.py::test_cada_manejador_corresponde_a_un_intent_del_modelo PASSED [  5%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AMAZON.CancelIntent] PASSED [  6%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AMAZON.FallbackIntent] PASSED [  8%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AMAZON.HelpIntent] PASSED [ 10%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AMAZON.NavigateHomeIntent] PASSED [ 12%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AMAZON.StopIntent] PASSED [ 13%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[AbrirPuertaIntent] PASSED [ 15%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[CerrarPuertaIntent] PASSED [ 17%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[ConsultarMovimientoIntent] PASSED [ 18%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[ConsultarVinculacionIntent] PASSED [ 20%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[DesvincularDispositivoIntent] PASSED [ 22%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[EstadoPuertaIntent] PASSED [ 24%]
+tests/test_contratos.py::test_ningun_intent_del_modelo_termina_en_error[VincularDispositivoIntent] PASSED [ 25%]
+tests/test_contratos.py::test_slot_codigo_es_numerico_obligatorio_y_con_confirmacion PASSED [ 27%]
+tests/test_contratos.py::test_desvincular_pide_confirmacion_como_espera_la_lambda PASSED [ 29%]
+tests/test_contratos.py::test_todos_los_prompts_referenciados_existen PASSED [ 31%]
+tests/test_contratos.py::test_eventos_de_prueba_usan_intents_del_modelo PASSED [ 32%]
+tests/test_contratos.py::test_claves_del_shadow_iguales_en_firmware_y_lambda SKIPPED [ 34%]
+tests/test_contratos.py::test_valores_de_la_puerta_iguales_en_firmware_y_lambda SKIPPED [ 36%]
+tests/test_contratos.py::test_prefijo_de_things_igual_en_firmware_y_lambda SKIPPED [ 37%]
+tests/test_contratos.py::test_latido_compatible_con_aviso_de_desconexion SKIPPED [ 39%]
+tests/test_contratos.py::test_plantilla_de_secretos_sin_valores_reales SKIPPED [ 41%]
+tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[iot-policy.json] PASSED [ 43%]
+tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[lambda-role-policy.json] PASSED [ 44%]
+tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[dynamodb-table.json] PASSED [ 46%]
+tests/test_contratos.py::test_rol_de_la_lambda_tiene_solo_los_permisos_minimos PASSED [ 48%]
+tests/test_contratos.py::test_politica_del_dispositivo_limitada_a_su_propio_shadow PASSED [ 50%]
+tests/test_contratos.py::test_tabla_dynamodb_coincide_con_el_repositorio_de_vinculaciones PASSED [ 51%]
+tests/test_contratos.py::test_punto_de_entrada_de_lambda_se_importa PASSED [ 53%]
+tests/test_contratos.py::test_dependencias_empaquetadas PASSED           [ 55%]
+tests/test_contratos.py::test_gitignore_excluye_secretos PASSED          [ 56%]
+tests/test_contratos.py::test_ningun_secreto_versionado_en_git PASSED    [ 58%]
+tests/test_guion_alexa.py::test_guion_del_simulador_usuario_principal PASSED [ 60%]
+tests/test_guion_alexa.py::test_guion_segundo_usuario_controla_solo_su_thing PASSED [ 62%]
+tests/test_guion_alexa.py::test_guion_reconexion_aplica_la_orden_pendiente PASSED [ 63%]
+tests/test_guion_alexa.py::test_guion_ayuda_y_frases_no_reconocidas PASSED [ 65%]
+tests/test_skill.py::test_launch_sin_vinculacion_guia_al_usuario PASSED  [ 67%]
+tests/test_skill.py::test_comando_sin_vinculacion_indica_como_vincular PASSED [ 68%]
+tests/test_skill.py::test_vincular_thing_existente_persiste_en_dynamodb PASSED [ 70%]
+tests/test_skill.py::test_vincular_thing_inexistente_se_rechaza PASSED   [ 72%]
+tests/test_skill.py::test_codigo_con_formato_invalido_se_rechaza PASSED  [ 74%]
+tests/test_skill.py::test_cambiar_vinculacion PASSED                     [ 75%]
+tests/test_skill.py::test_consultar_vinculacion PASSED                   [ 77%]
+tests/test_skill.py::test_desvincular_confirmado_elimina_registro PASSED [ 79%]
+tests/test_skill.py::test_desvincular_denegado_conserva_registro PASSED  [ 81%]
+tests/test_skill.py::test_movimiento_detectado PASSED                    [ 82%]
+tests/test_skill.py::test_sin_movimiento_indica_ultima_deteccion PASSED  [ 84%]
+tests/test_skill.py::test_sensor_en_calentamiento PASSED                 [ 86%]
+tests/test_skill.py::test_dispositivo_sin_reportes PASSED                [ 87%]
+tests/test_skill.py::test_aviso_de_dispositivo_desconectado PASSED       [ 89%]
+tests/test_skill.py::test_cerrar_puerta_actualiza_desired_y_confirma PASSED [ 91%]
+tests/test_skill.py::test_abrir_puerta PASSED                            [ 93%]
+tests/test_skill.py::test_puerta_ya_en_el_estado_pedido PASSED           [ 94%]
+tests/test_skill.py::test_comando_con_dispositivo_desconectado_queda_pendiente PASSED [ 96%]
+tests/test_skill.py::test_estado_de_la_puerta PASSED                     [ 98%]
+tests/test_skill.py::test_usuarios_distintos_controlan_things_distintos PASSED [100%]
+
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_contratos.py:162: El firmware (include/config.h) aún no está en el repositorio
+SKIPPED [1] tests\test_contratos.py:168: El firmware (include/config.h) aún no está en el repositorio
+SKIPPED [1] tests\test_contratos.py:173: El firmware (include/config.h) aún no está en el repositorio
+SKIPPED [1] tests\test_contratos.py:177: El firmware (include/config.h) aún no está en el repositorio
+SKIPPED [1] tests\test_contratos.py:189: secrets.example.h aún no está en el repositorio
+======================== 53 passed, 5 skipped in 1.53s ========================

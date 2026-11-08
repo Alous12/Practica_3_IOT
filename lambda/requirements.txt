@@ -1,0 +1,3 @@
+# Dependencias que se empaquetan en el .zip de la Lambda.
+# boto3/botocore ya vienen en el runtime de Python de Lambda: NO se empaquetan.
+ask-sdk-core==1.19.0

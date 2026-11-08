@@ -1,0 +1,23 @@
+{
+  "TableName": "vigilante_vinculaciones",
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "userId",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "userId",
+      "KeyType": "HASH"
+    }
+  ],
+  "BillingMode": "PAY_PER_REQUEST",
+  "TableClass": "STANDARD",
+  "Tags": [
+    {
+      "Key": "proyecto",
+      "Value": "vigilante-inteligente"
+    }
+  ]
+}
