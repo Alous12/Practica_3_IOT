@@ -3,7 +3,7 @@
 #include <functional>
 
 /** Contrato de integración de Luciana (RF2/RF3).
- * No implementa WiFi ni MQTT: la capa de Alejandro debe adaptar ShadowClient.
+ * No implementa WiFi ni MQTT: la capa de comunicación de Luciana debe adaptar ShadowClient.
  * Las callbacks se ejecutan en el mismo hilo que el loop del firmware.
  */
 class ShadowPort {
