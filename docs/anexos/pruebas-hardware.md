@@ -13,7 +13,7 @@ Responsable: Ruben (hardware). Resultados para §5 del informe y evidencias en `
 | Dato | Valor |
 |---|---|
 | Fecha y hora de inicio | [COMPLETAR] |
-| Firmware | completo (WiFi + MQTT + Shadow), commit [COMPLETAR] |
+| Firmware | raíz, entorno **`esp32dev-aws`** (WiFi + MQTT + Shadow), commit [COMPLETAR]. El entorno `esp32dev` es local y no sirve para esta prueba |
 | Alimentación | USB de [COMPLETAR: laptop / cargador 5 V] · servo por [COMPLETAR: VIN / fuente aparte] |
 | Distancia al router | [COMPLETAR] m |
 
@@ -51,7 +51,7 @@ Responsable: Ruben (hardware). Resultados para §5 del informe y evidencias en `
 | Fecha | [COMPLETAR] |
 | Ajustes del HC-SR501 | jumper **H** · Tx al mínimo (~3 s) · Sx [COMPLETAR: posición, p. ej. medio] |
 | Altura del PIR | [COMPLETAR] cm sobre el piso |
-| Firmware | `firmware/tools/prueba_hardware` (monitor serie) o firmware completo (Shadow) |
+| Firmware | [`tools/prueba_hardware`](../../tools/prueba_hardware/src/main.cpp) (monitor serie, comando `r`) o el de la raíz con `esp32dev-aws` (Shadow) |
 | Lugar | [COMPLETAR: sala, iluminación, sin calefactores ni ventanas al sol frente al PIR] |
 
 **Procedimiento**

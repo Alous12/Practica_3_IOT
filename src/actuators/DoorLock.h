@@ -5,9 +5,12 @@
 #include "core/Actuator.h"
 
 /**
- * Requerimientos: RF3: aplicar órdenes del Shadow; RF2: exponer el estado del servo.
- *
  * Cerradura de la puerta accionada por un servo SG90.
+ *
+ * Capa: hardware (Ruben). Requerimientos: RF3 aplicar órdenes del Shadow; RF2 exponer el estado.
+ *
+ * El brazo del servo es el pestillo: SERVO_ANGLE_CLOSED lo interpone delante de la hoja
+ * de la puerta y SERVO_ANGLE_OPEN la libera (ángulos en include/config.h).
  *
  * El SG90 no mide posición: reported expresa la posición ordenada, no una
  * confirmación física del pestillo. Calibrar y verificar el movimiento en la demo.
@@ -26,6 +29,12 @@ class DoorLock : public Actuator {
   void report(JsonObject reported) const override;
 
   bool isClosed() const { return closed_; }
+
+  /**
+   * Solo para calibrar (tools/prueba_hardware): mueve el servo a un ángulo libre
+   * (0–180) sin cambiar el estado reportado. Se suelta igual tras settleMs.
+   */
+  void calibrate(int angle);
 
  private:
   void moveTo(bool closed);
