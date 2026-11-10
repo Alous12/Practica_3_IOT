@@ -12,5 +12,3 @@ Evidencias referenciadas por el [informe](../INFORME.md). Antes de guardar una c
 | `aws-01`, `aws-02`, `aws-03`, `aws-04`, `aws-05`, `aws-07`, `aws-08`, `aws-09`, `aws-10`, `aws-11` (`.png`) | Alejandro | Configuración de AWS | §3.2 |
 | `alexa-01` … `alexa-05` (`.png`) | Alejandro | Configuración de la skill y simulador con *Skill I/O* (`alexa-05`) | §3.3 |
 | [`pytest-lambda.txt`](pytest-lambda.txt) | Alejandro | Salida de `python -m pytest -v` en `lambda/` | §4.2 |
-
-Videos (RNF3, RNF5 y la demo): súbanlos a YouTube o Drive para no inflar el repositorio y pongan aquí el enlace.
