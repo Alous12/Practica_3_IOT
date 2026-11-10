@@ -177,10 +177,6 @@ Los pines y ángulos están en [`include/config.h`](../include/config.h): `PIR_P
 
 *Figura 2.2.2 — El mismo circuito montado en la protoboard, en vista isométrica ([versión vectorial](anexos/circuito-3d.svg)). El porta pilas 4 × AA alimenta los rieles + y −; el PIR y el servo toman de ahí 6 V y GND; el ESP32 se alimenta por USB y une su GND al riel −. Cables: verde = PIR OUT → D27, naranja = señal del servo → D25, rojo = +6 V, negro y marrón = GND.*
 
-![Circuito en Wokwi](anexos/wokwi/image.png)
-
-*Figura 2.2.3 — El circuito en Wokwi ([`anexos/wokwi/diagram.json`](anexos/wokwi/diagram.json)). Wokwi no tiene porta pilas, así que en la simulación el PIR y el servo toman 5 V de VIN; las señales (GPIO 27 y GPIO 25) y la tierra común son las mismas del montaje físico.*
-
 ### Justificación de las conexiones
 
 - **OUT del PIR directo al GPIO, sin divisor.** El HC-SR501 tiene un regulador interno de 3,3 V y su salida no supera ese valor, que es el nivel lógico del ESP32. Nunca se llevan 5 V a un GPIO.
@@ -213,7 +209,7 @@ El SG90 no tiene realimentación de posición: `reported.puerta` indica la posic
 El prototipo se arma sobre una protoboard, sin maqueta de puerta. El brazo del servo representa el pestillo: a 90° (cerrada) y a 0° (abierta). El PIR se orienta hacia la zona vigilada.
 
 ![Protoboard](anexos/montaje-protoboard.jpg)
-*Figura 2.2.4 — Prototipo armado en la protoboard.* subir la foto real con este nombre
+*Figura 2.2.3 — Prototipo armado en la protoboard.*
 
 ## 2.3 Diagrama de clases del objeto inteligente
 
@@ -1335,7 +1331,7 @@ Todas las evidencias están en [`docs/anexos/`](anexos/). En las capturas se tap
 
 | Anexo | Archivos | Responsable |
 |---|---|---|
-| Diagrama del circuito | [`circuito.png`](anexos/circuito.png), [`wokwi/image.png`](anexos/wokwi/image.png), [`wokwi/diagram.json`](anexos/wokwi/diagram.json) | Ruben |
+| Diagrama del circuito | [`circuito.png`](anexos/circuito.png), [`circuito-3d.png`](anexos/circuito-3d.png) ([SVG](anexos/circuito-3d.svg)) | Ruben |
 | Foto del prototipo | `montaje-protoboard.jpg` | Ruben |
 | Pruebas del hardware (RNF1, RNF2) | [`pruebas-hardware.md`](anexos/pruebas-hardware.md), [`deteccion.csv`](anexos/deteccion.csv) | Ruben |
 | Pruebas de comunicación (RNF3–RNF5) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md), `latencias.csv`, `rnf4-*.png`, `rnf5-*.png` (incluida `rnf5-monitor.png`, el arranque de §4.3), videos (enlace) | Luciana |

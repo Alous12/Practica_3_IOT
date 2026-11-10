@@ -6,9 +6,8 @@ Evidencias referenciadas por el [informe](../INFORME.md). Antes de guardar una c
 |---|---|---|---|
 | [`circuito.png`](circuito.png) | Ruben | Diagrama de conexiones (PIR en GPIO 27, servo en GPIO 25, porta pilas 4 × AA con tierra común) | §2.2 |
 | [`circuito-3d.svg`](circuito-3d.svg), [`circuito-3d.png`](circuito-3d.png), [`circuito-3d-oscuro.png`](circuito-3d-oscuro.png) | Ruben | Montaje en la protoboard en vista isométrica (tema claro y oscuro) | §2.2 |
-| `circuito-wokwi.png`, [`wokwi/diagram.json`](wokwi/diagram.json) | Ruben | El mismo circuito en Wokwi | §2.2 |
-| `montaje-general.jpg`, `montaje-cerrada.jpg`, `montaje-abierta.jpg`, `montaje-protoboard.jpg` | Ruben | Fotos de la maqueta | §2.2 |
-| [`pruebas-hardware.md`](pruebas-hardware.md), `deteccion.csv` | Ruben | Procedimiento y datos de RNF1 y RNF2 | §4.5 |
+| [`montaje-protoboard.jpg`](montaje-protoboard.jpg) | Ruben | Foto del prototipo armado en la protoboard | §2.2 |
+| [`pruebas-hardware.md`](pruebas-hardware.md), [`deteccion.csv`](deteccion.csv) | Ruben | Procedimiento y datos de RNF1 y RNF2 | §4.5 |
 | [`pruebas-comunicacion.md`](pruebas-comunicacion.md), `latencias.csv`, `rnf4-*.png`, `rnf5-*.png` | Luciana | Procedimiento y datos de RNF3, RNF4 y RNF5 (incluida `rnf5-monitor.png`, el arranque del §4.3) | §4.3, §4.6 |
 | `aws-01` … `aws-13-*.png` | Alejandro | Configuración de AWS | §3.2 |
 | `alexa-01` … `alexa-05-*.png` | Alejandro | Configuración de la skill | §3.3 |
