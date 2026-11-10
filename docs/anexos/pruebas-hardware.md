@@ -73,9 +73,9 @@ Valores tomados del monitor serie (línea `reported` que sigue a cada orden); la
 
 | Prueba | Duración | Detecciones | Meta |
 |---|---|---|---|
-| Sala vacía | 10 min | ⟨0⟩ | 0 |
+| Sala vacía | 10 min | 0 | 0 |
 
-**Resultado:** cumple · alcance efectivo observado: ⟨3 m⟩ (⟨98,3 %⟩ en el rango 1–3 m).
+**Resultado:** cumple · alcance efectivo observado: 3 m (98,3 % en el rango 1–3 m).
 
 **Datos crudos** en `docs/anexos/deteccion.csv` (nombre pedido en `docs/anexos/README.md`), con este formato:
 
