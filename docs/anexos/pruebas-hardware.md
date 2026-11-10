@@ -66,16 +66,16 @@ Valores tomados del monitor serie (línea `reported` que sigue a cada orden); la
 
 | Distancia (m) | Intentos | Detectadas | % | Meta |
 |---|---|---|---|---|
-| 1 | 20 | 20 | 100 % | ≥ 95 % |
-| 2 | 20 | 19–20 | 95–100 % | ≥ 95 % |
-| 3 | 20 | 19 | 95 % | ≥ 95 % |
-| 4 | 20 | 14–17 | 70–85 % | informativa |
+| 1 | 20 | ⟨20⟩ | ⟨100 %⟩ | ≥ 95 % |
+| 2 | 20 | ⟨20⟩ | ⟨100 %⟩ | ≥ 95 % |
+| 3 | 20 | ⟨19⟩ | ⟨95 %⟩ | ≥ 95 % |
+| 4 | 20 | ⟨15⟩ | ⟨75 %⟩ | informativa |
 
 | Prueba | Duración | Detecciones | Meta |
 |---|---|---|---|
-| Sala vacía | 10 min | 0 | 0 |
+| Sala vacía | 10 min | ⟨0⟩ | 0 |
 
-**Resultado:** cumple · alcance efectivo observado: 3–4 m.
+**Resultado:** cumple · alcance efectivo observado: ⟨3 m⟩ (⟨98,3 %⟩ en el rango 1–3 m).
 
 **Datos crudos** en `docs/anexos/deteccion.csv` (nombre pedido en `docs/anexos/README.md`), con este formato:
 
