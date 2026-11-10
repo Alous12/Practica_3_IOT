@@ -74,7 +74,7 @@ El servo SG90 gira entre 0° y 180° según el ancho del pulso PWM (50 Hz). Se u
 | Cerradura solenoide de 12 V | Requiere fuente y MOSFET adicionales y solo tiene un estado sin energía; queda como extensión para un uso real (§7) |
 | LED o buzzer como actuador | La práctica prohíbe los LED como actuador, y un buzzer no tiene un estado estable que reflejar en el Shadow |
 
-El **PIR HC-SR501** detecta presencia sin alinear nada, a varios metros y en un cono amplio, y su salida digital de 3,3 V va directo al ESP32. El **servo SG90** tiene **dos estados estables** (`abierta` / `cerrada`) que corresponden exactamente a `desired` y `reported` del Shadow, funciona entre 4,8 y 6 V (≤ 12 V DC). El servo y el PIR se alimentan con un porta pilas de 4 × AA (6 V) y el ESP32 con el USB de la computadora (§2.2).
+El **PIR HC-SR501** detecta presencia sin alinear nada, a varios metros y en un cono amplio, y su salida digital de 3,3 V va directo al ESP32. El **servo SG90** tiene **dos estados estables** (`abierta` / `cerrada`) que corresponden exactamente a `desired` y `reported` del Shadow, y funciona entre 4,8 y 6 V, dentro del límite de baja tensión que fija la práctica para los actuadores (≤ 12 V DC). El servo y el PIR se alimentan con un porta pilas de 4 × AA (6 V) y el ESP32 con el USB de la computadora (§2.2).
 
 Sensor y actuador son independientes: el PIR **no** cierra la puerta por sí solo. El servo solo obedece órdenes que llegan por el Shadow (RF3). El estado de ambos se publica en `reported`: `movimiento`, `detecciones`, `ultima_deteccion` y `sensor_listo` para el PIR, y `puerta` para el servo. Alexa nunca se comunica directamente con el ESP32.
 
@@ -1186,7 +1186,7 @@ Ensayo del 9 de noviembre de 2026 con el firmware `esp32dev-aws`, red WiFi domé
 | 23:25:02 | 1764 | −52 | abrir | Sí | No |
 | ≈ 23:26 | ≈ 1826 | −50 a −55 | — | — | No |
 
-Durante el ensayo el RSSI se mantuvo entre −48 y −55 dBm y `uptime_s` creció sin volver a 0. Un primer intento, iniciado a las 22:47, se interrumpió por reinicios de alimentación (`rst:0x1 (POWERON_RESET)`) al manipular el cable USB y el montaje; no se registró ningún `Brownout`. El ensayo válido se tomó desde el arranque de las 22:55:38, sin tocar el circuito.
+Durante el ensayo el RSSI se mantuvo entre −48 y −55 dBm y `uptime_s` creció sin volver a 0. Entre el inicio y el minuto 10 no se dio ninguna orden; desde el minuto 10 se dio una cada 5 min aproximadamente, 5 en total. Un primer intento, iniciado a las 22:47, se interrumpió por reinicios de alimentación (`rst:0x1 (POWERON_RESET)`) al manipular el cable USB y el montaje; no se registró ningún `Brownout`. El ensayo válido se tomó desde el arranque de las 22:55:38, sin tocar el circuito.
 
 **RNF2 — Exactitud del PIR** (jumper L, Tx al mínimo, Sx de fábrica, altura 100 cm).
 
@@ -1202,7 +1202,7 @@ Durante el ensayo el RSSI se mantuvo entre −48 y −55 dBm y `uptime_s` creci�
 |---|---|---|---|---|
 | Sala vacía | 10 min | 0 | 0 | ✅ |
 
-**Análisis de errores (RNF2).** La única pasada perdida dentro del rango fue a 3 m (pasada 14), cuando la persona cruzó más rápido que el resto. A 4 m las pérdidas se concentran en los bordes del cono de detección. Datos crudos en [`anexos/deteccion.csv`](anexos/deteccion.csv).
+**Análisis de errores (RNF2).** Dentro del rango declarado se perdió una sola pasada de 60, a 3 m. A 4 m se perdieron 5 de 20 (75 %): con la sensibilidad de fábrica, esa distancia queda en el límite del alcance del módulo, por eso no forma parte del rango declarado. Datos crudos en [`anexos/deteccion.csv`](anexos/deteccion.csv).
 
 ## 4.6 Pruebas de comunicación (RNF3, RNF4 y RNF5)
 

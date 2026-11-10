@@ -34,7 +34,7 @@ Responsable: Ruben (hardware). Resultados para §5 del informe y evidencias en `
 | ≈ 30 (23:25:02) | 1764 | −52 | abrir | Sí | No |
 | ≈ 31 (23:26:04) | ≈ 1826 | −50 a −55 | — | — | No |
 
-Valores tomados del monitor serie (línea `reported` que sigue a cada orden); las órdenes se dieron editando `desired.puerta` en la Sombra clásica. Un primer intento, iniciado a las 22:47, se interrumpió por reinicios `rst:0x1 (POWERON_RESET)` al mover el cable USB y el montaje; no apareció ningún `Brownout`. El ensayo válido empezó en el arranque de las 22:55:38, sin tocar el circuito.
+Valores tomados del monitor serie (línea `reported` que sigue a cada orden); las órdenes se dieron editando `desired.puerta` en la Sombra clásica. Entre el inicio y el minuto 10 no se dio ninguna orden; desde el minuto 10 se dio una cada 5 min aproximadamente, 5 en total. Un primer intento, iniciado a las 22:47, se interrumpió por reinicios `rst:0x1 (POWERON_RESET)` al mover el cable USB y el montaje; no apareció ningún `Brownout`. El ensayo válido empezó en el arranque de las 22:55:38, sin tocar el circuito.
 
 **Resultado:** cumple · reinicios: 0 durante el ensayo válido · `uptime_s` final: ≥ 1800.
 
@@ -77,15 +77,15 @@ Valores tomados del monitor serie (línea `reported` que sigue a cada orden); la
 
 **Resultado:** cumple · alcance efectivo observado: 3 m (98,3 % en el rango 1–3 m).
 
-**Datos crudos** en `docs/anexos/deteccion.csv` (nombre pedido en `docs/anexos/README.md`), con este formato:
+**Datos crudos** en [`deteccion.csv`](deteccion.csv):
 
 ```csv
 prueba,distancia_m,intentos,detectadas,porcentaje
-pasadas,1,20,,
-pasadas,2,20,,
-pasadas,3,20,,
-pasadas,4,20,,
-sala_vacia_10min,,0,,
+pasadas,1,20,20,100
+pasadas,2,20,20,100
+pasadas,3,20,19,95
+pasadas,4,20,15,75
+sala_vacia_10min,,0,0,
 ```
 
 **Evidencia:** [`deteccion.csv`](deteccion.csv), con los conteos de cada distancia y de la sala vacía.
