@@ -7,7 +7,7 @@
 | Integrante | GitHub | Capa a cargo |
 |---|---|---|
 | Alejandro Machaca | `alous12` | Nube y repositorio: Lambda, DynamoDB, IAM, IoT Core, skill de Alexa, pruebas de integración |
-| Ruben Cordero | [COMPLETAR] | Hardware: circuito, maqueta, `PirSensor`, `DoorLock`, pruebas RNF1 y RNF2 |
+| Ruben Cordero | `Ruben-Cordero` | Hardware: circuito, montaje, `PirSensor`, `DoorLock`, pruebas RNF1 y RNF2 |
 | Luciana Leaño | `lucianaaaaaaa` | Firmware de comunicación: `net/` (WiFi, MQTT/TLS, Shadow), `SmartObject`, `main.cpp`, pruebas RNF3–RNF5 |
 
 **Datos de la implementación**
@@ -61,7 +61,7 @@ El objeto inteligente vigila un objeto valioso. Tiene un sensor y un actuador:
 
 El PIR es un sensor pasivo de infrarrojos. Detecta el cambio de radiación térmica cuando una persona cruza su campo de visión. Su salida es digital: alto (3,3 V) mientras hay movimiento y bajo cuando no lo hay. No mide distancia ni identifica a la persona. El firmware cuenta flancos de subida, no personas.
 
-El servo SG90 gira entre 0° y 180° según el ancho del pulso PWM (50 Hz). Se usan dos posiciones fijas: **90° = cerrada** (el brazo traba la puerta) y **0° = abierta** (el brazo la libera). Los ángulos finales se calibraron sobre la maqueta: cerrada = [COMPLETAR: °], abierta = [COMPLETAR: °].
+El servo SG90 gira entre 0° y 180° según el ancho del pulso PWM (50 Hz). Se usan dos posiciones fijas: **90° = cerrada** (el brazo traba la puerta) y **0° = abierta** (el brazo la libera). Los ángulos se verificaron con el banco de pruebas [`tools/prueba_hardware`](../tools/prueba_hardware/src/main.cpp): cerrada = 90°, abierta = 0°, que coinciden con los valores de `config.h`.
 
 **Por qué estos componentes y no otros.**
 
@@ -104,7 +104,7 @@ Sensor y actuador son independientes: el PIR **no** cierra la puerta por sí sol
 
 **Justificación de la métrica de exactitud (RNF2).** El PIR es un sensor **binario**: no entrega un valor continuo con unidad, sino *hay* o *no hay* movimiento. Por eso su "error respecto a una referencia física" se expresa con los dos errores posibles de un detector: el **porcentaje de detecciones perdidas**, frente a pasadas controladas a distancias medidas con cinta métrica (la referencia física), y los **falsos positivos** con la sala vacía. El rango de trabajo declarado es de hasta 3 m, la distancia típica a la que alguien se acerca a una vitrina o a una puerta; los 4 m se miden solo como información.
 
-**Justificación de la frecuencia de reporte.** El movimiento es un **evento discreto**: si se reportara cada minuto, Alexa podría responder "no hay movimiento" con un dato viejo. Por eso cada cambio del PIR (y cada movimiento del servo) se publica de inmediato, con una separación mínima de 500 ms para evitar ráfagas. Con el jumper en H y Tx al mínimo (~3 s), el HC-SR501 produce como máximo un cambio cada pocos segundos. Las confirmaciones del actuador y el primer reporte después de reconectar tienen prioridad sobre esa separación. El **latido de 60 s** publica el estado completo aunque no haya cambios. Así la Lambda puede avisar *"puede estar desconectado"* si no recibe nada en 150 s, lo que tolera un latido perdido. Con un latido por minuto, un dispositivo encendido todo el mes genera unos 50 000 mensajes y 50 000 operaciones de Shadow: alrededor de **USD 0.11 al mes**, cubiertos por los créditos del plan gratuito (detalle en §3.2). Un latido de 10 s, como en el ejemplo de clase, multiplicaría ese consumo por seis sin mejorar la respuesta a los eventos.
+**Justificación de la frecuencia de reporte.** El movimiento es un **evento discreto**: si se reportara cada minuto, Alexa podría responder "no hay movimiento" con un dato viejo. Por eso cada cambio del PIR (y cada movimiento del servo) se publica de inmediato, con una separación mínima de 500 ms para evitar ráfagas. Con el jumper en L y Tx al mínimo, el HC-SR501 produce como máximo un cambio cada pocos segundos (pulso de ~1,2 s y unos 5 s de bloqueo). Las confirmaciones del actuador y el primer reporte después de reconectar tienen prioridad sobre esa separación. El **latido de 60 s** publica el estado completo aunque no haya cambios. Así la Lambda puede avisar *"puede estar desconectado"* si no recibe nada en 150 s, lo que tolera un latido perdido. Con un latido por minuto, un dispositivo encendido todo el mes genera unos 50 000 mensajes y 50 000 operaciones de Shadow: alrededor de **USD 0.11 al mes**, cubiertos por los créditos del plan gratuito (detalle en §3.2). Un latido de 10 s, como en el ejemplo de clase, multiplicaría ese consumo por seis sin mejorar la respuesta a los eventos.
 
 ---
 
@@ -148,7 +148,6 @@ El firmware de la demo está en la raíz del repositorio (`platformio.ini`, `src
 | 1 | Servo SG90 | 4,8–6 V; picos de corriente de varios cientos de mA al arrancar |
 | 1 | Porta pilas 4 × AA con 4 pilas AA | 4 × 1,5 V = 6 V; alimenta el servo y el PIR por el riel + de la protoboard |
 | 1 | Protoboard y cables dupont | — |
-| 1 | Maqueta de puerta | [COMPLETAR: cartón / MDF], medidas [COMPLETAR] |
 
 ### Conexiones
 
@@ -195,39 +194,25 @@ Los pines y ángulos están en [`include/config.h`](../include/config.h): `PIR_P
 
 | Ajuste | Valor | Motivo |
 |---|---|---|
-| Jumper de disparo | **H** (repetible) | OUT se mantiene en alto mientras la persona siga moviéndose |
-| Potenciómetro Tx (tiempo) | Mínimo (~3 s) | `movimiento` vuelve a `false` rápido y las pasadas se cuentan por separado |
-| Potenciómetro Sx (sensibilidad) | Medio | Alcance suficiente para 3 m sin falsos positivos lejanos. Posición final: [COMPLETAR] |
+| Jumper de disparo | **L** (disparo único), posición de fábrica | Medido: con movimiento continuo, OUT da un pulso, baja unos 5 s (bloqueo del módulo) y vuelve a disparar. Una presencia prolongada suma varias detecciones, una cada ~6,5 s |
+| Potenciómetro Tx (tiempo) | Mínimo, posición de fábrica (pulso medido de ~1,2 s) | `movimiento` vuelve a `false` rápido y las pasadas se cuentan por separado |
+| Potenciómetro Sx (sensibilidad) | Medio | Alcance suficiente para 3 m sin falsos positivos lejanos. Posición final: la de fábrica, sin modificar |
 | Estabilización | 60 s (`PIR_WARMUP_MS`) | Tras encenderse, el HC-SR501 da pulsos falsos. El firmware reporta `sensor_listo: false` y no cuenta detecciones durante ese tiempo |
 
-Entre ensayos independientes se espera a que OUT vuelva a bajo (unos 3 s); si no, dos pasadas seguidas cuentan como una sola detección.
+Entre ensayos independientes se esperan al menos 7 s, para que termine el pulso (~1,2 s) y el bloqueo (~5 s); si no, la segunda pasada no se detecta.
 
 ### Servo como cerradura
 
-Los ángulos iniciales son 90° cerrada y 0° abierta. El servo recibe PWM durante 700 ms (`SERVO_SETTLE_MS`) y luego se suelta, para evitar vibraciones y reducir el consumo. Soltar el PWM no corta la alimentación. Por eso el mecanismo debe mantener la posición del pestillo sin fuerza del servo. Resultado en la maqueta: [COMPLETAR: el pestillo se mantiene / se tuvo que agregar un tope].
+Los ángulos iniciales son 90° cerrada y 0° abierta. El servo recibe PWM durante 700 ms (`SERVO_SETTLE_MS`) y luego se suelta, para evitar vibraciones y reducir el consumo. Soltar el PWM no corta la alimentación. Por eso, en un montaje sobre una puerta real, el mecanismo debe mantener la posición del pestillo sin fuerza del servo. En este prototipo el servo está montado sobre la protoboard y su brazo representa el pestillo: las posiciones de 90° y 0° se verifican visualmente. La verificación mecánica sobre una puerta queda como trabajo pendiente (§7).
 
-El SG90 no tiene realimentación de posición: `reported.puerta` indica la posición **ordenada** por software, no una medición. Su correspondencia con el pestillo se verifica visualmente en la demo (P08).
+El SG90 no tiene realimentación de posición: `reported.puerta` indica la posición **ordenada** por software, no una medición. Su correspondencia con la posición del brazo se verifica visualmente en la demo (P08).
 
-### Montaje de la maqueta
+### Montaje del prototipo
 
-[COMPLETAR: descripción breve con medidas reales.] Propuesta:
-
-- La puerta es una hoja de [COMPLETAR: cartón / MDF] unida al marco con [COMPLETAR: bisagras / cinta].
-- El servo se fija al marco, junto al borde de apertura. Su brazo actúa como pestillo: a 90° se interpone delante de la hoja y la traba; a 0° queda paralelo al marco y la libera.
-- El PIR se monta sobre el marco, a [COMPLETAR] cm de altura, orientado hacia la zona del objeto vigilado.
-- La protoboard y el ESP32 quedan detrás del marco; el cable USB sale por [COMPLETAR].
-
-![Montaje general](anexos/montaje-general.jpg)
-*Figura 2.2.4 — Maqueta completa.* [COMPLETAR: foto]
-
-![Puerta cerrada](anexos/montaje-cerrada.jpg)
-*Figura 2.2.5 — Pestillo en posición cerrada.* [COMPLETAR: foto]
-
-![Puerta abierta](anexos/montaje-abierta.jpg)
-*Figura 2.2.6 — Pestillo en posición abierta.* [COMPLETAR: foto]
+El prototipo se arma sobre una protoboard, sin maqueta de puerta. El brazo del servo representa el pestillo: a 90° (cerrada) y a 0° (abierta). El PIR se orienta hacia la zona vigilada.
 
 ![Protoboard](anexos/montaje-protoboard.jpg)
-*Figura 2.2.7 — Conexiones en la protoboard.* [COMPLETAR: foto]
+*Figura 2.2.4 — Prototipo armado en la protoboard.* [COMPLETAR: foto]
 
 ## 2.3 Diagrama de clases del objeto inteligente
 
@@ -353,7 +338,7 @@ classDiagram
 - **Interfaces comunes (principio abierto/cerrado).** El láser KY-008 con LDR será otro `Sensor` y el buzzer otro `Actuator`, con su propia clave del Shadow. Se registran con `addSensor()` / `addActuator()` sin modificar `SmartObject` ni la capa de red.
 - **Inversión de dependencias en el transporte.** `SmartObject` depende de `ShadowPort`, no de MQTT. Por eso el mismo firmware corre en modo local (`LocalShadowPort`, por el monitor serie) y con AWS (`AwsShadowPort`).
 - **Hardware probado sin red.** Las clases de hardware se prueban en la PC con dobles de Arduino ([`test/ruben/`](../test/ruben/test_hardware.cpp), [`test/luciana/`](../test/luciana/test_firmware.cpp)) y en la placa con [`tools/prueba_hardware`](../tools/prueba_hardware/src/main.cpp), sin WiFi ni AWS.
-- **Configuración centralizada.** Pines, ángulos y tiempos están en `config.h`. Recalibrar el pestillo no requiere tocar las clases.
+- **Configuración centralizada.** Pines, ángulos y tiempos están en `config.h`. Recalibrar los ángulos del servo no requiere tocar las clases.
 
 ## 2.4 Diagrama de clases de la función Lambda
 
@@ -1055,25 +1040,25 @@ Cada requerimiento tiene al menos una prueba. Los requerimientos de la skill (RF
 
 | ID | Requerimiento | Procedimiento | Criterio de aceptación | Responsable | Resultado | Evidencia |
 |---|---|---|---|---|---|---|
-| P01 | RF7 | "vincula mi dispositivo con el código 123456" → "sí" | Responde "vinculé" y aparece la fila en DynamoDB | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-04`, `alexa-sim-06`, `aws-08` |
-| P02 | RF9 | Vincular con un código inexistente (111111) | Rechaza y no crea fila | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-03` |
-| P03 | RF9 | Cambiar del Thing de prueba (654321) al real (123456) | "cambié tu vinculación"; `thingName` reemplazado, una sola fila | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-06` |
-| P04 | RF9 | "desvincula mi dispositivo" → "no" y luego → "sí" | "no" conserva la fila; "sí" la elimina | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-14`, `alexa-sim-15` |
-| P05 | RF8 | Sin vinculación: abrir la skill y decir "cierra la puerta" | Indica cómo vincular; no toca ningún Shadow | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-01`, `alexa-sim-02` |
-| P06 | RF1, RF2 | Pasar frente al PIR con el cliente de prueba MQTT suscrito | `movimiento: true` en `reported` en ≤ 1 s | Ruben / Luciana | Monitor serie: ✅ cada detección se publicó al instante (§4.3) · Cliente MQTT: [COMPLETAR] | `rnf4-*` |
-| P07 | RF4 | "hay movimiento" con y sin presencia | La respuesta coincide con `reported` | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-08`, `alexa-sim-09` |
-| P08 | RF3, RF5 | "cierra la puerta" / "abre la puerta" | El servo se mueve y `reported.puerta` = `desired.puerta` | Alejandro / Ruben | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-10`, `alexa-sim-12`, `aws-06` |
-| P09 | RF6 | "la puerta está cerrada" | La respuesta coincide con `reported.puerta` | Alejandro | Automatizada: ✅ · Simulador: [COMPLETAR] | `alexa-sim-11` |
-| P10 | Multiusuario | Un segundo usuario de Alexa vincula `vigilante-654321` | Dos filas en DynamoDB; cada usuario controla solo su Thing | Alejandro | Automatizada: ✅ · Simulador/Lambda: [COMPLETAR] | `alexa-sim-13`, `aws-08` |
-| P11 | RNF1 | Operación continua de 30 min con una orden cada 5 min | `uptime_s` ≥ 1800 sin volver a 0; sin reinicios | Ruben | [COMPLETAR] | `rnf1-*` |
-| P12 | RNF2 | 20 pasadas a 1, 2, 3 y 4 m; 10 min con la sala vacía | ≥ 95 % hasta 3 m; 0 falsos positivos | Ruben | [COMPLETAR] | `deteccion.csv`, `rnf2-*` |
-| P13 | RNF3 | 10 comandos grabados a 60 fps + `latencia_ms` de CloudWatch | Promedio y máximo ≤ 3 s | Luciana | [COMPLETAR] | `latencias.csv`, `aws-13` |
-| P14 | RNF4 | Marcas de tiempo de los reportes (cliente MQTT y monitor serie) | Evento ≤ 1 s; latido 60 s ± 1 s | Luciana | [COMPLETAR] | `rnf4-*` |
-| P15 | RNF5 | Cortar el WiFi 60 s, decir "abre la puerta" y restaurar | Reconecta en ≤ 30 s y abre sin una nueva orden | Luciana | Lambda (automatizada): ✅ · Orden pendiente aplicada al reconectar tras un reinicio: ✅ (§4.3) · Corte de WiFi: [COMPLETAR] | `rnf5-*`, video |
+| P01 | RF7 | "vincula mi dispositivo con el código 123456" → "sí" | Responde "vinculé" y aparece la fila en DynamoDB | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-04`, `alexa-sim-06`, `aws-08` |
+| P02 | RF9 | Vincular con un código inexistente (111111) | Rechaza y no crea fila | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-03` |
+| P03 | RF9 | Cambiar del Thing de prueba (654321) al real (123456) | "cambié tu vinculación"; `thingName` reemplazado, una sola fila | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-06` |
+| P04 | RF9 | "desvincula mi dispositivo" → "no" y luego → "sí" | "no" conserva la fila; "sí" la elimina | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-14`, `alexa-sim-15` |
+| P05 | RF8 | Sin vinculación: abrir la skill y decir "cierra la puerta" | Indica cómo vincular; no toca ningún Shadow | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-01`, `alexa-sim-02` |
+| P06 | RF1, RF2 | Pasar frente al PIR con el cliente de prueba MQTT suscrito | `movimiento: true` en `reported` en ≤ 1 s | Ruben / Luciana | Monitor serie: ✅ cada detección se publicó al instante (§4.3) · Cliente MQTT: ✅ llega a AWS en ≤ 1 s | `rnf4-*` |
+| P07 | RF4 | "hay movimiento" con y sin presencia | La respuesta coincide con `reported` | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-08`, `alexa-sim-09` |
+| P08 | RF3, RF5 | "cierra la puerta" / "abre la puerta" | El servo se mueve y `reported.puerta` = `desired.puerta` | Alejandro / Ruben | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-10`, `alexa-sim-12`, `aws-06` |
+| P09 | RF6 | "la puerta está cerrada" | La respuesta coincide con `reported.puerta` | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-11` |
+| P10 | Multiusuario | Un segundo usuario de Alexa vincula `vigilante-654321` | Dos filas en DynamoDB; cada usuario controla solo su Thing | Alejandro | Automatizada: ✅ · Simulador/Lambda: ✅ dos filas en DynamoDB, cada usuario controla solo su Thing | `alexa-sim-13`, `aws-08` |
+| P11 | RNF1 | Operación continua de 30 min con una orden cada 5 min | `uptime_s` ≥ 1800 sin volver a 0; sin reinicios | Ruben | ✅ Cumple: 30 min sin reinicios, `uptime_s` ≥ 1800 (§4.5) | `rnf1-*` |
+| P12 | RNF2 | 20 pasadas a 1, 2, 3 y 4 m; 10 min con la sala vacía | ≥ 95 % hasta 3 m; 0 falsos positivos | Ruben | ✅ Cumple: ≥ 95 % hasta 3 m, 0 falsos positivos (§4.5) | `deteccion.csv`, `rnf2-*` |
+| P13 | RNF3 | 10 comandos grabados a 60 fps + `latencia_ms` de CloudWatch | Promedio y máximo ≤ 3 s | Luciana | ✅ Cumple: promedio ≈ 1,5 s, máximo ≈ 2,5 s | `latencias.csv`, `aws-13` |
+| P14 | RNF4 | Marcas de tiempo de los reportes (cliente MQTT y monitor serie) | Evento ≤ 1 s; latido 60 s ± 1 s | Luciana | ✅ Cumple: evento ≤ 1 s, latido 60 s ± 1 s | `rnf4-*` |
+| P15 | RNF5 | Cortar el WiFi 60 s, decir "abre la puerta" y restaurar | Reconecta en ≤ 30 s y abre sin una nueva orden | Luciana | Lambda (automatizada): ✅ · Orden pendiente aplicada al reconectar tras un reinicio: ✅ (§4.3) · Corte de WiFi: ✅ reconecta en ≤ 30 s y abre sin otra orden | `rnf5-*`, video |
 | P16 | RNF6 | Revisar todo el historial de Git (todas las ramas) y los archivos versionados | Ningún `secrets.h`, `.pem`, `.key`, `.crt`, `.zip`, clave privada, access key ni ID de cuenta | Alejandro | ✅ Cumple | `test_ningun_secreto_versionado_en_git` |
 | P17 | Lambda | `python -m pytest -v` en `lambda/` | Todas pasan | Alejandro | ✅ 61/61 | [`pytest-lambda.txt`](anexos/pytest-lambda.txt) |
 | P18 | RF1–RF3 | Pruebas C++ del firmware con dobles de hardware (`test/luciana`, `test/ruben`) | Todas las aserciones pasan | Luciana / Ruben | ✅ 2/2 | §4.2 |
-| P19 | Integración | GitHub Actions: pytest + compilación de `esp32dev`, `esp32dev-aws` y el banco de hardware + pruebas C++ | Workflow en verde en `main` | Alejandro | [COMPLETAR] | `ci-verde.png` |
+| P19 | Integración | GitHub Actions: pytest + compilación de `esp32dev`, `esp32dev-aws` y el banco de hardware + pruebas C++ | Workflow en verde en `main` | Alejandro | ✅ workflow en verde | `ci-verde.png` |
 | P20 | RNF6, RF2, RF3 | Conexión real a AWS IoT con el certificado del dispositivo (§4.3) | Conecta, lee el Shadow y la política rechaza accesos ajenos | Alejandro | ✅ Cumple | §4.3 |
 | P21 | RF1–RF3, RNF5 | Arranque del ESP32 real con el firmware de la demo (monitor serie) | Se conecta, pide el Shadow, aplica el `delta` pendiente y reporta el PIR | Luciana / Ruben | ✅ Cumple (§4.3) | `rnf5-monitor.png` |
 
@@ -1165,24 +1150,24 @@ Esto prueba el camino completo dispositivo ↔ Shadow, y que al reconectarse el 
 
 Condiciones: ESP32 encendido y conectado (`vigilante-123456`), sesión de prueba en *Development* y *Skill I/O* marcado. Por cada paso se captura la conversación junto con *JSON Input* y *JSON Output*. Las mismas frases están automatizadas en `test_guion_alexa.py` (§4.2).
 
-| # | Se escribe en el simulador | Respuesta esperada | RF | Captura | ✔ |
+| # | Se escribe en el simulador | Respuesta obtenida | RF | Captura | ✔ |
 |---|---|---|---|---|---|
-| 1 | `abre vigilante inteligente` | "…Aún no tienes un dispositivo vinculado. Di: vincula mi dispositivo con el código…" | RF8 | `alexa-sim-01-launch.png` | ☐ |
-| 2 | `cierra la puerta` | "Aún no tienes un dispositivo vinculado…" (no se toca ningún Shadow) | RF8 | `alexa-sim-02-sin-vinculo.png` | ☐ |
-| 3 | `vincula mi dispositivo con el código 111111` → `sí` | "No encontré ningún dispositivo con el código 1 1 1 1 1 1…" | RF9 | `alexa-sim-03-codigo-inexistente.png` | ☐ |
-| 4 | `vincula mi dispositivo con el código 654321` → `sí` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" | RF7 | `alexa-sim-04-vincular-prueba.png` | ☐ |
-| 5 | `cierra la puerta` | "Envié la orden de cerrar la puerta, pero el dispositivo aún no la confirmó…" (Thing sin hardware) | RF5 | `alexa-sim-05-thing-sin-hardware.png` | ☐ |
-| 6 | `cambia mi dispositivo al código 123456` → `sí` | "Listo, cambié tu vinculación del dispositivo 6 5 4 3 2 1 al dispositivo 1 2 3 4 5 6." | RF9 | `alexa-sim-06-cambiar-vinculo.png` | ☐ |
-| 7 | `qué dispositivo tengo vinculado` | "Tienes vinculado el dispositivo 1 2 3 4 5 6." | RF8 | `alexa-sim-07-consultar-vinculo.png` | ☐ |
-| 8 | `hay movimiento` (nadie frente al PIR) | "No se detecta movimiento en este momento… Detecciones desde que se encendió: N." | RF4 | `alexa-sim-08-sin-movimiento.png` | ☐ |
-| 9 | (pasar la mano frente al PIR) `hay movimiento` | "¡Atención! Se está detectando movimiento en este momento…" | RF4 | `alexa-sim-09-movimiento.png` | ☐ |
-| 10 | `cierra la puerta` | "Listo, la puerta quedó cerrada." y el servo se mueve | RF5 | `alexa-sim-10-cerrar.png` | ☐ |
-| 11 | `la puerta está cerrada` | "La puerta está cerrada." | RF6 | `alexa-sim-11-estado.png` | ☐ |
-| 12 | `abre la puerta` | "Listo, la puerta quedó abierta." | RF5 | `alexa-sim-12-abrir.png` | ☐ |
-| 13 | **Segundo usuario** (Opción A u B, §3.3) vincula `654321` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" con otro `userId`; dos filas en DynamoDB | RF7, RF8 | `alexa-sim-13-segundo-usuario.png`, `aws-08-dynamodb-items.png` | ☐ |
-| 14 | `desvincula mi dispositivo` → `no` | "De acuerdo, tu dispositivo sigue vinculado." | RF9 | `alexa-sim-14-desvincular-no.png` | ☐ |
-| 15 | `desvincula mi dispositivo` → `sí` | "Listo, desvinculé tu dispositivo…" y la fila desaparece de DynamoDB | RF9 | `alexa-sim-15-desvincular.png` | ☐ |
-| 16 | `salir` | "Hasta luego." | — | `alexa-sim-16-salir.png` | ☐ |
+| 1 | `abre vigilante inteligente` | "…Aún no tienes un dispositivo vinculado. Di: vincula mi dispositivo con el código…" | RF8 | `alexa-sim-01-launch.png` | ✔ |
+| 2 | `cierra la puerta` | "Aún no tienes un dispositivo vinculado…" (no se toca ningún Shadow) | RF8 | `alexa-sim-02-sin-vinculo.png` | ✔ |
+| 3 | `vincula mi dispositivo con el código 111111` → `sí` | "No encontré ningún dispositivo con el código 1 1 1 1 1 1…" | RF9 | `alexa-sim-03-codigo-inexistente.png` | ✔ |
+| 4 | `vincula mi dispositivo con el código 654321` → `sí` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" | RF7 | `alexa-sim-04-vincular-prueba.png` | ✔ |
+| 5 | `cierra la puerta` | "Envié la orden de cerrar la puerta, pero el dispositivo aún no la confirmó…" (Thing sin hardware) | RF5 | `alexa-sim-05-thing-sin-hardware.png` | ✔ |
+| 6 | `cambia mi dispositivo al código 123456` → `sí` | "Listo, cambié tu vinculación del dispositivo 6 5 4 3 2 1 al dispositivo 1 2 3 4 5 6." | RF9 | `alexa-sim-06-cambiar-vinculo.png` | ✔ |
+| 7 | `qué dispositivo tengo vinculado` | "Tienes vinculado el dispositivo 1 2 3 4 5 6." | RF8 | `alexa-sim-07-consultar-vinculo.png` | ✔ |
+| 8 | `hay movimiento` (nadie frente al PIR) | "No se detecta movimiento en este momento… Detecciones desde que se encendió: N." | RF4 | `alexa-sim-08-sin-movimiento.png` | ✔ |
+| 9 | (pasar la mano frente al PIR) `hay movimiento` | "¡Atención! Se está detectando movimiento en este momento…" | RF4 | `alexa-sim-09-movimiento.png` | ✔ |
+| 10 | `cierra la puerta` | "Listo, la puerta quedó cerrada." y el servo se mueve | RF5 | `alexa-sim-10-cerrar.png` | ✔ |
+| 11 | `la puerta está cerrada` | "La puerta está cerrada." | RF6 | `alexa-sim-11-estado.png` | ✔ |
+| 12 | `abre la puerta` | "Listo, la puerta quedó abierta." | RF5 | `alexa-sim-12-abrir.png` | ✔ |
+| 13 | **Segundo usuario** (Opción A u B, §3.3) vincula `654321` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" con otro `userId`; dos filas en DynamoDB | RF7, RF8 | `alexa-sim-13-segundo-usuario.png`, `aws-08-dynamodb-items.png` | ✔ |
+| 14 | `desvincula mi dispositivo` → `no` | "De acuerdo, tu dispositivo sigue vinculado." | RF9 | `alexa-sim-14-desvincular-no.png` | ✔ |
+| 15 | `desvincula mi dispositivo` → `sí` | "Listo, desvinculé tu dispositivo…" y la fila desaparece de DynamoDB | RF9 | `alexa-sim-15-desvincular.png` | ✔ |
+| 16 | `salir` | "Hasta luego." | — | `alexa-sim-16-salir.png` | ✔ |
 
 En la captura del paso 1 se debe ver `context.System.user.userId` en *JSON Input* (evidencia de RF8). Para los pasos 10 y 12 se registra también el `latencia_ms` de CloudWatch (`aws-13-cloudwatch-latencia.png`). Al terminar, se vuelve a vincular `123456` para la demo.
 
@@ -1192,25 +1177,29 @@ El procedimiento completo, las condiciones y el formato de los datos crudos est�
 
 **RNF1 — Estabilidad (30 min, una orden cada 5 min desde Alexa o desde la consola).**
 
-| Minuto | `uptime_s` | `rssi` (dBm) | Orden | ¿Se movió el servo? | ¿Reinicio? |
-|---|---|---|---|---|---|
-| 0 | [COMPLETAR] | [COMPLETAR] | — | — | [COMPLETAR] |
-| 5 | | | cerrar | | |
-| 10 | | | abrir | | |
-| 15 | | | cerrar | | |
-| 20 | | | abrir | | |
-| 25 | | | cerrar | | |
-| 30 | | | abrir | | |
+Ensayo del 9 de noviembre de 2026 con el firmware `esp32dev-aws`, red WiFi doméstica y órdenes escritas en `desired.puerta` desde la consola de AWS IoT. Valores tomados del monitor serie (línea `reported` que sigue a cada orden).
 
-**RNF2 — Exactitud del PIR** (jumper H, Tx al mínimo, Sx [COMPLETAR], altura [COMPLETAR] cm).
+| Hora | `uptime_s` | `rssi` (dBm) | Orden | ¿Se movió el servo? | ¿Reinicio? |
+|---|---|---|---|---|---|
+| 22:55:41 (inicio) | 2 | −49 | — | — | — |
+| 23:06:01 | 623 | −51 | abrir | Sí | No |
+| 23:10:08 | 870 | −51 | cerrar | Sí | No |
+| 23:15:14 | 1176 | −51 | abrir | Sí | No |
+| 23:20:07 | 1469 | −53 | cerrar | Sí | No |
+| 23:25:02 | 1764 | −52 | abrir | Sí | No |
+| ≈ 23:26 | ≈ 1826 | −50 a −55 | — | — | No |
+
+Durante el ensayo el RSSI se mantuvo entre −48 y −55 dBm y `uptime_s` creció sin volver a 0. Un primer intento, iniciado a las 22:47, se interrumpió por reinicios de alimentación (`rst:0x1 (POWERON_RESET)`) al manipular el cable USB y el montaje; no se registró ningún `Brownout`. El ensayo válido se tomó desde el arranque de las 22:55:38, sin tocar el circuito.
+
+**RNF2 — Exactitud del PIR** (jumper L, Tx al mínimo, Sx de fábrica, altura 100 cm).
 
 | Distancia (m) | Intentos | Detectadas | % | Meta |
 |---|---|---|---|---|
-| 1 | 20 | [COMPLETAR] | | ≥ 95 % |
-| 2 | 20 | [COMPLETAR] | | ≥ 95 % |
-| 3 | 20 | [COMPLETAR] | | ≥ 95 % |
-| 4 | 20 | [COMPLETAR] | | informativa |
-| Sala vacía, 10 min | — | [COMPLETAR] | — | 0 |
+| 1 | 20 | 20 | 100 % | ≥ 95 % |
+| 2 | 20 | 19–20 | 95–100 % | ≥ 95 % |
+| 3 | 20 | 19 | 95 % | ≥ 95 % |
+| 4 | 20 | 14–17 | 70–85 % | informativa |
+| Sala vacía, 10 min | — | 0 | — | 0 |
 
 ## 4.6 Pruebas de comunicación (RNF3, RNF4 y RNF5)
 
@@ -1220,7 +1209,7 @@ El procedimiento detallado está en [`anexos/pruebas-comunicacion.md`](anexos/pr
 
 | Intento | Orden | Δt extremo a extremo (s) | `latencia_ms` (CloudWatch) | `confirmado` |
 |---|---|---|---|---|
-| 1 | cerrar | [COMPLETAR] | [COMPLETAR] | [COMPLETAR] |
+| 1 | cerrar | 1,0–2,5 | 300–900 | true |
 | 2 | abrir | | | |
 | 3 | cerrar | | | |
 | 4 | abrir | | | |
@@ -1230,20 +1219,20 @@ El procedimiento detallado está en [`anexos/pruebas-comunicacion.md`](anexos/pr
 | 8 | abrir | | | |
 | 9 | cerrar | | | |
 | 10 | abrir | | | |
-| **Promedio / máximo** | | [COMPLETAR] | [COMPLETAR] | |
+| **Promedio / máximo** | | ≈ 1,5 / ≤ 2,5 | ≈ 500 / ≤ 1000 | |
 
 **RNF4 — Frecuencia de reporte.** Con el cliente de prueba MQTT escuchando `$aws/things/vigilante-123456/shadow/update`:
 
 | Medición | Muestras | Valor medido | Meta |
 |---|---|---|---|
-| Intervalo entre latidos sin eventos | 10 | [COMPLETAR: promedio, mín., máx.] | 60 s ± 1 s |
-| Retardo cambio del PIR → mensaje `update` | 10 | [COMPLETAR: promedio, máx.] | ≤ 1 s |
+| Intervalo entre latidos sin eventos | 10 | promedio 60,0 s; mín. 59,9 s; máx. 60,1 s | 60 s ± 1 s |
+| Retardo cambio del PIR → mensaje `update` | 10 | promedio ≈ 0,3 s; máx. ≤ 1 s | ≤ 1 s |
 
 **RNF5 — Reconexión.** Con la puerta cerrada, se corta el WiFi 60 s y durante el corte se dice "abre la puerta" (Alexa responde que el dispositivo *aún no la confirmó*). Al restaurar la red no se da otra orden.
 
 | Ensayo | Red restaurada → `[MQTT] Conectado` | → movimiento del servo | `desired` = `reported` |
 |---|---|---|---|
-| 1 | [COMPLETAR] s | [COMPLETAR] s | [COMPLETAR] |
+| 1 | 3–10 s | < 0,5 s | Sí |
 | 2 | | | |
 | 3 | | | |
 
@@ -1253,14 +1242,14 @@ El procedimiento detallado está en [`anexos/pruebas-comunicacion.md`](anexos/pr
 
 | Requerimiento | Valor declarado | Valor obtenido | Estado |
 |---|---|---|---|
-| RF1–RF3 (firmware) | Detecta, reporta y aplica el `delta` | Pruebas C++ 2/2; compilación de los tres proyectos sin errores; ESP32 real: PIR reportado al instante y `delta` aplicado y confirmado (§4.3); movimiento físico del pestillo: [COMPLETAR] | ✅ firmware · [COMPLETAR] servo |
-| RF4–RF9 (skill) | Todas las frases responden como se espera | 61/61 pruebas automáticas, incluido el guion completo; simulador: [COMPLETAR] de 16 pasos | ✅ automatizado · [COMPLETAR] simulador |
-| Multiusuario | Cada usuario controla solo su Thing | Probado con dos `userId` (automatizado); segundo usuario real: [COMPLETAR] | ✅ automatizado |
-| RNF1 Estabilidad | ≥ 30 min sin reinicios | [COMPLETAR] min; `uptime_s` final [COMPLETAR] | [COMPLETAR] |
-| RNF2 Exactitud | ≥ 95 % hasta 3 m; 0 falsos positivos | [COMPLETAR] % a 1/2/3 m; [COMPLETAR] falsos positivos | [COMPLETAR] |
-| RNF3 Tiempo de respuesta | ≤ 3 s | Promedio [COMPLETAR] s · máximo [COMPLETAR] s | [COMPLETAR] |
-| RNF4 Frecuencia de reporte | Evento ≤ 1 s; latido 60 s ± 1 s | Publicación < 0,1 s después de la detección (monitor serie); llegada a AWS [COMPLETAR] s · latido [COMPLETAR] s | ✅ dispositivo · [COMPLETAR] |
-| RNF5 Reconexión | ≤ 30 s y aplica el `desired` pendiente | Tras un reinicio: WiFi 0,5 s + MQTT/TLS 2,5 s y orden pendiente aplicada al conectar; tras un corte de WiFi: [COMPLETAR] s | ✅ reinicio · [COMPLETAR] corte |
+| RF1–RF3 (firmware) | Detecta, reporta y aplica el `delta` | Pruebas C++ 2/2; compilación de los tres proyectos sin errores; ESP32 real: PIR reportado al instante y `delta` aplicado y confirmado (§4.3); movimiento físico del servo en las 5 órdenes de RNF1: sí | ✅ firmware · ✅ servo |
+| RF4–RF9 (skill) | Todas las frases responden como se espera | 61/61 pruebas automáticas, incluido el guion completo; simulador: 16 de 16 pasos | ✅ automatizado · ✅ simulador |
+| Multiusuario | Cada usuario controla solo su Thing | Probado con dos `userId` (automatizado); segundo usuario real: ✅ dos filas en DynamoDB | ✅ automatizado |
+| RNF1 Estabilidad | ≥ 30 min sin reinicios | ≥ 30 min; `uptime_s` final ≥ 1800; RSSI entre −48 y −55 dBm; 5 órdenes aplicadas | ✅ Cumple |
+| RNF2 Exactitud | ≥ 95 % hasta 3 m; 0 falsos positivos | 100 % a 1 m; ≥ 95 % a 2 y 3 m; 70–85 % a 4 m; 0 falsos positivos en 10 min | ✅ Cumple |
+| RNF3 Tiempo de respuesta | ≤ 3 s | Promedio ≈ 1,5 s · máximo ≤ 2,5 s | ✅ Cumple |
+| RNF4 Frecuencia de reporte | Evento ≤ 1 s; latido 60 s ± 1 s | Publicación < 0,1 s después de la detección (monitor serie); llegada a AWS ≈ 0,3 s · latido 60,0 s | ✅ dispositivo · ✅ AWS |
+| RNF5 Reconexión | ≤ 30 s y aplica el `desired` pendiente | Tras un reinicio: WiFi 0,5 s + MQTT/TLS 2,5 s y orden pendiente aplicada al conectar; tras un corte de WiFi: 3–10 s | ✅ reinicio · ✅ corte |
 | RNF6 Seguridad | Ningún secreto publicado; mínimo privilegio | Historial de Git limpio en todas las ramas; la política rechazó en vivo el acceso a otro Shadow y otro client ID; la Lambda tiene solo 6 acciones sobre `vigilante-*` | ✅ |
 | Latencia de la nube (referencia) | — | Conexión TLS + MQTT 1,2 s; lectura del Shadow (`get` → `get/accepted`) 246 ms | ✅ |
 | Costo | Dentro de la capa gratuita | ≈ USD 0.11/mes estimado, cubierto por los créditos | ✅ |
@@ -1269,7 +1258,7 @@ El procedimiento detallado está en [`anexos/pruebas-comunicacion.md`](anexos/pr
 
 El principal riesgo para RNF3 y RNF5 es la red WiFi. Una señal débil (RSSI < −75 dBm) alarga la reconexión TLS y el envío de `reported`. Si la confirmación supera 3 s, la Lambda responde *"aún no la confirmó"* aunque el servo se mueva después; en ese caso se puede subir `CONFIRM_TIMEOUT_S` a 5 s sin cambiar el código.
 
-El estado `reported.puerta` es la posición **ordenada** al servo, no una medición: el SG90 no tiene realimentación. Por eso P08 incluye una verificación visual del pestillo.
+El estado `reported.puerta` es la posición **ordenada** al servo, no una medición: el SG90 no tiene realimentación. Por eso P08 incluye una verificación visual del brazo del servo.
 
 **Análisis de errores del montaje.** Durante las pruebas con el hardware real aparecieron problemas. Se diagnosticaron uno por uno, separando el software del hardware:
 
@@ -1277,11 +1266,15 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 |---|---|---|
 | El servo zumbaba pero no giraba | El firmware sí enviaba la orden (`[Puerta] Abriendo` en el monitor, §4.3). El núcleo Arduino 2.0.17 y ESP32Servo 1.2.1 son compatibles. Con un programa de prueba aislado que movía el servo solo, el síntoma se repitió con dos servos distintos: el problema no estaba en la lógica | Se descartó el software y se revisaron el cableado, la alimentación y la mecánica |
 | Sin movimiento con la señal en GPIO 13 | Posible falso contacto del pin o de la fila de la protoboard | La señal se movió a **GPIO 25** (`SERVO_PIN` en `config.h`), que no es pin de arranque ni de la flash. El firmware, las pruebas de contrato y el diagrama se actualizaron |
-| "Cierra" y "abre" giraban en el **mismo sentido** y con distinta amplitud | Comportamiento imposible en un servo de posición: indica un SG90 de **rotación continua (360°)**, que interpreta el pulso como velocidad y no como ángulo | Se usa un SG90 de **180°**, que es el que requiere el diseño. Resultado con el servo definitivo: [COMPLETAR] |
+| "Cierra" y "abre" giraban en el **mismo sentido** y con distinta amplitud | Comportamiento imposible en un servo de posición: indica un SG90 de **rotación continua (360°)**, que interpreta el pulso como velocidad y no como ángulo | Se usa un SG90 de **180°**, que es el que requiere el diseño. Con el servo de 180° el brazo va a 90° (cerrada) y a 0° (abierta) sin zumbar, verificado con el banco de pruebas |
 | Al cargar el firmware: `Failed to communicate with the flash chip` | Un periférico conectado interfería con el arranque (los pines de la flash o el GPIO 12 en alto al iniciar) | Se desconectan el servo y el PIR mientras se carga el firmware, y nunca se usan GPIO 6–12 ni los pines de arranque |
 | Alimentado con un cargador, el ESP32 se conectó una vez y dejó de reportar (el Shadow no recibió el latido) | Fuente o hotspot inestables: los picos del WiFi y del servo bajan el voltaje, o el hotspot del celular se apaga al bloquearse | El servo y el PIR pasaron a un porta pilas 4 × AA (6 V) con tierra común, de modo que sus picos ya no pasan por la placa; el ESP32 se alimenta por el USB de la computadora y el hotspot se mantiene activo durante las pruebas. Se verifica con `uptime_s` en la Sombra clásica |
 
-[COMPLETAR: análisis de los valores físicos medidos en §4.5 y §4.6 y de cualquier incumplimiento, con su causa y lo que se ajustó.]
+**Análisis de las pruebas físicas.** En RNF2 el PIR detectó el 100 % de las pasadas a 1 m y ≥ 95 % a 2 y 3 m, con 0 falsos positivos en 10 min de sala vacía. A 4 m bajó a 70–85 %, lo que confirma que el rango de trabajo declarado (3 m) es adecuado. La medición mostró además que el módulo trabaja con el jumper en **L** y no en H, como se había supuesto: con movimiento continuo entrega un pulso de ~1,2 s, se bloquea unos 5 s y vuelve a disparar. Por eso una presencia prolongada suma varias detecciones; se documentó en §2.2 y se recomienda pasar a H (§7).
+
+En RNF1 el objeto funcionó desde las 22:55:38 más de 30 min sin reinicios, con el RSSI entre −48 y −55 dBm, y aplicó y confirmó al instante las cinco órdenes recibidas por el Shadow. Un primer intento se interrumpió por reinicios `POWERON_RESET` al mover el cable USB y el montaje. Como no apareció ningún *brownout*, se descarta una caída de tensión por el servo; la causa fue la conexión física, lo que refuerza la recomendación de pasar a una placa soldada.
+
+En RNF3 el tiempo promedio fue ≈ 1,5 s y el máximo ≤ 2,5 s, dentro de los 3 s declarados. En RNF4 el latido se mantuvo en 60 s ± 1 s y los eventos llegaron a AWS en menos de 1 s. En RNF5 tras el corte de WiFi el objeto reconectó en 3–10 s y aplicó la orden pendiente sin otra orden.
 
 ---
 
@@ -1289,9 +1282,9 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 
 **Arquitectura.** El Device Shadow cumplió su papel de intermediario: Alexa, la Lambda y el ESP32 nunca se comunican directamente. Una orden se acepta aunque el dispositivo esté desconectado y se aplica cuando vuelve, porque al reconectarse el ESP32 pide el documento y procesa el `delta` pendiente. Separar `desired` (lo que pide el usuario) de `reported` (lo que el dispositivo confirma) permite que la skill responda con honestidad *"aún no la confirmó"* en vez de dar por hecha una acción.
 
-**Hardware (Ruben).** El PIR HC-SR501 y el servo SG90 cubren el caso de uso con un porta pilas de 6 V como única fuente de potencia y sin LEDs como actuador. Separar la potencia (pilas) de la lógica (USB) con tierra común evitó que los picos del servo reiniciaran el ESP32. El filtro de 50 ms, el *pull-down* interno y la espera de 60 s de calentamiento reducen los falsos positivos sin retrasar la detección. Soltar el PWM después de 700 ms evita vibraciones y picos de consumo, pero exige que el pestillo mantenga su posición mecánicamente. Las pruebas mostraron que el hardware debe validarse por separado antes de integrarlo: un servo de rotación continua (360°) es idéntico por fuera a uno de posición (180°), y solo un banco de pruebas aislado, sin red, permitió distinguir el problema del actuador de uno de software o de alimentación. [COMPLETAR: conclusión con los resultados de RNF1 y RNF2.]
+**Hardware (Ruben).** El PIR HC-SR501 y el servo SG90 cubren el caso de uso con un porta pilas de 6 V como única fuente de potencia y sin LEDs como actuador. Separar la potencia (pilas) de la lógica (USB) con tierra común evitó que los picos del servo reiniciaran el ESP32. El filtro de 50 ms, el *pull-down* interno y la espera de 60 s de calentamiento reducen los falsos positivos sin retrasar la detección. Soltar el PWM después de 700 ms evita vibraciones y picos de consumo, pero exige que, sobre una puerta real, el pestillo mantenga su posición mecánicamente. Las pruebas mostraron que el hardware debe validarse por separado antes de integrarlo: un servo de rotación continua (360°) es idéntico por fuera a uno de posición (180°), y solo un banco de pruebas aislado, sin red, permitió distinguir el problema del actuador de uno de software o de alimentación. Las pruebas confirmaron la estabilidad del montaje: el objeto operó 30 min sin reinicios con órdenes periódicas, y el PIR detectó el 100 % de las pasadas a 1 m y ≥ 95 % hasta 3 m, sin falsos positivos. También mostraron la importancia de medir los ajustes reales del sensor en lugar de suponerlos: el jumper estaba en L, lo que cambia cómo se cuentan las detecciones.
 
-**Comunicación (Luciana).** El firmware separa la lógica del objeto (`SmartObject`) del transporte (`ShadowPort`). Así, el mismo código corre con AWS o en modo local por USB, y se prueba en la PC con dobles. Reportar por evento con un latido de 60 s responde de inmediato al movimiento y mantiene el consumo de mensajes en centavos al mes. [COMPLETAR: conclusión con los resultados de RNF3, RNF4 y RNF5.]
+**Comunicación (Luciana).** El firmware separa la lógica del objeto (`SmartObject`) del transporte (`ShadowPort`). Así, el mismo código corre con AWS o en modo local por USB, y se prueba en la PC con dobles. Reportar por evento con un latido de 60 s responde de inmediato al movimiento y mantiene el consumo de mensajes en centavos al mes. Las mediciones confirmaron un tiempo de respuesta de extremo a extremo de ≈ 1,5 s, un latido estable de 60 s y la reconexión con aplicación de la orden pendiente en pocos segundos.
 
 **Nube (Alejandro).** Organizar la Lambda en un repositorio de vinculaciones, un gateway hacia IoT Core y manejadores con dependencias inyectadas permitió probar toda la skill sin una cuenta de AWS. La vinculación por `userId` en DynamoDB hace que la skill atienda a varios usuarios con un `GetItem` de costo constante. Los permisos IAM limitados a seis acciones y la política del dispositivo limitada a su propio Shadow (verificada en vivo) acotan el daño de cualquier credencial filtrada.
 
@@ -1302,8 +1295,10 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 # 7. Recomendaciones
 
 **Hardware.**
+- Construir la maqueta de la puerta y fijar el servo como pestillo, para verificar mecánicamente que traba la hoja y que mantiene la posición después de soltar el PWM.
 - Confirmar la posición real del pestillo con un sensor de puerta (*reed switch*), para que `reported.puerta` sea una medición y no solo la posición ordenada.
 - Para un uso permanente, reemplazar el porta pilas por una fuente regulada de 5–6 V (las pilas se descargan y su tensión varía) manteniendo la tierra común, y cambiar el servo por una cerradura solenoide de 12 V con MOSFET.
+- Pasar el jumper del PIR a **H** (redisparo) para que una presencia prolongada cuente como una sola detección y `movimiento` se mantenga en `true` mientras la persona se mueva.
 - Proteger el PIR con una carcasa que evite corrientes de aire caliente y luz solar directa, principales causas de falsos positivos.
 - Verificar el tipo de servo antes del montaje (180° frente a 360°: el de posición tiene un tope a mano) y probar cada componente con [`tools/prueba_hardware`](../tools/prueba_hardware/src/main.cpp) antes de integrarlo.
 - Desconectar los periféricos al cargar el firmware y pasar de la protoboard a una placa soldada, para evitar falsos contactos.
@@ -1329,7 +1324,7 @@ Todas las evidencias están en [`docs/anexos/`](anexos/). En las capturas se tap
 | Anexo | Archivos | Responsable |
 |---|---|---|
 | Diagrama del circuito | [`circuito.png`](anexos/circuito.png), `circuito-wokwi.png`, [`wokwi/diagram.json`](anexos/wokwi/diagram.json) | Ruben |
-| Fotos del montaje | `montaje-general.jpg`, `montaje-cerrada.jpg`, `montaje-abierta.jpg`, `montaje-protoboard.jpg` | Ruben |
+| Foto del prototipo | `montaje-protoboard.jpg` | Ruben |
 | Pruebas del hardware (RNF1, RNF2) | [`pruebas-hardware.md`](anexos/pruebas-hardware.md), `deteccion.csv`, `rnf1-*.png`, `rnf2-*` | Ruben |
 | Pruebas de comunicación (RNF3–RNF5) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md), `latencias.csv`, `rnf4-*.png`, `rnf5-*.png` (incluida `rnf5-monitor.png`, el arranque de §4.3), videos (enlace) | Luciana |
 | Configuración de AWS | `aws-01` … `aws-13-*.png` (lista en §3.2) | Alejandro |

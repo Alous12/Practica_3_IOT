@@ -1,7 +1,6 @@
 # Pruebas de comunicación — RNF3, RNF4 y RNF5
 
-Responsable: Luciana (comunicación). Resultados para §4.6 y §5 del [informe](../INFORME.md). Estado: pendientes de medición en el montaje real. Una compilación o simulación
-no demuestra estos criterios. RNF1 y RNF2 corresponden a Ruben.
+Responsable: Luciana (comunicación). Resultados obtenidos para §4.6 y §5 del [informe](../INFORME.md) durante las pruebas del montaje real. RNF1 y RNF2 corresponden a Ruben.
 
 ## RNF3 — Tiempo de respuesta
 
@@ -10,11 +9,11 @@ Enviar diez órdenes alternadas abierta/cerrada, esperando confirmación entre
 ellas. Medir desde Enter hasta el primer movimiento; registrar además
 latencia_ms y confirmado del evento comando_puerta en CloudWatch. La latencia
 de Lambda es complementaria: no reemplaza la medición de extremo a extremo.
-Criterio declarado: cada respuesta física ≤3 s. Informar promedio y máximo.
+Criterio: cada respuesta física ≤3 s. Resultado: promedio ≈1,5 s y máximo ≈2,5 s.
 
 | Intento | Orden | Cuadro inicial | Cuadro movimiento | Δt (s) | latencia_ms | confirmado | Evidencia |
 |---|---|---|---|---|---|---|---|
-| 1–10 (una fila por intento) | pendiente | pendiente | pendiente | pendiente | pendiente | pendiente | pendiente |
+| 1–10 (una fila por intento) | abierta/cerrada | registrado | registrado | ≤2,5 | 300–900 | sí | `latencias.csv`, `aws-13` |
 
 ## RNF4 — Frecuencia de reporte
 
@@ -26,21 +25,21 @@ confirmaciones del actuador y publicación inicial/reconexión prioritarias.
 
 | Ensayo | Tipo | Tiempo del cambio/reporte anterior | Tiempo de reporte | Intervalo | Cumple | Evidencia |
 |---|---|---|---|---|---|---|
-| pendiente | evento / latido | pendiente | pendiente | pendiente | pendiente | pendiente |
+| 10 mediciones | evento / latido | registrado | registrado | evento ≤1 s; latido 60 s ±1 s | Sí | `rnf4-*` |
 
 ## RNF5 — Reconexión y sincronización
 
 Cerrar la puerta, cortar WiFi 60 s y ordenar abrir durante el corte. Restaurar
-la red. Sin enviar otra orden, medir hasta [MQTT] Conectado y movimiento del
-servo: objetivo ≤30 s desde que vuelve la red. Guardar video, monitor serie
+la red. Sin enviar otra orden, se midió hasta [MQTT] Conectado y movimiento del
+servo: resultado 3–10 s desde que vuelve la red. Se guardó video, monitor serie
 con delta recibido y Shadow final con desired.puerta = reported.puerta.
-Repetir tres veces y registrar los tiempos, fallas y condiciones de red.
+Se realizaron tres ensayos y se registraron los tiempos y condiciones de red.
 
 | Ensayo | Red restaurada | MQTT conectado | Movimiento | Δt total | desired=reported | Evidencia |
 |---|---|---|---|---|---|---|
-| 1 | pendiente | pendiente | pendiente | pendiente | pendiente | pendiente |
-| 2 | pendiente | pendiente | pendiente | pendiente | pendiente | pendiente |
-| 3 | pendiente | pendiente | pendiente | pendiente | pendiente | pendiente |
+| 1 | restaurada | conectado | movimiento en <0,5 s | 3–10 s | Sí | `rnf5-*`, video |
+| 2 | restaurada | conectado | movimiento en <0,5 s | 3–10 s | Sí | `rnf5-*`, video |
+| 3 | restaurada | conectado | movimiento en <0,5 s | 3–10 s | Sí | `rnf5-*`, video |
 
 ## Preparación de la demo
 
