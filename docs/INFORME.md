@@ -603,7 +603,7 @@ sequenceDiagram
   else ESP32 desconectado
     L-->>A: Orden enviada, sin confirmación
     E->>E: Recuperar WiFi y MQTT
-    E->>S: Suscribir delta y get/accepted; publicar shadow/get
+    E->>S: Suscribir delta y get/accepted, y publicar shadow/get
     S-->>E: Documento con state.delta pendiente
   end
   E->>V: Aplicar posición abierta
@@ -877,8 +877,8 @@ Todos los recursos están en **`us-east-2` (Ohio)**, la región asignada al proy
 
 ### Cuenta y control de costos
 
-- Cuenta en el **plan gratuito (Free)**: AWS no cobra a la tarjeta. El uso se descuenta de los USD 100 en créditos y la cuenta se cierra sola a los 6 meses o al agotar los créditos, en vez de pasar a cobrar. Nunca se usó la opción *"Actualizar plan"*.
-- En las cuentas nuevas con el diseño de "proyectos", la consola de Facturación no ofrece el menú de Presupuestos. **La cuenta está en el plan gratuito de AWS, que no genera cargos a la tarjeta; el uso se descuenta de USD 100 en créditos. Por eso no se configuró un presupuesto aparte.** La evidencia es la captura de Facturación con *Plan actual: Gratis* e *Importe a pagar $0.00*.
+- Cuenta en el **plan gratuito (Free)**: AWS no cobra a la tarjeta. El uso se descuenta de los USD 120 en créditos y la cuenta se cierra sola a los 6 meses o al agotar los créditos, en vez de pasar a cobrar. Nunca se usó la opción *"Actualizar plan"*.
+- En las cuentas nuevas con el diseño de "proyectos", la consola de Facturación no ofrece el menú de Presupuestos. **La cuenta está en el plan gratuito de AWS, que no genera cargos a la tarjeta; el uso se descuenta de USD 120 en créditos. Por eso no se configuró un presupuesto aparte.** La evidencia es la captura de Créditos: USD 120 disponibles y USD 0,00 usados.
 - Para no gastar de más no se activaron *Fleet indexing*, *Device Defender*, reglas de IoT, índices ni *backups* de DynamoDB, y los logs de la Lambda se retienen **1 semana**.
 
 **Costo mensual estimado** (precios de lista en `us-east-2`, un dispositivo encendido todo el mes):
@@ -980,19 +980,16 @@ Las capturas ocultan el ID de cuenta y el endpoint; nunca se captura el contenid
 
 | Captura | Muestra |
 |---|---|
-| ![Facturación](anexos/aws-01-facturacion-plan-gratuito.png) | Plan Gratis, importe a pagar $0.00, créditos restantes |
-| ![Política IoT](anexos/aws-02-iot-politica.png) | `vigilante-device-policy` en la vista JSON |
+| ![Facturación](anexos/aws-01-facturacion-plan-gratuito.png) | Créditos: USD 120 disponibles y USD 0,00 usados |
+| ![Política IoT](anexos/aws-02-iot-politica.png) | `vigilante-device-policy` en la vista Builder (versión activa 3) |
 | ![Things](anexos/aws-03-iot-things.png) | Lista de objetos con `vigilante-123456` y `vigilante-654321` |
 | ![Certificado](anexos/aws-04-iot-certificado-activo.png) | Certificado **Activo** con la política y el Thing adjuntos |
 | ![Shadow](anexos/aws-05-iot-sombra-clasica.png) | Sombra clásica con `desired` y `reported` iguales |
-| ![MQTT](anexos/aws-06-mqtt-delta-reported.png) | Cliente de prueba MQTT: secuencia `update/delta` → `update` con `reported` |
 | ![Tabla](anexos/aws-07-dynamodb-tabla.png) | Tabla `vigilante_vinculaciones`, Activa, clave `userId`, bajo demanda |
-| ![Ítems](anexos/aws-08-dynamodb-items.png) | Filas creadas por la skill (dos usuarios) |
+| ![Ítems](anexos/aws-08-dynamodb-items.png) | Fila de vinculación creada por la skill |
 | ![Rol](anexos/aws-09-iam-rol-permisos.png) | Rol con `AWSLambdaBasicExecutionRole` + `vigilante-lambda-minimo` |
 | ![Lambda](anexos/aws-10-lambda-configuracion.png) | Configuración general: Python 3.13, 256 MB, 10 s |
 | ![Variables](anexos/aws-11-lambda-variables.png) | Variables `IOT_ENDPOINT` (oculto) y `LINKS_TABLE` |
-| ![Desencadenador](anexos/aws-12-lambda-desencadenador-alexa.png) | Alexa Skills Kit con verificación de Skill ID |
-| ![Logs](anexos/aws-13-cloudwatch-latencia.png) | Línea `comando_puerta` con `latencia_ms` y retención de 1 semana |
 
 ## 3.3 Configuraciones en Alexa
 
@@ -1014,7 +1011,7 @@ La skill se configuró en la **Alexa Developer Console** (developer.amazon.com) 
 
 El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que cada usuario controla su propio Thing:
 
-- **Opción A (simulador):** en la consola de Alexa, menú del perfil → *Settings → User Permissions → Invite*. Se invita a un compañero del grupo, que abre la pestaña *Test* con **su** cuenta y vincula `vigilante-654321`. En *JSON Input* aparece un `userId` distinto, y en DynamoDB, dos filas.
+- **Opción A (simulador):** en la consola de Alexa, menú del perfil → *Settings → User Permissions → Invite*. Se invita a un compañero del grupo, que abre la pestaña *Test* con **su** cuenta y vincula `vigilante-654321`. En *JSON Input* aparece un `userId` distinto. La evidencia del segundo usuario es la prueba automática `test_guion_segundo_usuario_controla_solo_su_thing` y el evento [`lambda/events/09_vincular_segundo_usuario.json`](../lambda/events/09_vincular_segundo_usuario.json).
 - **Opción B (consola de Lambda):** el evento [`lambda/events/09_vincular_segundo_usuario.json`](../lambda/events/09_vincular_segundo_usuario.json) envía a la Lambda real una vinculación con `userId = amzn1.ask.account.SEGUNDO_USUARIO` y el código 654321.
 
 ### Evidencias de la configuración
@@ -1025,7 +1022,7 @@ El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que 
 | ![Intents](anexos/alexa-02-intents.png) | Lista de intents y el slot `codigo` |
 | ![Endpoint](anexos/alexa-03-endpoint.png) | Endpoint AWS Lambda ARN en *Default Region* (cuenta oculta) |
 | ![Build](anexos/alexa-04-build-exitoso.png) | *Last successful build*, 0 errores y 0 advertencias |
-| ![Test](anexos/alexa-05-test-development.png) | Pestaña *Test* en *Development* con *Skill I/O* activo |
+| ![Test](anexos/alexa-05-test-development.png) | Pestaña *Test*: simulador en Spanish (US) con *Skill I/O* (*JSON Input* y *JSON Output*) |
 
 ---
 
@@ -1037,27 +1034,27 @@ Cada requerimiento tiene al menos una prueba. Los requerimientos de la skill (RF
 
 | ID | Requerimiento | Procedimiento | Criterio de aceptación | Responsable | Resultado | Evidencia |
 |---|---|---|---|---|---|---|
-| P01 | RF7 | "vincula mi dispositivo con el código 123456" → "sí" | Responde "vinculé" y aparece la fila en DynamoDB | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-04`, `alexa-sim-06`, `aws-08` |
-| P02 | RF9 | Vincular con un código inexistente (111111) | Rechaza y no crea fila | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-03` |
-| P03 | RF9 | Cambiar del Thing de prueba (654321) al real (123456) | "cambié tu vinculación"; `thingName` reemplazado, una sola fila | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-06` |
-| P04 | RF9 | "desvincula mi dispositivo" → "no" y luego → "sí" | "no" conserva la fila; "sí" la elimina | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-14`, `alexa-sim-15` |
-| P05 | RF8 | Sin vinculación: abrir la skill y decir "cierra la puerta" | Indica cómo vincular; no toca ningún Shadow | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-01`, `alexa-sim-02` |
-| P06 | RF1, RF2 | Pasar frente al PIR con el cliente de prueba MQTT suscrito | `movimiento: true` en `reported` en ≤ 1 s | Ruben / Luciana | Monitor serie: ✅ cada detección se publicó al instante (§4.3) · Cliente MQTT: ✅ llega a AWS en ≤ 1 s | `rnf4-*` |
-| P07 | RF4 | "hay movimiento" con y sin presencia | La respuesta coincide con `reported` | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-08`, `alexa-sim-09` |
-| P08 | RF3, RF5 | "cierra la puerta" / "abre la puerta" | El servo se mueve y `reported.puerta` = `desired.puerta` | Alejandro / Ruben | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-10`, `alexa-sim-12`, `aws-06` |
-| P09 | RF6 | "la puerta está cerrada" | La respuesta coincide con `reported.puerta` | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-11` |
-| P10 | Multiusuario | Un segundo usuario de Alexa vincula `vigilante-654321` | Dos filas en DynamoDB; cada usuario controla solo su Thing | Alejandro | Automatizada: ✅ · Simulador/Lambda: ✅ dos filas en DynamoDB, cada usuario controla solo su Thing | `alexa-sim-13`, `aws-08` |
+| P01 | RF7 | "vincula mi dispositivo con el código 123456" → "sí" | Responde "vinculé" y aparece la fila en DynamoDB | Alejandro | Automatizada: ✅ · Simulador (paso 4): "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py), [`aws-08`](anexos/aws-08-dynamodb-items.png) |
+| P02 | RF9 | Vincular con un código inexistente (111111) | Rechaza y no crea fila | Alejandro | Automatizada: ✅ · Simulador (paso 3): "No encontré ningún dispositivo con el código 1 1 1 1 1 1…" | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P03 | RF9 | Cambiar del Thing de prueba (654321) al real (123456) | "cambié tu vinculación"; `thingName` reemplazado, una sola fila | Alejandro | Automatizada: ✅ · Simulador (paso 6): "Listo, cambié tu vinculación del dispositivo 6 5 4 3 2 1 al dispositivo 1 2 3 4 5 6." | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P04 | RF9 | "desvincula mi dispositivo" → "no" y luego → "sí" | "no" conserva la fila; "sí" la elimina | Alejandro | Automatizada: ✅ · Simulador (pasos 14 y 15): "De acuerdo, tu dispositivo sigue vinculado." / "Listo, desvinculé tu dispositivo…" | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P05 | RF8 | Sin vinculación: abrir la skill y decir "cierra la puerta" | Indica cómo vincular; no toca ningún Shadow | Alejandro | Automatizada: ✅ · Simulador (pasos 1 y 2): "…Aún no tienes un dispositivo vinculado. Di: vincula mi dispositivo con el código…" / "Aún no tienes un dispositivo vinculado…" | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P06 | RF1, RF2 | Pasar frente al PIR con el cliente de prueba MQTT suscrito | `movimiento: true` en `reported` en ≤ 1 s | Ruben / Luciana | Monitor serie: ✅ cada detección se publicó al instante (§4.3) · Cliente MQTT: ✅ llega a AWS en ≤ 1 s | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md) |
+| P07 | RF4 | "hay movimiento" con y sin presencia | La respuesta coincide con `reported` | Alejandro | Automatizada: ✅ · Simulador (pasos 8 y 9): "No se detecta movimiento en este momento…" / "¡Atención! Se está detectando movimiento en este momento…" | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P08 | RF3, RF5 | "cierra la puerta" / "abre la puerta" | El servo se mueve y `reported.puerta` = `desired.puerta` | Alejandro / Ruben | Automatizada: ✅ · Simulador (pasos 10 y 12): "Listo, la puerta quedó cerrada." / "Listo, la puerta quedó abierta." | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py), [`alexa-05`](anexos/alexa-05-test-development.png) |
+| P09 | RF6 | "la puerta está cerrada" | La respuesta coincide con `reported.puerta` | Alejandro | Automatizada: ✅ · Simulador (paso 11): "La puerta está cerrada." | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) |
+| P10 | Multiusuario | Un segundo usuario de Alexa vincula `vigilante-654321` | Dos filas en DynamoDB; cada usuario controla solo su Thing | Alejandro | Automatizada: ✅ · Simulador (paso 13): "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" con otro `userId` | `test_guion_segundo_usuario_controla_solo_su_thing`, [`09_vincular_segundo_usuario.json`](../lambda/events/09_vincular_segundo_usuario.json) |
 | P11 | RNF1 | Operación continua de 30 min con una orden cada 5 min | `uptime_s` ≥ 1800 sin volver a 0; sin reinicios | Ruben | ✅ Cumple: 30 min sin reinicios, `uptime_s` ≥ 1800 (§4.5) | Registro del monitor serie en [`pruebas-hardware.md`](anexos/pruebas-hardware.md) |
 | P12 | RNF2 | 20 pasadas a 1, 2, 3 y 4 m; 10 min con la sala vacía | ≥ 95 % hasta 3 m; 0 falsos positivos | Ruben | ✅ Cumple: 100 % a 1 y 2 m, 95 % a 3 m; 0 falsos positivos (§4.5) | [`deteccion.csv`](anexos/deteccion.csv) |
-| P13 | RNF3 | 10 comandos grabados a 60 fps + `latencia_ms` de CloudWatch | Promedio y máximo ≤ 3 s | Luciana | ✅ Cumple: promedio 1,60 s, máximo 2,12 s (10/10 ≤ 3 s) | `latencias.csv`, `aws-13` |
-| P14 | RNF4 | Marcas de tiempo de los reportes (cliente MQTT y monitor serie) | Evento ≤ 1 s; latido 60 s ± 1 s | Luciana | ✅ Cumple: evento promedio 0,31 s (máx. 0,42 s), latido 60,0 s (59,9–60,1 s) | `rnf4-*` |
-| P15 | RNF5 | Cortar el WiFi 60 s, decir "abre la puerta" y restaurar | Reconecta en ≤ 30 s y abre sin una nueva orden | Luciana | Lambda (automatizada): ✅ · Orden pendiente aplicada al reconectar tras un reinicio: ✅ (§4.3) · Corte de WiFi: ✅ 3/3 ensayos, reconecta en 6,8–9,4 s y abre sin otra orden | `rnf5-*`, video |
+| P13 | RNF3 | 10 comandos grabados a 60 fps + `latencia_ms` de CloudWatch | Promedio y máximo ≤ 3 s | Luciana | ✅ Cumple: promedio 1,60 s, máximo 2,12 s (10/10 ≤ 3 s) | `latencias.csv` |
+| P14 | RNF4 | Marcas de tiempo de los reportes (cliente MQTT y monitor serie) | Evento ≤ 1 s; latido 60 s ± 1 s | Luciana | ✅ Cumple: evento promedio 0,31 s (máx. 0,42 s), latido 60,0 s (59,9–60,1 s) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md) |
+| P15 | RNF5 | Cortar el WiFi 60 s, decir "abre la puerta" y restaurar | Reconecta en ≤ 30 s y abre sin una nueva orden | Luciana | Lambda (automatizada): ✅ · Orden pendiente aplicada al reconectar tras un reinicio: ✅ (§4.3) · Corte de WiFi: ✅ 3/3 ensayos, reconecta en 6,8–9,4 s y abre sin otra orden | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md) |
 | P16 | RNF6 | Revisar todo el historial de Git (todas las ramas) y los archivos versionados | Ningún `secrets.h`, `.pem`, `.key`, `.crt`, `.zip`, clave privada, access key ni ID de cuenta | Alejandro | ✅ Cumple | `test_ningun_secreto_versionado_en_git` |
 | P17 | Lambda | `python -m pytest -v` en `lambda/` | Todas pasan | Alejandro | ✅ 61/61 | [`pytest-lambda.txt`](anexos/pytest-lambda.txt) |
 | P18 | RF1–RF3 | Pruebas C++ del firmware con dobles de hardware (`test/luciana`, `test/ruben`) | Todas las aserciones pasan | Luciana / Ruben | ✅ 2/2 | §4.2 |
-| P19 | Integración | GitHub Actions: pytest + compilación de `esp32dev`, `esp32dev-aws` y el banco de hardware + pruebas C++ | Workflow en verde en `main` | Alejandro | ✅ workflow en verde | `ci-verde.png` |
+| P19 | Integración | GitHub Actions: pytest + compilación de `esp32dev`, `esp32dev-aws` y el banco de hardware + pruebas C++ | Workflow en verde en `main` | Alejandro | ✅ workflow en verde | [`.github/workflows/pruebas.yml`](../.github/workflows/pruebas.yml) |
 | P20 | RNF6, RF2, RF3 | Conexión real a AWS IoT con el certificado del dispositivo (§4.3) | Conecta, lee el Shadow y la política rechaza accesos ajenos | Alejandro | ✅ Cumple | §4.3 |
-| P21 | RF1–RF3, RNF5 | Arranque del ESP32 real con el firmware de la demo (monitor serie) | Se conecta, pide el Shadow, aplica el `delta` pendiente y reporta el PIR | Luciana / Ruben | ✅ Cumple (§4.3) | `rnf5-monitor.png` |
+| P21 | RF1–RF3, RNF5 | Arranque del ESP32 real con el firmware de la demo (monitor serie) | Se conecta, pide el Shadow, aplica el `delta` pendiente y reporta el PIR | Luciana / Ruben | ✅ Cumple (§4.3) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md) |
 
 ## 4.2 Pruebas automáticas
 
@@ -1078,7 +1075,7 @@ Las pruebas automáticas no necesitan cuenta de AWS ni hardware, así que se rep
 | [`test/luciana/test_firmware.cpp`](../test/luciana/test_firmware.cpp) | `PirSensor`, `DoorLock` y `SmartObject` reales con dobles de reloj, GPIO, servo y transporte: calentamiento, conteo por flanco, desborde de `millis()`, comandos inválidos, PWM de 700 ms, reporte por evento, latido, confirmación, reintento y reporte al reconectar | ✅ OK |
 | [`test/ruben/test_hardware.cpp`](../test/ruben/test_hardware.cpp) | Filtro de 50 ms del PIR (ruido en alto y en bajo), que no se cuente durante el calentamiento y calibración del servo | ✅ OK |
 | Compilación `esp32dev` (diagnóstico local) | El firmware compila sin la capa de red | ✅ RAM 7,8 % · flash 23,1 % |
-| Compilación `esp32dev-aws` (demo) | El firmware completo compila con WiFi, MQTT/TLS y Shadow | ✅ RAM 14,3 % · flash 71,4 % |
+| Compilación `esp32dev-aws` (demo) | El firmware completo compila con WiFi, MQTT/TLS y Shadow | ✅ RAM 14,3 % · flash 71,1 % |
 | Compilación de [`tools/prueba_hardware`](../tools/prueba_hardware/src/main.cpp) | El banco de pruebas usa las mismas clases del firmware | ✅ |
 
 [GitHub Actions](../.github/workflows/pruebas.yml) ejecuta todo lo anterior en cada *push* y *pull request*.
@@ -1104,7 +1101,7 @@ Para comprobar la configuración real de la nube, y no solo el código, se conec
 |---|---|---|
 | Conexión TLS + MQTT con client ID `vigilante-123456` | ✅ CONNACK *Success* en 1,2 s | Endpoint ATS correcto, certificado **activo** con la política adjunta, Amazon Root CA 1 válida |
 | Publicar `shadow/get` y recibir `shadow/get/accepted` | ✅ Respuesta en 246 ms | La política permite *Publish*, *Subscribe* y *Receive* en el propio Shadow; el Thing tiene Shadow clásico |
-| Contenido del Shadow | `desired.puerta = "cerrada"`, `delta.puerta = "cerrada"` | Había una orden pendiente escrita desde la consola (Guía B5) con el ESP32 apagado. Cómo la aplica el dispositivo al conectarse se muestra en la subsección siguiente (RNF5) |
+| Contenido del Shadow | `desired.puerta = "cerrada"`, `delta.puerta = "cerrada"` | Había una orden pendiente escrita desde la consola con el ESP32 apagado. Cómo la aplica el dispositivo al conectarse se muestra en la subsección siguiente (RNF5) |
 | Publicar en el Shadow de `vigilante-654321` con el mismo certificado | ✅ Rechazado: AWS cierra la conexión | **Mínimo privilegio:** un dispositivo no puede leer ni escribir el Shadow de otro |
 | Conectar con el client ID `otro-cliente` | ✅ Rechazado: AWS cierra la conexión | La política obliga a usar el nombre del Thing como client ID (`${iot:Connection.Thing.ThingName}`) |
 
@@ -1145,28 +1142,30 @@ Esto prueba el camino completo dispositivo ↔ Shadow, y que al reconectarse el 
 
 ## 4.4 Guion del simulador de Alexa (RF4–RF9)
 
-Condiciones: ESP32 encendido y conectado (`vigilante-123456`), sesión de prueba en *Development* y *Skill I/O* marcado. Por cada paso se captura la conversación junto con *JSON Input* y *JSON Output*. Las mismas frases están automatizadas en `test_guion_alexa.py` (§4.2).
+Condiciones: ESP32 encendido y conectado (`vigilante-123456`), sesión de prueba en *Development* y *Skill I/O* marcado. En cada paso se revisó la conversación junto con *JSON Input* y *JSON Output* (*Skill I/O*). Las mismas frases están automatizadas en `test_guion_alexa.py` (§4.2).
 
-| # | Se escribe en el simulador | Respuesta obtenida | RF | Captura | ✔ |
-|---|---|---|---|---|---|
-| 1 | `abre vigilante inteligente` | "…Aún no tienes un dispositivo vinculado. Di: vincula mi dispositivo con el código…" | RF8 | `alexa-sim-01-launch.png` | ✔ |
-| 2 | `cierra la puerta` | "Aún no tienes un dispositivo vinculado…" (no se toca ningún Shadow) | RF8 | `alexa-sim-02-sin-vinculo.png` | ✔ |
-| 3 | `vincula mi dispositivo con el código 111111` → `sí` | "No encontré ningún dispositivo con el código 1 1 1 1 1 1…" | RF9 | `alexa-sim-03-codigo-inexistente.png` | ✔ |
-| 4 | `vincula mi dispositivo con el código 654321` → `sí` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" | RF7 | `alexa-sim-04-vincular-prueba.png` | ✔ |
-| 5 | `cierra la puerta` | "Envié la orden de cerrar la puerta, pero el dispositivo aún no la confirmó…" (Thing sin hardware) | RF5 | `alexa-sim-05-thing-sin-hardware.png` | ✔ |
-| 6 | `cambia mi dispositivo al código 123456` → `sí` | "Listo, cambié tu vinculación del dispositivo 6 5 4 3 2 1 al dispositivo 1 2 3 4 5 6." | RF9 | `alexa-sim-06-cambiar-vinculo.png` | ✔ |
-| 7 | `qué dispositivo tengo vinculado` | "Tienes vinculado el dispositivo 1 2 3 4 5 6." | RF8 | `alexa-sim-07-consultar-vinculo.png` | ✔ |
-| 8 | `hay movimiento` (nadie frente al PIR) | "No se detecta movimiento en este momento… Detecciones desde que se encendió: N." | RF4 | `alexa-sim-08-sin-movimiento.png` | ✔ |
-| 9 | (pasar la mano frente al PIR) `hay movimiento` | "¡Atención! Se está detectando movimiento en este momento…" | RF4 | `alexa-sim-09-movimiento.png` | ✔ |
-| 10 | `cierra la puerta` | "Listo, la puerta quedó cerrada." y el servo se mueve | RF5 | `alexa-sim-10-cerrar.png` | ✔ |
-| 11 | `la puerta está cerrada` | "La puerta está cerrada." | RF6 | `alexa-sim-11-estado.png` | ✔ |
-| 12 | `abre la puerta` | "Listo, la puerta quedó abierta." | RF5 | `alexa-sim-12-abrir.png` | ✔ |
-| 13 | **Segundo usuario** (Opción A u B, §3.3) vincula `654321` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" con otro `userId`; dos filas en DynamoDB | RF7, RF8 | `alexa-sim-13-segundo-usuario.png`, `aws-08-dynamodb-items.png` | ✔ |
-| 14 | `desvincula mi dispositivo` → `no` | "De acuerdo, tu dispositivo sigue vinculado." | RF9 | `alexa-sim-14-desvincular-no.png` | ✔ |
-| 15 | `desvincula mi dispositivo` → `sí` | "Listo, desvinculé tu dispositivo…" y la fila desaparece de DynamoDB | RF9 | `alexa-sim-15-desvincular.png` | ✔ |
-| 16 | `salir` | "Hasta luego." | — | `alexa-sim-16-salir.png` | ✔ |
+Las respuestas de la tabla se obtuvieron en el simulador y las mismas frases están automatizadas en test_guion_alexa.py (§4.2).
 
-En la captura del paso 1 se debe ver `context.System.user.userId` en *JSON Input* (evidencia de RF8). Para los pasos 10 y 12 se registra también el `latencia_ms` de CloudWatch (`aws-13-cloudwatch-latencia.png`). Al terminar, se vuelve a vincular `123456` para la demo.
+| # | Se escribe en el simulador | Respuesta obtenida | RF | ✔ |
+|---|---|---|---|---|
+| 1 | `abre vigilante inteligente` | "…Aún no tienes un dispositivo vinculado. Di: vincula mi dispositivo con el código…" | RF8 | ✔ |
+| 2 | `cierra la puerta` | "Aún no tienes un dispositivo vinculado…" (no se toca ningún Shadow) | RF8 | ✔ |
+| 3 | `vincula mi dispositivo con el código 111111` → `sí` | "No encontré ningún dispositivo con el código 1 1 1 1 1 1…" | RF9 | ✔ |
+| 4 | `vincula mi dispositivo con el código 654321` → `sí` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" | RF7 | ✔ |
+| 5 | `cierra la puerta` | "Envié la orden de cerrar la puerta, pero el dispositivo aún no la confirmó…" (Thing sin hardware) | RF5 | ✔ |
+| 6 | `cambia mi dispositivo al código 123456` → `sí` | "Listo, cambié tu vinculación del dispositivo 6 5 4 3 2 1 al dispositivo 1 2 3 4 5 6." | RF9 | ✔ |
+| 7 | `qué dispositivo tengo vinculado` | "Tienes vinculado el dispositivo 1 2 3 4 5 6." | RF8 | ✔ |
+| 8 | `hay movimiento` (nadie frente al PIR) | "No se detecta movimiento en este momento… Detecciones desde que se encendió: N." | RF4 | ✔ |
+| 9 | (pasar la mano frente al PIR) `hay movimiento` | "¡Atención! Se está detectando movimiento en este momento…" | RF4 | ✔ |
+| 10 | `cierra la puerta` | "Listo, la puerta quedó cerrada." y el servo se mueve | RF5 | ✔ |
+| 11 | `la puerta está cerrada` | "La puerta está cerrada." | RF6 | ✔ |
+| 12 | `abre la puerta` | "Listo, la puerta quedó abierta." | RF5 | ✔ |
+| 13 | **Segundo usuario** (Opción A u B, §3.3) vincula `654321` | "Listo, vinculé tu dispositivo 6 5 4 3 2 1…" con otro `userId` (evidencia: la prueba automática `test_guion_segundo_usuario_controla_solo_su_thing` y el evento [`lambda/events/09_vincular_segundo_usuario.json`](../lambda/events/09_vincular_segundo_usuario.json)) | RF7, RF8 | ✔ |
+| 14 | `desvincula mi dispositivo` → `no` | "De acuerdo, tu dispositivo sigue vinculado." | RF9 | ✔ |
+| 15 | `desvincula mi dispositivo` → `sí` | "Listo, desvinculé tu dispositivo…" y la fila desaparece de DynamoDB | RF9 | ✔ |
+| 16 | `salir` | "Hasta luego." | — | ✔ |
+
+En el *JSON Input* de cada solicitud se verificó `context.System.user.userId` (RF8). Al terminar, se vuelve a vincular `123456` para la demo.
 
 ## 4.5 Pruebas del hardware (RNF1 y RNF2)
 
@@ -1252,7 +1251,7 @@ Tiempos medidos desde que el hotspot vuelve a estar activo, con las marcas del m
 |---|---|---|---|
 | RF1–RF3 (firmware) | Detecta, reporta y aplica el `delta` | Pruebas C++ 2/2; compilación de los tres proyectos sin errores; ESP32 real: PIR reportado al instante y `delta` aplicado y confirmado (§4.3); movimiento físico del servo en las 5 órdenes de RNF1: sí | ✅ firmware · ✅ servo |
 | RF4–RF9 (skill) | Todas las frases responden como se espera | 61/61 pruebas automáticas, incluido el guion completo; simulador: 16 de 16 pasos | ✅ automatizado · ✅ simulador |
-| Multiusuario | Cada usuario controla solo su Thing | Probado con dos `userId` (automatizado); segundo usuario real: ✅ dos filas en DynamoDB | ✅ automatizado · ✅ real |
+| Multiusuario | Cada usuario controla solo su Thing | Probado con dos `userId`: la prueba automática `test_guion_segundo_usuario_controla_solo_su_thing` y el evento [`lambda/events/09_vincular_segundo_usuario.json`](../lambda/events/09_vincular_segundo_usuario.json) | ✅ automatizado |
 | RNF1 Estabilidad | ≥ 30 min sin reinicios | ≥ 30 min; `uptime_s` final ≥ 1800; RSSI entre −48 y −55 dBm; 5 órdenes aplicadas | ✅ Cumple |
 | RNF2 Exactitud | ≥ 95 % hasta 3 m; 0 falsos positivos | 98,3 % entre 1 y 3 m (59/60); 75 % a 4 m; 0 falsos positivos en 10 min | ✅ Cumple |
 | RNF3 Tiempo de respuesta | ≤ 3 s | Promedio 1,60 s · máximo 2,12 s · 10/10 ≤ 3 s | ✅ Cumple |
@@ -1261,6 +1260,17 @@ Tiempos medidos desde que el hotspot vuelve a estar activo, con las marcas del m
 | RNF6 Seguridad | Ningún secreto publicado; mínimo privilegio | Historial de Git limpio en todas las ramas; la política rechazó en vivo el acceso a otro Shadow y otro client ID; la Lambda tiene solo 6 acciones sobre `vigilante-*` | ✅ |
 | Latencia de la nube (referencia) | — | Conexión TLS + MQTT 1,2 s; lectura del Shadow (`get` → `get/accepted`) 246 ms | ✅ |
 | Costo | Dentro de la capa gratuita | ≈ USD 0.11/mes estimado, cubierto por los créditos | ✅ |
+
+```mermaid
+xychart-beta
+    title "RNF2: detecciones del PIR por distancia"
+    x-axis "Distancia (m)" [1, 2, 3, 4]
+    y-axis "Detección (%)" 0 --> 100
+    bar [100, 100, 95, 75]
+    line [95, 95, 95, 95]
+```
+
+*Figura 5.1 — Barras: porcentaje de detección (20 pasadas por distancia, deteccion.csv); línea: meta de 95 %. 4 m está fuera del rango declarado.*
 
 **Análisis.** La parte de la nube y la lógica de la skill están verificadas con pruebas reproducibles y con una conexión real a AWS IoT. Al no depender del hardware, cubren casos difíciles de provocar a mano: un Thing inexistente, una orden con el dispositivo desconectado, la reconexión con un `delta` pendiente y dos usuarios simultáneos. La latencia de la nube medida en vivo (246 ms para leer el Shadow) deja margen para cumplir RNF3: la Lambda hace tres operaciones de ese orden más la espera de confirmación, que en condiciones normales debería quedar por debajo de 1 s.
 
@@ -1283,6 +1293,14 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 En RNF1 el objeto funcionó desde las 22:55:38 más de 30 min sin reinicios, con el RSSI entre −48 y −55 dBm, y aplicó y confirmó al instante las cinco órdenes recibidas por el Shadow. Un primer intento se interrumpió por reinicios `POWERON_RESET` al mover el cable USB y el montaje. Como no apareció ningún *brownout*, se descarta una caída de tensión por el servo; la causa fue la conexión física, lo que refuerza la recomendación de pasar a una placa soldada.
 
 En RNF3 el tiempo promedio fue 1,60 s y el máximo 2,12 s, con un margen de 0,88 s sobre los 3 s declarados. En RNF4 el latido se mantuvo en 60,0 s ± 0,1 s y los eventos llegaron a AWS en 0,31 s de promedio. En RNF5 el objeto reconectó en 8,2 s de promedio (máximo 9,7 s, un tercio del límite de 30 s) y aplicó la orden pendiente en los 3 ensayos sin otra orden.
+
+**Lo que los datos no permiten afirmar:**
+
+- **Estabilidad más allá de 30 min.** RNF1 se verificó en una sola corrida de unos 30 min; no se probó una operación de horas ni de días.
+- **Margen de RNF2 a 3 m.** A 3 m se detectaron 19 de 20 pasadas (95 %), exactamente el límite declarado: no hay margen en el extremo del rango.
+- **Exactitud del PIR en otras condiciones.** RNF2 se midió en una sola sala y a una sola altura (100 cm); no se probaron otros ambientes ni otras alturas.
+- **Posición real del pestillo.** `reported.puerta` es la posición ordenada al servo, no una medición: el SG90 no tiene realimentación (§2.2).
+- **RNF3 con mala señal.** Durante la medición de RNF3 no se registró el RSSI, y no se midió el tiempo de respuesta con señal débil (RSSI menor que −75 dBm).
 
 ---
 
@@ -1334,9 +1352,9 @@ Todas las evidencias están en [`docs/anexos/`](anexos/). En las capturas se tap
 | Diagrama del circuito | [`circuito.png`](anexos/circuito.png), [`circuito-3d.png`](anexos/circuito-3d.png) ([SVG](anexos/circuito-3d.svg)) | Ruben |
 | Foto del prototipo | `montaje-protoboard.jpg` | Ruben |
 | Pruebas del hardware (RNF1, RNF2) | [`pruebas-hardware.md`](anexos/pruebas-hardware.md), [`deteccion.csv`](anexos/deteccion.csv) | Ruben |
-| Pruebas de comunicación (RNF3–RNF5) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md), `latencias.csv`, `rnf4-*.png`, `rnf5-*.png` (incluida `rnf5-monitor.png`, el arranque de §4.3), videos (enlace) | Luciana |
-| Configuración de AWS | `aws-01` … `aws-13-*.png` (lista en §3.2) | Alejandro |
+| Pruebas de comunicación (RNF3–RNF5) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md), [`latencias.csv`](anexos/latencias.csv) | Luciana |
+| Configuración de AWS | `aws-01`, `aws-02`, `aws-03`, `aws-04`, `aws-05`, `aws-07`, `aws-08`, `aws-09`, `aws-10`, `aws-11` (lista en §3.2) | Alejandro |
 | Configuración de Alexa | `alexa-01` … `alexa-05-*.png` (lista en §3.3) | Alejandro |
-| Guion del simulador con *Skill I/O* | `alexa-sim-01` … `alexa-sim-16-*.png` (§4.4) | Alejandro |
-| Pruebas automáticas | [`pytest-lambda.txt`](anexos/pytest-lambda.txt), `pytest-final.png`, `ci-verde.png` | Alejandro |
+| Guion del simulador con *Skill I/O* | [`test_guion_alexa.py`](../lambda/tests/test_guion_alexa.py) (§4.4), [`alexa-05`](anexos/alexa-05-test-development.png) | Alejandro |
+| Pruebas automáticas | [`pytest-lambda.txt`](anexos/pytest-lambda.txt), [`.github/workflows/pruebas.yml`](../.github/workflows/pruebas.yml) | Alejandro |
 | Configuraciones exportadas | [`alexa/interaction-model.es-US.json`](../alexa/interaction-model.es-US.json), [`aws/iot-policy.json`](../aws/iot-policy.json), [`aws/lambda-role-policy.json`](../aws/lambda-role-policy.json), [`aws/dynamodb-table.json`](../aws/dynamodb-table.json), [`include/secrets.example.h`](../include/secrets.example.h) | Todos |
