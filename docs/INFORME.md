@@ -1051,8 +1051,8 @@ Cada requerimiento tiene al menos una prueba. Los requerimientos de la skill (RF
 | P08 | RF3, RF5 | "cierra la puerta" / "abre la puerta" | El servo se mueve y `reported.puerta` = `desired.puerta` | Alejandro / Ruben | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-10`, `alexa-sim-12`, `aws-06` |
 | P09 | RF6 | "la puerta está cerrada" | La respuesta coincide con `reported.puerta` | Alejandro | Automatizada: ✅ · Simulador: ✅ responde como se espera | `alexa-sim-11` |
 | P10 | Multiusuario | Un segundo usuario de Alexa vincula `vigilante-654321` | Dos filas en DynamoDB; cada usuario controla solo su Thing | Alejandro | Automatizada: ✅ · Simulador/Lambda: ✅ dos filas en DynamoDB, cada usuario controla solo su Thing | `alexa-sim-13`, `aws-08` |
-| P11 | RNF1 | Operación continua de 30 min con una orden cada 5 min | `uptime_s` ≥ 1800 sin volver a 0; sin reinicios | Ruben | ✅ Cumple: 30 min sin reinicios, `uptime_s` ≥ 1800 (§4.5) | `rnf1-*` |
-| P12 | RNF2 | 20 pasadas a 1, 2, 3 y 4 m; 10 min con la sala vacía | ≥ 95 % hasta 3 m; 0 falsos positivos | Ruben | ✅ Cumple: 100 % a 1 y 2 m, 95 % a 3 m; 0 falsos positivos (§4.5) | `deteccion.csv`, `rnf2-*` |
+| P11 | RNF1 | Operación continua de 30 min con una orden cada 5 min | `uptime_s` ≥ 1800 sin volver a 0; sin reinicios | Ruben | ✅ Cumple: 30 min sin reinicios, `uptime_s` ≥ 1800 (§4.5) | Registro del monitor serie en [`pruebas-hardware.md`](anexos/pruebas-hardware.md) |
+| P12 | RNF2 | 20 pasadas a 1, 2, 3 y 4 m; 10 min con la sala vacía | ≥ 95 % hasta 3 m; 0 falsos positivos | Ruben | ✅ Cumple: 100 % a 1 y 2 m, 95 % a 3 m; 0 falsos positivos (§4.5) | [`deteccion.csv`](anexos/deteccion.csv) |
 | P13 | RNF3 | 10 comandos grabados a 60 fps + `latencia_ms` de CloudWatch | Promedio y máximo ≤ 3 s | Luciana | ✅ Cumple: promedio 1,60 s, máximo 2,12 s (10/10 ≤ 3 s) | `latencias.csv`, `aws-13` |
 | P14 | RNF4 | Marcas de tiempo de los reportes (cliente MQTT y monitor serie) | Evento ≤ 1 s; latido 60 s ± 1 s | Luciana | ✅ Cumple: evento promedio 0,31 s (máx. 0,42 s), latido 60,0 s (59,9–60,1 s) | `rnf4-*` |
 | P15 | RNF5 | Cortar el WiFi 60 s, decir "abre la puerta" y restaurar | Reconecta en ≤ 30 s y abre sin una nueva orden | Luciana | Lambda (automatizada): ✅ · Orden pendiente aplicada al reconectar tras un reinicio: ✅ (§4.3) · Corte de WiFi: ✅ 3/3 ensayos, reconecta en 6,8–9,4 s y abre sin otra orden | `rnf5-*`, video |
@@ -1337,7 +1337,7 @@ Todas las evidencias están en [`docs/anexos/`](anexos/). En las capturas se tap
 |---|---|---|
 | Diagrama del circuito | [`circuito.png`](anexos/circuito.png), [`wokwi/image.png`](anexos/wokwi/image.png), [`wokwi/diagram.json`](anexos/wokwi/diagram.json) | Ruben |
 | Foto del prototipo | `montaje-protoboard.jpg` | Ruben |
-| Pruebas del hardware (RNF1, RNF2) | [`pruebas-hardware.md`](anexos/pruebas-hardware.md), `deteccion.csv`, `rnf1-*.png`, `rnf2-*` | Ruben |
+| Pruebas del hardware (RNF1, RNF2) | [`pruebas-hardware.md`](anexos/pruebas-hardware.md), [`deteccion.csv`](anexos/deteccion.csv) | Ruben |
 | Pruebas de comunicación (RNF3–RNF5) | [`pruebas-comunicacion.md`](anexos/pruebas-comunicacion.md), `latencias.csv`, `rnf4-*.png`, `rnf5-*.png` (incluida `rnf5-monitor.png`, el arranque de §4.3), videos (enlace) | Luciana |
 | Configuración de AWS | `aws-01` … `aws-13-*.png` (lista en §3.2) | Alejandro |
 | Configuración de Alexa | `alexa-01` … `alexa-05-*.png` (lista en §3.3) | Alejandro |

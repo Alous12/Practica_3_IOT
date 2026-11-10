@@ -38,7 +38,7 @@ Valores tomados del monitor serie (línea `reported` que sigue a cada orden); la
 
 **Resultado:** cumple · reinicios: 0 durante el ensayo válido · `uptime_s` final: ≥ 1800.
 
-**Evidencias:** `rnf1-shadow-min0.png`, `rnf1-shadow-min30.png` (Shadow con `uptime_s`) y `rnf1-monitor.png` (monitor serie sin reinicios).
+**Evidencia:** la tabla anterior, con los valores de `uptime_s` y `rssi` copiados del monitor serie.
 
 ---
 
@@ -88,4 +88,4 @@ pasadas,4,20,,
 sala_vacia_10min,,0,,
 ```
 
-**Evidencias:** `rnf2-montaje.jpg` (cinta métrica y PIR) y `rnf2-monitor.png` (conteo de una distancia).
+**Evidencia:** [`deteccion.csv`](deteccion.csv), con los conteos de cada distancia y de la sala vacía.
