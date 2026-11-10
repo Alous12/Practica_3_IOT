@@ -14,7 +14,7 @@ Responsable: Ruben (hardware). Resultados para §5 del informe y evidencias en `
 |---|---|
 | Fecha y hora de inicio | [COMPLETAR] |
 | Firmware | raíz, entorno **`esp32dev-aws`** (WiFi + MQTT + Shadow), commit [COMPLETAR]. El entorno `esp32dev` es local y no sirve para esta prueba |
-| Alimentación | USB de [COMPLETAR: laptop / cargador 5 V] · servo por [COMPLETAR: VIN / fuente aparte] |
+| Alimentación | ESP32 por USB de la computadora · servo y PIR con porta pilas 4 × AA (tensión medida: [COMPLETAR] V) |
 | Distancia al router | [COMPLETAR] m |
 
 **Procedimiento**

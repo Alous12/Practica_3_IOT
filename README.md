@@ -67,7 +67,7 @@ Practica_3_IOT/
 
 4. Monitor serie a 115200 baudios: `pio device monitor`. Al arrancar se muestra el **código de vinculación** del dispositivo.
 
-Conexiones: PIR OUT → **GPIO 27**, servo (señal) → **GPIO 25**, ambos a VIN (5 V) y GND, con un condensador de 470 µF junto al servo. Ver [`docs/anexos/circuito.png`](docs/anexos/circuito.png).
+Conexiones: PIR OUT → **GPIO 27**, servo (señal) → **GPIO 25**. El PIR y el servo se alimentan con un **porta pilas de 4 × AA (6 V)** por los rieles de la protoboard; el negativo de las pilas se une al **GND del ESP32** (tierra común) y el ESP32 se alimenta por USB desde la computadora. Ver [`docs/anexos/circuito.png`](docs/anexos/circuito.png) y la vista isométrica [`docs/anexos/circuito-3d.svg`](docs/anexos/circuito-3d.svg).
 
 ### 2. Lambda
 

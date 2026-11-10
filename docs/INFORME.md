@@ -73,7 +73,7 @@ El servo SG90 gira entre 0° y 180° según el ancho del pulso PWM (50 Hz). Se u
 | Cerradura solenoide de 12 V | Requiere fuente y MOSFET adicionales y solo tiene un estado sin energía; queda como extensión para un uso real (§7) |
 | LED o buzzer como actuador | La práctica prohíbe los LED como actuador, y un buzzer no tiene un estado estable que reflejar en el Shadow |
 
-El **PIR HC-SR501** detecta presencia sin alinear nada, a varios metros y en un cono amplio, y su salida digital de 3,3 V va directo al ESP32. El **servo SG90** tiene **dos estados estables** (`abierta` / `cerrada`) que corresponden exactamente a `desired` y `reported` del Shadow, funciona a 5 V (≤ 12 V DC) y no necesita fuente adicional para la maqueta.
+El **PIR HC-SR501** detecta presencia sin alinear nada, a varios metros y en un cono amplio, y su salida digital de 3,3 V va directo al ESP32. El **servo SG90** tiene **dos estados estables** (`abierta` / `cerrada`) que corresponden exactamente a `desired` y `reported` del Shadow, funciona entre 4,8 y 6 V (≤ 12 V DC). El servo y el PIR se alimentan con un porta pilas de 4 × AA (6 V) y el ESP32 con el USB de la computadora (§2.2).
 
 Sensor y actuador son independientes: el PIR **no** cierra la puerta por sí solo. El servo solo obedece órdenes que llegan por el Shadow (RF3). El estado de ambos se publica en `reported`: `movimiento`, `detecciones`, `ultima_deteccion` y `sensor_listo` para el PIR, y `puerta` para el servo. Alexa nunca se comunica directamente con el ESP32.
 
@@ -143,24 +143,29 @@ El firmware de la demo está en la raíz del repositorio (`platformio.ini`, `src
 
 | Cantidad | Componente | Especificación relevante |
 |---|---|---|
-| 1 | ESP32 DOIT DevKit V1 | 3,3 V lógicos; VIN entrega el 5 V del USB |
+| 1 | ESP32 DOIT DevKit V1 | 3,3 V lógicos; alimentado por USB desde la computadora |
 | 1 | Sensor PIR HC-SR501 | Alimentación 4,5–20 V; salida digital de 3,3 V; alcance ajustable hasta ~7 m; ángulo ~110° |
 | 1 | Servo SG90 | 4,8–6 V; picos de corriente de varios cientos de mA al arrancar |
-| 1 | Condensador electrolítico 470 µF / 16 V | Desacople de la alimentación del servo |
+| 1 | Porta pilas 4 × AA con 4 pilas AA | 4 × 1,5 V = 6 V; alimenta el servo y el PIR por el riel + de la protoboard |
 | 1 | Protoboard y cables dupont | — |
 | 1 | Maqueta de puerta | [COMPLETAR: cartón / MDF], medidas [COMPLETAR] |
 
 ### Conexiones
 
-| Componente | Terminal | Conexión en el ESP32 |
+| Componente | Terminal | Conexión |
 |---|---|---|
-| PIR HC-SR501 | VCC | VIN (5 V del USB) |
+| Porta pilas 4 × AA | Rojo (+6 V) | Riel + de la protoboard |
+| Porta pilas 4 × AA | Negro (−) | Riel − de la protoboard (GND común) |
+| ESP32 | GND | Riel − de la protoboard (une la tierra del ESP32 con la de las pilas) |
+| ESP32 | Micro USB | Computadora (alimentación de la placa y monitor serie) |
+| PIR HC-SR501 | VCC | Riel + (6 V de las pilas) |
 | PIR HC-SR501 | OUT | GPIO 27 |
-| PIR HC-SR501 | GND | GND común |
-| Servo SG90 | Rojo (V+) | VIN (5 V) |
+| PIR HC-SR501 | GND | Riel − (GND común) |
+| Servo SG90 | Rojo (V+) | Riel + (6 V de las pilas) |
 | Servo SG90 | Naranja/amarillo (señal) | GPIO 25 |
-| Servo SG90 | Marrón (GND) | GND común |
-| Condensador 470 µF / 16 V | Positivo / negativo | VIN / GND, junto al servo |
+| Servo SG90 | Marrón (GND) | Riel − (GND común) |
+
+El positivo de las pilas **no** se conecta a ningún pin del ESP32 (ni a VIN ni a 3V3): la placa solo comparte la tierra.
 
 Los pines y ángulos están en [`include/config.h`](../include/config.h): `PIR_PIN = 27`, `SERVO_PIN = 25`, `SERVO_ANGLE_CLOSED = 90`, `SERVO_ANGLE_OPEN = 0`.
 
@@ -168,17 +173,22 @@ Los pines y ángulos están en [`include/config.h`](../include/config.h): `PIR_P
 
 *Figura 2.2.1 — Diagrama de conexiones. Es un esquema por nombre de terminal: no representa la posición física de los pines. Se verifican las etiquetas del módulo utilizado.*
 
+![Montaje en la protoboard en vista isométrica](anexos/circuito-3d.png)
+
+*Figura 2.2.2 — El mismo circuito montado en la protoboard, en vista isométrica ([versión vectorial](anexos/circuito-3d.svg)). El porta pilas 4 × AA alimenta los rieles + y −; el PIR y el servo toman de ahí 6 V y GND; el ESP32 se alimenta por USB y une su GND al riel −. Cables: verde = PIR OUT → D27, naranja = señal del servo → D25, rojo = +6 V, negro y marrón = GND.*
+
 ![Circuito en Wokwi](anexos/circuito-wokwi.png)
 
-*Figura 2.2.2 — El mismo circuito en Wokwi ([`anexos/wokwi/diagram.json`](anexos/wokwi/diagram.json)). Wokwi no incluye el condensador; está solo en el montaje físico.* [COMPLETAR: exportar la imagen]
+*Figura 2.2.3 — El circuito en Wokwi ([`anexos/wokwi/diagram.json`](anexos/wokwi/diagram.json)). Wokwi no tiene porta pilas, así que en la simulación el PIR y el servo toman 5 V de VIN; las señales (GPIO 27 y GPIO 25) y la tierra común son las mismas del montaje físico.* [COMPLETAR: exportar la imagen]
 
 ### Justificación de las conexiones
 
 - **OUT del PIR directo al GPIO, sin divisor.** El HC-SR501 tiene un regulador interno de 3,3 V y su salida no supera ese valor, que es el nivel lógico del ESP32. Nunca se llevan 5 V a un GPIO.
-- **PIR y servo en VIN.** Ambos necesitan 5 V. El pin de 3,3 V del ESP32 no alcanza para el servo ni cumple el mínimo de 4,5 V del PIR.
+- **PIR y servo en el porta pilas de 6 V.** El pin de 3,3 V del ESP32 no alcanza para el servo ni cumple el mínimo de 4,5 V del PIR. Tomar 5 V de VIN tampoco conviene: esa corriente sale del USB de la computadora (limitado a unos 500 mA) y los picos del servo al arrancar, sumados a los del WiFi, hacen caer la tensión y pueden reiniciar el ESP32 (*Brownout detector was triggered*). Con las pilas, la corriente del servo no pasa por la placa. Los 6 V están dentro de los rangos de ambos componentes: 4,8–6 V del SG90 y 4,5–20 V del HC-SR501.
 - **GPIO 27 y GPIO 25.** No son pines de arranque (0, 2, 12, 15) ni de la memoria flash (6–11). El GPIO 25 admite PWM (LEDC) para el servo. Al principio se usó el GPIO 13; durante el diagnóstico del servo la señal se pasó al 25 (§5). El GPIO 27 se configura con *pull-down* interno, que evita lecturas falsas si el cable de OUT se suelta.
-- **Condensador de 470 µF.** Al arrancar, el servo pide picos de corriente que hacen caer la tensión del USB. Sin el condensador, esa caída puede reiniciar el ESP32 (*Brownout detector was triggered*). Se coloca respetando la polaridad.
-- **Si persisten los reinicios,** el servo se alimenta con una fuente regulada independiente de 5 V. El positivo de esa fuente va solo al servo, sin unirlo al VIN alimentado por USB, y se unen únicamente las tierras. En las pruebas [COMPLETAR: no fue necesario / fue necesario].
+- **Tierra común.** El negativo de las pilas se une al GND del ESP32 en el riel −. Sin esa unión, los pulsos de 3,3 V del GPIO 25 y la salida del PIR no tendrían una referencia común y el servo no interpretaría la señal.
+- **El positivo de las pilas no toca el ESP32.** Se mantienen dos fuentes separadas (USB para la lógica, pilas para la potencia) que solo comparten la tierra.
+- **Estado de las pilas.** Cuatro pilas alcalinas nuevas pueden marcar hasta ~6,4 V, apenas sobre el máximo del SG90; con el uso bajan rápido a 6 V. Pilas recargables NiMH (4 × 1,2 V = 4,8 V) quedan en el mínimo del servo. Si el servo zumba sin girar o pierde fuerza, lo primero es medir las pilas con un multímetro.
 - **Seguridad.** Todo el montaje trabaja a baja tensión. La alimentación se desconecta antes de modificar el cableado.
 
 ### Ajustes del PIR
@@ -208,16 +218,16 @@ El SG90 no tiene realimentación de posición: `reported.puerta` indica la posic
 - La protoboard y el ESP32 quedan detrás del marco; el cable USB sale por [COMPLETAR].
 
 ![Montaje general](anexos/montaje-general.jpg)
-*Figura 2.2.3 — Maqueta completa.* [COMPLETAR: foto]
+*Figura 2.2.4 — Maqueta completa.* [COMPLETAR: foto]
 
 ![Puerta cerrada](anexos/montaje-cerrada.jpg)
-*Figura 2.2.4 — Pestillo en posición cerrada.* [COMPLETAR: foto]
+*Figura 2.2.5 — Pestillo en posición cerrada.* [COMPLETAR: foto]
 
 ![Puerta abierta](anexos/montaje-abierta.jpg)
-*Figura 2.2.5 — Pestillo en posición abierta.* [COMPLETAR: foto]
+*Figura 2.2.6 — Pestillo en posición abierta.* [COMPLETAR: foto]
 
 ![Protoboard](anexos/montaje-protoboard.jpg)
-*Figura 2.2.6 — Conexiones en la protoboard.* [COMPLETAR: foto]
+*Figura 2.2.7 — Conexiones en la protoboard.* [COMPLETAR: foto]
 
 ## 2.3 Diagrama de clases del objeto inteligente
 
@@ -1269,7 +1279,7 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 | Sin movimiento con la señal en GPIO 13 | Posible falso contacto del pin o de la fila de la protoboard | La señal se movió a **GPIO 25** (`SERVO_PIN` en `config.h`), que no es pin de arranque ni de la flash. El firmware, las pruebas de contrato y el diagrama se actualizaron |
 | "Cierra" y "abre" giraban en el **mismo sentido** y con distinta amplitud | Comportamiento imposible en un servo de posición: indica un SG90 de **rotación continua (360°)**, que interpreta el pulso como velocidad y no como ángulo | Se usa un SG90 de **180°**, que es el que requiere el diseño. Resultado con el servo definitivo: [COMPLETAR] |
 | Al cargar el firmware: `Failed to communicate with the flash chip` | Un periférico conectado interfería con el arranque (los pines de la flash o el GPIO 12 en alto al iniciar) | Se desconectan el servo y el PIR mientras se carga el firmware, y nunca se usan GPIO 6–12 ni los pines de arranque |
-| Alimentado con un cargador, el ESP32 se conectó una vez y dejó de reportar (el Shadow no recibió el latido) | Fuente o hotspot inestables: los picos del WiFi y del servo bajan el voltaje, o el hotspot del celular se apaga al bloquearse | Cargador de 5 V / 2 A, condensador de 470 µF junto al servo y hotspot activo durante las pruebas. Se verifica con `uptime_s` en la Sombra clásica |
+| Alimentado con un cargador, el ESP32 se conectó una vez y dejó de reportar (el Shadow no recibió el latido) | Fuente o hotspot inestables: los picos del WiFi y del servo bajan el voltaje, o el hotspot del celular se apaga al bloquearse | El servo y el PIR pasaron a un porta pilas 4 × AA (6 V) con tierra común, de modo que sus picos ya no pasan por la placa; el ESP32 se alimenta por el USB de la computadora y el hotspot se mantiene activo durante las pruebas. Se verifica con `uptime_s` en la Sombra clásica |
 
 [COMPLETAR: análisis de los valores físicos medidos en §4.5 y §4.6 y de cualquier incumplimiento, con su causa y lo que se ajustó.]
 
@@ -1279,7 +1289,7 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 
 **Arquitectura.** El Device Shadow cumplió su papel de intermediario: Alexa, la Lambda y el ESP32 nunca se comunican directamente. Una orden se acepta aunque el dispositivo esté desconectado y se aplica cuando vuelve, porque al reconectarse el ESP32 pide el documento y procesa el `delta` pendiente. Separar `desired` (lo que pide el usuario) de `reported` (lo que el dispositivo confirma) permite que la skill responda con honestidad *"aún no la confirmó"* en vez de dar por hecha una acción.
 
-**Hardware (Ruben).** El PIR HC-SR501 y el servo SG90 cubren el caso de uso con componentes de 5 V y sin LEDs como actuador. El filtro de 50 ms, el *pull-down* interno y la espera de 60 s de calentamiento reducen los falsos positivos sin retrasar la detección. Soltar el PWM después de 700 ms evita vibraciones y picos de consumo, pero exige que el pestillo mantenga su posición mecánicamente. Las pruebas mostraron que el hardware debe validarse por separado antes de integrarlo: un servo de rotación continua (360°) es idéntico por fuera a uno de posición (180°), y solo un banco de pruebas aislado, sin red, permitió distinguir el problema del actuador de uno de software o de alimentación. [COMPLETAR: conclusión con los resultados de RNF1 y RNF2.]
+**Hardware (Ruben).** El PIR HC-SR501 y el servo SG90 cubren el caso de uso con un porta pilas de 6 V como única fuente de potencia y sin LEDs como actuador. Separar la potencia (pilas) de la lógica (USB) con tierra común evitó que los picos del servo reiniciaran el ESP32. El filtro de 50 ms, el *pull-down* interno y la espera de 60 s de calentamiento reducen los falsos positivos sin retrasar la detección. Soltar el PWM después de 700 ms evita vibraciones y picos de consumo, pero exige que el pestillo mantenga su posición mecánicamente. Las pruebas mostraron que el hardware debe validarse por separado antes de integrarlo: un servo de rotación continua (360°) es idéntico por fuera a uno de posición (180°), y solo un banco de pruebas aislado, sin red, permitió distinguir el problema del actuador de uno de software o de alimentación. [COMPLETAR: conclusión con los resultados de RNF1 y RNF2.]
 
 **Comunicación (Luciana).** El firmware separa la lógica del objeto (`SmartObject`) del transporte (`ShadowPort`). Así, el mismo código corre con AWS o en modo local por USB, y se prueba en la PC con dobles. Reportar por evento con un latido de 60 s responde de inmediato al movimiento y mantiene el consumo de mensajes en centavos al mes. [COMPLETAR: conclusión con los resultados de RNF3, RNF4 y RNF5.]
 
@@ -1293,7 +1303,7 @@ El estado `reported.puerta` es la posición **ordenada** al servo, no una medici
 
 **Hardware.**
 - Confirmar la posición real del pestillo con un sensor de puerta (*reed switch*), para que `reported.puerta` sea una medición y no solo la posición ordenada.
-- Alimentar el servo con una fuente de 5 V dedicada, con tierra común, y reemplazarlo por una cerradura solenoide de 12 V con MOSFET para un uso real.
+- Para un uso permanente, reemplazar el porta pilas por una fuente regulada de 5–6 V (las pilas se descargan y su tensión varía) manteniendo la tierra común, y cambiar el servo por una cerradura solenoide de 12 V con MOSFET.
 - Proteger el PIR con una carcasa que evite corrientes de aire caliente y luz solar directa, principales causas de falsos positivos.
 - Verificar el tipo de servo antes del montaje (180° frente a 360°: el de posición tiene un tope a mano) y probar cada componente con [`tools/prueba_hardware`](../tools/prueba_hardware/src/main.cpp) antes de integrarlo.
 - Desconectar los periféricos al cargar el firmware y pasar de la protoboard a una placa soldada, para evitar falsos contactos.

@@ -4,7 +4,8 @@ Evidencias referenciadas por el [informe](../INFORME.md). Antes de guardar una c
 
 | Archivo | Responsable | Contenido | Sección |
 |---|---|---|---|
-| [`circuito.png`](circuito.png) | Ruben | Diagrama de conexiones (PIR en GPIO 27, servo en GPIO 25, condensador) | §2.2 |
+| [`circuito.png`](circuito.png) | Ruben | Diagrama de conexiones (PIR en GPIO 27, servo en GPIO 25, porta pilas 4 × AA con tierra común) | §2.2 |
+| [`circuito-3d.svg`](circuito-3d.svg), [`circuito-3d.png`](circuito-3d.png), [`circuito-3d-oscuro.png`](circuito-3d-oscuro.png) | Ruben | Montaje en la protoboard en vista isométrica (tema claro y oscuro) | §2.2 |
 | `circuito-wokwi.png`, [`wokwi/diagram.json`](wokwi/diagram.json) | Ruben | El mismo circuito en Wokwi | §2.2 |
 | `montaje-general.jpg`, `montaje-cerrada.jpg`, `montaje-abierta.jpg`, `montaje-protoboard.jpg` | Ruben | Fotos de la maqueta | §2.2 |
 | [`pruebas-hardware.md`](pruebas-hardware.md), `deteccion.csv`, `rnf1-*.png`, `rnf2-*` | Ruben | Procedimiento y datos de RNF1 y RNF2 | §4.5 |
