@@ -66,10 +66,10 @@ Valores tomados del monitor serie (línea `reported` que sigue a cada orden); la
 
 | Distancia (m) | Intentos | Detectadas | % | Meta |
 |---|---|---|---|---|
-| 1 | 20 | ⟨20⟩ | ⟨100 %⟩ | ≥ 95 % |
-| 2 | 20 | ⟨20⟩ | ⟨100 %⟩ | ≥ 95 % |
-| 3 | 20 | ⟨19⟩ | ⟨95 %⟩ | ≥ 95 % |
-| 4 | 20 | ⟨15⟩ | ⟨75 %⟩ | informativa |
+| 1 | 20 | 20 | 100 % | ≥ 95 % |
+| 2 | 20 | 20 | 100 % | ≥ 95 % |
+| 3 | 20 | 19 | 95 % | ≥ 95 % |
+| 4 | 20 | 15 | 75 % | informativa |
 
 | Prueba | Duración | Detecciones | Meta |
 |---|---|---|---|

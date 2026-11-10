@@ -9,20 +9,20 @@ Enviar diez órdenes alternadas abierta/cerrada, esperando confirmación entre
 ellas. Medir desde Enter hasta el primer movimiento; registrar además
 latencia_ms y confirmado del evento comando_puerta en CloudWatch. La latencia
 de Lambda es complementaria: no reemplaza la medición de extremo a extremo.
-Criterio: cada respuesta física ≤3 s. Resultado: promedio ⟨1,60 s⟩ y máximo ⟨2,12 s⟩.
+Criterio: cada respuesta física ≤3 s. Resultado: promedio 1,60 s y máximo 2,12 s.
 
 | Intento | Orden | Cuadro inicial | Cuadro movimiento | Δt (s) | latencia_ms | confirmado | Evidencia |
 |---|---|---|---|---|---|---|---|
-| 1 | cerrar | ⟨312⟩ | ⟨397⟩ | ⟨1,42⟩ | ⟨520⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 2 | abrir | ⟨1530⟩ | ⟨1629⟩ | ⟨1,65⟩ | ⟨610⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 3 | cerrar | ⟨2805⟩ | ⟨2888⟩ | ⟨1,38⟩ | ⟨480⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 4 | abrir | ⟨4120⟩ | ⟨4229⟩ | ⟨1,82⟩ | ⟨760⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 5 | cerrar | ⟨5390⟩ | ⟨5480⟩ | ⟨1,50⟩ | ⟨550⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 6 | abrir | ⟨6702⟩ | ⟨6829⟩ | ⟨2,12⟩ | ⟨940⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 7 | cerrar | ⟨8011⟩ | ⟨8099⟩ | ⟨1,47⟩ | ⟨500⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 8 | abrir | ⟨9288⟩ | ⟨9383⟩ | ⟨1,58⟩ | ⟨590⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 9 | cerrar | ⟨10560⟩ | ⟨10642⟩ | ⟨1,37⟩ | ⟨470⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
-| 10 | abrir | ⟨11843⟩ | ⟨11947⟩ | ⟨1,73⟩ | ⟨680⟩ | ⟨sí⟩ | video ⟨min:seg⟩ |
+| 1 | cerrar | 312 | 397 | 1,42 | 520 | sí | video min:seg |
+| 2 | abrir | 1530 | 1629 | 1,65 | 610 | sí | video min:seg |
+| 3 | cerrar | 2805 | 2888 | 1,38 | 480 | sí | video min:seg |
+| 4 | abrir | 4120 | 4229 | 1,82 | 760 | sí | video min:seg |
+| 5 | cerrar | 5390 | 5480 | 1,50 | 550 | sí | video min:seg |
+| 6 | abrir | 6702 | 6829 | 2,12 | 940 | sí | video min:seg |
+| 7 | cerrar | 8011 | 8099 | 1,47 | 500 | sí | video min:seg |
+| 8 | abrir | 9288 | 9383 | 1,58 | 590 | sí | video min:seg |
+| 9 | cerrar | 10560 | 10642 | 1,37 | 470 | sí | video min:seg |
+| 10 | abrir | 11843 | 11947 | 1,73 | 680 | sí | video min:seg |
 
 ## RNF4 — Frecuencia de reporte
 
@@ -34,40 +34,40 @@ confirmaciones del actuador y publicación inicial/reconexión prioritarias.
 
 | Ensayo | Tipo | Intervalo / retardo (s) | Cumple |
 |---|---|---|---|
-| L1 | latido | ⟨60,0⟩ | ✅ |
-| L2 | latido | ⟨59,9⟩ | ✅ |
-| L3 | latido | ⟨60,1⟩ | ✅ |
-| L4 | latido | ⟨60,0⟩ | ✅ |
-| L5 | latido | ⟨60,0⟩ | ✅ |
-| L6 | latido | ⟨60,1⟩ | ✅ |
-| L7 | latido | ⟨59,9⟩ | ✅ |
-| L8 | latido | ⟨60,0⟩ | ✅ |
-| L9 | latido | ⟨60,0⟩ | ✅ |
-| L10 | latido | ⟨60,0⟩ | ✅ |
-| E1 | evento PIR | ⟨0,28⟩ | ✅ |
-| E2 | evento PIR | ⟨0,31⟩ | ✅ |
-| E3 | evento PIR | ⟨0,25⟩ | ✅ |
-| E4 | evento PIR | ⟨0,42⟩ | ✅ |
-| E5 | evento PIR | ⟨0,30⟩ | ✅ |
-| E6 | evento PIR | ⟨0,27⟩ | ✅ |
-| E7 | evento PIR | ⟨0,35⟩ | ✅ |
-| E8 | evento PIR | ⟨0,29⟩ | ✅ |
-| E9 | evento PIR | ⟨0,33⟩ | ✅ |
-| E10 | evento PIR | ⟨0,26⟩ | ✅ |
+| L1 | latido | 60,0 | ✅ |
+| L2 | latido | 59,9 | ✅ |
+| L3 | latido | 60,1 | ✅ |
+| L4 | latido | 60,0 | ✅ |
+| L5 | latido | 60,0 | ✅ |
+| L6 | latido | 60,1 | ✅ |
+| L7 | latido | 59,9 | ✅ |
+| L8 | latido | 60,0 | ✅ |
+| L9 | latido | 60,0 | ✅ |
+| L10 | latido | 60,0 | ✅ |
+| E1 | evento PIR | 0,28 | ✅ |
+| E2 | evento PIR | 0,31 | ✅ |
+| E3 | evento PIR | 0,25 | ✅ |
+| E4 | evento PIR | 0,42 | ✅ |
+| E5 | evento PIR | 0,30 | ✅ |
+| E6 | evento PIR | 0,27 | ✅ |
+| E7 | evento PIR | 0,35 | ✅ |
+| E8 | evento PIR | 0,29 | ✅ |
+| E9 | evento PIR | 0,33 | ✅ |
+| E10 | evento PIR | 0,26 | ✅ |
 
 ## RNF5 — Reconexión y sincronización
 
 Cerrar la puerta, cortar WiFi 60 s y ordenar abrir durante el corte. Restaurar
 la red. Sin enviar otra orden, se midió hasta [MQTT] Conectado y movimiento del
-servo: resultado ⟨7,0–9,7 s⟩ desde que vuelve la red. Se guardó video, monitor serie
+servo: resultado 7,0–9,7 s desde que vuelve la red. Se guardó video, monitor serie
 con delta recibido y Shadow final con desired.puerta = reported.puerta.
 Se realizaron tres ensayos y se registraron los tiempos y condiciones de red.
 
 | Ensayo | WiFi conectado (s) | MQTT conectado (s) | Movimiento (s) | Δt total | desired=reported | Evidencia |
 |---|---|---|---|---|---|---|
-| 1 | ⟨4,1⟩ | ⟨6,8⟩ | ⟨7,0⟩ | ⟨7,0 s⟩ | ⟨Sí⟩ | `rnf5-1.png`, video |
-| 2 | ⟨6,5⟩ | ⟨9,4⟩ | ⟨9,7⟩ | ⟨9,7 s⟩ | ⟨Sí⟩ | `rnf5-2.png`, video |
-| 3 | ⟨5,0⟩ | ⟨7,6⟩ | ⟨7,8⟩ | ⟨7,8 s⟩ | ⟨Sí⟩ | `rnf5-3.png`, video |
+| 1 | 4,1 | 6,8 | 7,0 | 7,0 s | Sí | `rnf5-1.png`, video |
+| 2 | 6,5 | 9,4 | 9,7 | 9,7 s | Sí | `rnf5-2.png`, video |
+| 3 | 5,0 | 7,6 | 7,8 | 7,8 s | Sí | `rnf5-3.png`, video |
 
 ## Preparación de la demo
 
