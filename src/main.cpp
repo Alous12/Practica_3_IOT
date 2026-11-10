@@ -89,7 +89,15 @@ void setup() {
   Serial.println("[LOCAL] Sin AWS ni Alexa. a=abrir; c=cerrar. PIR: esperar 60 s.");
   channel.begin();
 #else
-  Serial.printf("[AWS] Thing: %s\n", THING_NAME);
+  // El código de vinculación (parte numérica del Thing) es lo que el usuario le dice a
+  // Alexa (RF7): el dispositivo lo muestra al iniciar, como recomienda la práctica.
+  const char *code = strncmp(THING_NAME, THING_PREFIX, strlen(THING_PREFIX)) == 0
+                         ? THING_NAME + strlen(THING_PREFIX) : THING_NAME;
+  Serial.println("==============================================");
+  Serial.println(" Vigilante Inteligente (PIR + cerradura servo)");
+  Serial.printf(" Thing:                  %s\n", THING_NAME);
+  Serial.printf(" Código de vinculación:  %s\n", code);
+  Serial.println("==============================================");
   wifi.begin();
   shadow.begin(MQTT_BUFFER_SIZE);
 #endif

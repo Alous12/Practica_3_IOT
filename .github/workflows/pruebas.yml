@@ -48,10 +48,15 @@ jobs:
           cp include/secrets.example.h include/secrets.h
           pio run -e esp32dev-aws
 
-      - name: Prueba C++ del objeto inteligente (dobles de hardware)
+      - name: Pruebas C++ del objeto inteligente (dobles de hardware)
         run: |
-          g++ -std=c++17 -Wall -I test/luciana/stubs -I src -I include \
-              -I .pio/libdeps/esp32dev/ArduinoJson/src \
-              test/luciana/test_firmware.cpp src/sensors/PirSensor.cpp \
+          INC="-I test/luciana/stubs -I src -I include -I .pio/libdeps/esp32dev/ArduinoJson/src"
+          g++ -std=c++17 -Wall $INC test/luciana/test_firmware.cpp src/sensors/PirSensor.cpp \
               src/actuators/DoorLock.cpp src/app/SmartObject.cpp -o test_firmware
           ./test_firmware
+          g++ -std=c++17 -Wall $INC test/ruben/test_hardware.cpp src/sensors/PirSensor.cpp \
+              src/actuators/DoorLock.cpp -o test_hardware
+          ./test_hardware
+
+      - name: Compilar el banco de pruebas del hardware
+        run: pio run -d tools/prueba_hardware

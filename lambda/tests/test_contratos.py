@@ -181,9 +181,9 @@ def firmware_config():
 
 
 def test_pines_del_circuito(firmware_config):
-    """Pines documentados en el circuito (§2.2): PIR en GPIO 27 y servo en GPIO 13."""
+    """Pines documentados en el circuito (§2.2): PIR en GPIO 27 y servo en GPIO 25."""
     assert firmware_config["PIR_PIN"] == 27
-    assert firmware_config["SERVO_PIN"] == 13
+    assert firmware_config["SERVO_PIN"] == 25
 
 
 def test_tiempo_de_confirmacion_cabe_en_el_limite_de_la_lambda(firmware_config):

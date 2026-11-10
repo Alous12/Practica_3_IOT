@@ -12,7 +12,7 @@
 
 // ---------- Pines (ESP32 DOIT DevKit V1) ----------
 #define PIR_PIN               27   // salida digital del HC-SR501 (3.3 V)
-#define SERVO_PIN             13   // señal PWM del servo SG90
+#define SERVO_PIN             25   // señal PWM del servo SG90 (se movió de GPIO 13 durante el diagnóstico)
 
 // ---------- Sensor PIR (HC-SR501) ----------
 // El HC-SR501 necesita ~60 s tras energizarse para estabilizarse.

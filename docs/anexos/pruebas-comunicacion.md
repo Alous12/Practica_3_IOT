@@ -1,6 +1,6 @@
-# Pruebas de comunicación — Luciana
+# Pruebas de comunicación — RNF3, RNF4 y RNF5
 
-Estado: pendientes de medición en el montaje real. Una compilación o simulación
+Responsable: Luciana (comunicación). Resultados para §4.6 y §5 del [informe](../INFORME.md). Estado: pendientes de medición en el montaje real. Una compilación o simulación
 no demuestra estos criterios. RNF1 y RNF2 corresponden a Ruben.
 
 ## RNF3 — Tiempo de respuesta

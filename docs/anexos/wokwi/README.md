@@ -15,7 +15,7 @@ El diagrama principal del informe es `docs/anexos/circuito.png` (incluye el cond
 | PIR HC-SR501 | OUT | GPIO 27 (D27) | verde |
 | PIR HC-SR501 | GND | GND | negro |
 | Servo SG90 | V+ (rojo) | VIN (5 V) | rojo |
-| Servo SG90 | PWM (naranja) | GPIO 13 (D13) | naranja |
+| Servo SG90 | PWM (naranja) | GPIO 25 (D25) | naranja |
 | Servo SG90 | GND (marrón) | GND | negro |
 
 **Condensador de 470 µF / 16 V.** Wokwi no tiene condensador electrolítico entre sus piezas estándar, así que no aparece. En el montaje físico va entre VIN (+) y GND (−), junto al servo.

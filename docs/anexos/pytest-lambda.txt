@@ -24,14 +24,14 @@ tests/test_contratos.py::test_slot_codigo_es_numerico_obligatorio_y_con_confirma
 tests/test_contratos.py::test_desvincular_pide_confirmacion_como_espera_la_lambda PASSED [ 27%]
 tests/test_contratos.py::test_todos_los_prompts_referenciados_existen PASSED [ 29%]
 tests/test_contratos.py::test_eventos_de_prueba_usan_intents_del_modelo PASSED [ 31%]
-tests/test_contratos.py::test_hay_un_solo_firmware_en_el_repositorio FAILED [ 32%]
+tests/test_contratos.py::test_hay_un_solo_firmware_en_el_repositorio PASSED [ 32%]
 tests/test_contratos.py::test_pines_del_circuito PASSED                  [ 34%]
 tests/test_contratos.py::test_tiempo_de_confirmacion_cabe_en_el_limite_de_la_lambda PASSED [ 36%]
 tests/test_contratos.py::test_claves_del_shadow_iguales_en_firmware_y_lambda PASSED [ 37%]
 tests/test_contratos.py::test_valores_de_la_puerta_iguales_en_firmware_y_lambda PASSED [ 39%]
 tests/test_contratos.py::test_prefijo_de_things_igual_en_firmware_y_lambda PASSED [ 40%]
 tests/test_contratos.py::test_latido_compatible_con_aviso_de_desconexion PASSED [ 42%]
-tests/test_contratos.py::test_plantilla_de_secretos_sin_valores_reales SKIPPED [ 44%]
+tests/test_contratos.py::test_plantilla_de_secretos_sin_valores_reales PASSED [ 44%]
 tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[iot-policy.json] PASSED [ 45%]
 tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[lambda-role-policy.json] PASSED [ 47%]
 tests/test_contratos.py::test_configuraciones_aws_sin_id_de_cuenta_real[dynamodb-table.json] PASSED [ 49%]
@@ -67,20 +67,4 @@ tests/test_skill.py::test_comando_con_dispositivo_desconectado_queda_pendiente P
 tests/test_skill.py::test_estado_de_la_puerta PASSED                     [ 98%]
 tests/test_skill.py::test_usuarios_distintos_controlan_things_distintos PASSED [100%]
 
-================================== FAILURES ===================================
-_________________ test_hay_un_solo_firmware_en_el_repositorio _________________
-
-    def test_hay_un_solo_firmware_en_el_repositorio():
-        """Dos árboles de firmware se desincronizan: solo uno se compila y el otro queda muerto."""
-        trees = _firmware_trees()
->       assert len(trees) <= 1, (
-            "Hay más de un firmware: {}. Debe quedar uno solo (la raíz, con platformio.ini)."
-            .format(", ".join(str(t.relative_to(REPO_ROOT)) or "." for t in trees)))
-E       AssertionError: Hay más de un firmware: ., firmware. Debe quedar uno solo (la raíz, con platformio.ini).
-E       assert 2 <= 1
-E        +  where 2 = len([WindowsPath('C:/Users/alemv/Documents/PlatformIO/Projects/Practica_3_IOT'), WindowsPath('C:/Users/alemv/Documents/PlatformIO/Projects/Practica_3_IOT/firmware')])
-
-tests\test_contratos.py:166: AssertionError
-=========================== short test summary info ===========================
-SKIPPED [1] tests\test_contratos.py:221: secrets.example.h aún no está en el repositorio
-=================== 1 failed, 59 passed, 1 skipped in 1.68s ===================
+============================= 61 passed in 2.08s ==============================

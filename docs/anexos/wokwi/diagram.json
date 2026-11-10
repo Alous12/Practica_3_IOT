@@ -28,7 +28,7 @@
     [ "pir:GND", "esp:GND.1", "black", [] ],
 
     [ "servo:V+", "esp:VIN", "red", [] ],
-    [ "servo:PWM", "esp:D13", "orange", [] ],
+    [ "servo:PWM", "esp:D25", "orange", [] ],
     [ "servo:GND", "esp:GND.1", "black", [] ]
   ],
   "dependencies": {}
