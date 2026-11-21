@@ -42,7 +42,7 @@ def test_guion_del_simulador_usuario_principal():
 
     # 5. "cierra la puerta" sobre el Thing sin hardware -> orden queda pendiente
     assert "aún no la confirmó" in h.ask("CerrarPuertaIntent")
-    assert h.shadow_state(OTHER)["desired"] == {"puerta": "cerrada"}
+    assert h.shadow_state(OTHER)["desired"] == {"puerta": "cerrada", "origen": "voz"}
 
     # 6. "cambia mi dispositivo al código 123456" -> sí -> cambio de vinculación (RF9)
     text = h.ask("VincularDispositivoIntent", codigo=THING_CODE)
@@ -135,6 +135,48 @@ def test_guion_reconexion_aplica_la_orden_pendiente():
     text = h.ask("EstadoPuertaIntent")
     assert "La puerta está abierta" in text
     assert "pendiente" not in text
+
+
+def test_guion_modos_y_parametros():
+    """Ampliación: modo de operación, parámetros y origen, en el orden del simulador."""
+    h = Harness()
+    _esp32_reporta(h, puerta="abierta", modo="manual", max_detecciones=5, ventana_min=10,
+                   origen="inicio")
+    h.ask("VincularDispositivoIntent", codigo=THING_CODE)
+
+    # 1. "en qué modo está"
+    assert "modo manual" in h.ask("ConsultarModoIntent")
+
+    # 2. "cambia el modo a automático" -> desired.modo con origen voz, el ESP32 confirma
+    assert "cambié al modo automático" in h.set_mode("automatico", spoken="automático")
+    assert h.shadow_state()["reported"]["modo"] == "automatico"
+    assert h.shadow_state()["reported"]["origen"] == "voz"
+
+    # 3. "abre la puerta" en modo automático -> se rechaza sin tocar desired.puerta
+    assert "No puedo abrir la puerta" in h.ask("AbrirPuertaIntent")
+    assert "puerta" not in h.shadow_state()["desired"]
+
+    # 4. Pasa alguien: la regla del Edge cierra la puerta y borra desired (sin la nube)
+    _esp32_reporta(h, puerta="cerrada", origen="edge", modo="automatico",
+                   movimiento=True, detecciones=1, ultima_deteccion=NOW)
+    h.data.clear_desired(THING, "puerta", "origen")
+    assert h.shadow_state()["desired"] == {"modo": "automatico"}
+    assert "La cerró el sistema automáticamente" in h.ask("EstadoPuertaIntent")
+
+    # 5. "cambia el máximo de detecciones a 8" y "cambia la ventana a 30 minutos"
+    assert "ahora es 8" in h.ask("CambiarMaxDeteccionesIntent", slots={"numero": "8"})
+    assert "ahora es de 30 minutos" in h.ask("CambiarVentanaIntent", slots={"minutos": "30"})
+
+    # 6. "cuáles son los parámetros"
+    text = h.ask("ConsultarParametrosIntent")
+    assert "Modo automático" in text
+    assert "Máximo de detecciones: 8" in text
+    assert "Ventana: 30 minutos" in text
+
+    # 7. "cambia el modo a manual" y ahora sí "abre la puerta"
+    assert "cambié al modo manual" in h.set_mode("manual")
+    assert "Listo, la puerta quedó abierta" in h.ask("AbrirPuertaIntent")
+    assert h.shadow_state()["reported"]["puerta"] == "abierta"
 
 
 def test_guion_ayuda_y_frases_no_reconocidas():

@@ -2,7 +2,8 @@
 import json
 import logging
 import time
-from typing import Callable, Optional
+import unicodedata
+from typing import Any, Callable, Optional, Tuple
 
 import ask_sdk_core.utils as ask_utils
 from ask_sdk_core.dispatch_components import (
@@ -15,7 +16,20 @@ from ask_sdk_model import Response
 from botocore.exceptions import ClientError
 
 from . import speech
-from .config import DOOR_CLOSED, DOOR_OPEN, Settings
+from .config import (
+    AUTOLOCK_MODES,
+    DOOR_CLOSED,
+    DOOR_OPEN,
+    KEY_MAX_DETECTIONS,
+    KEY_MODE,
+    KEY_WINDOW_MIN,
+    MAX_DETECTIONS_MAX,
+    MAX_DETECTIONS_MIN,
+    MODES,
+    WINDOW_MINUTES_MAX,
+    WINDOW_MINUTES_MIN,
+    Settings,
+)
 from .device_gateway import DeviceGateway
 from .link_repository import LinkRepository
 
@@ -39,6 +53,47 @@ def _linked_thing(handler_input: HandlerInput) -> Optional[str]:
 
 def _ask(handler_input: HandlerInput, text: str, reprompt: str = speech.REPROMPT) -> Response:
     return handler_input.response_builder.speak(text).ask(reprompt).response
+
+
+def _slot_text(handler_input: HandlerInput, name: str) -> str:
+    """Texto que reconoció Alexa en el slot, o "" si no vino."""
+    slot = ask_utils.get_slot(handler_input, name)
+    return (slot.value if slot and slot.value else "").strip()
+
+
+def _plain(text: str) -> str:
+    """Minúsculas y sin tildes: "Automático" -> "automatico"."""
+    decomposed = unicodedata.normalize("NFD", text.lower())
+    return "".join(c for c in decomposed if unicodedata.category(c) != "Mn").strip()
+
+
+def _resolved_slot(handler_input: HandlerInput, name: str) -> Optional[str]:
+    """Valor canónico de un slot de tipo propio (TipoModo).
+
+    Alexa resuelve sinónimos ("automático", "auto") al valor canónico ("automatico") en
+    `resolutions`. Si el evento no trae resoluciones (p. ej. una prueba en la consola de
+    Lambda), se usa el texto sin tildes. Devuelve None si Alexa no encontró coincidencia.
+    """
+    slot = ask_utils.get_slot(handler_input, name)
+    if not slot or not slot.value:
+        return None
+    authorities = (slot.resolutions.resolutions_per_authority
+                   if slot.resolutions and slot.resolutions.resolutions_per_authority else [])
+    for authority in authorities:
+        code = getattr(getattr(authority.status, "code", None), "value", None)
+        if code == "ER_SUCCESS_MATCH" and authority.values:
+            return authority.values[0].value.name
+    if authorities:
+        return None
+    return _plain(slot.value)
+
+
+def _int_in_range(text: str, low: int, high: int) -> Optional[int]:
+    """Entero del slot AMAZON.NUMBER si está en [low, high]; si no ("?", vacío, 25), None."""
+    if not text.isdigit():
+        return None
+    value = int(text)
+    return value if low <= value <= high else None
 
 
 class LinkedThingInterceptor(AbstractRequestInterceptor):
@@ -166,12 +221,12 @@ class LinkedDeviceHandler(AbstractRequestHandler):
         if not thing:
             return _ask(handler_input, speech.NOT_LINKED)
         try:
-            return _ask(handler_input, self.handle_linked(thing))
+            return _ask(handler_input, self.handle_linked(thing, handler_input))
         except ClientError as error:
             logger.error(error, exc_info=True)
             return _ask(handler_input, speech.DEVICE_ERROR)
 
-    def handle_linked(self, thing: str) -> str:
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         raise NotImplementedError
 
     def _stale(self, state) -> str:
@@ -184,7 +239,7 @@ class MotionQueryHandler(LinkedDeviceHandler):
 
     intent_name = "ConsultarMovimientoIntent"
 
-    def handle_linked(self, thing: str) -> str:
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         state = self._gateway.get_state(thing)
         if not state.has_report:
             return speech.NO_REPORT
@@ -204,13 +259,22 @@ class MotionQueryHandler(LinkedDeviceHandler):
 
 
 class DoorCommandHandler(LinkedDeviceHandler):
-    """RF5: escribe state.desired.puerta y espera la confirmación en reported."""
+    """RF5: escribe state.desired.puerta (origen "voz") y espera la confirmación en reported."""
 
     target = DOOR_CLOSED
     verb = "cerrar"
 
-    def handle_linked(self, thing: str) -> str:
+    def rejection(self, state) -> Optional[str]:
+        """Motivo para no ejecutar la orden, o None si se puede."""
+        return None
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         current = self._gateway.get_state(thing)
+        rejected = self.rejection(current)
+        if rejected:
+            _log_event("comando_puerta_rechazado", thing=thing, objetivo=self.target,
+                       modo=current.target_mode)
+            return rejected
         if current.door == self.target and not current.door_pending:
             return "La puerta ya está {}.".format(self.target) + self._stale(current)
 
@@ -232,24 +296,186 @@ class CloseDoorHandler(DoorCommandHandler):
 
 
 class OpenDoorHandler(DoorCommandHandler):
+    """En modo automático o bloqueo la regla del Edge cierra la puerta: no se abre por voz."""
+
     intent_name = "AbrirPuertaIntent"
     target = DOOR_OPEN
     verb = "abrir"
 
+    def rejection(self, state) -> Optional[str]:
+        # target_mode: si hay un cambio de modo pendiente, manda el último que pidió el usuario.
+        if state.target_mode in AUTOLOCK_MODES:
+            return speech.open_rejected(state.target_mode)
+        return None
+
 
 class DoorStatusHandler(LinkedDeviceHandler):
-    """RF6: estado actual del actuador leído de state.reported."""
+    """RF6: estado actual del actuador leído de state.reported (y quién lo dejó así)."""
 
     intent_name = "EstadoPuertaIntent"
 
-    def handle_linked(self, thing: str) -> str:
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         state = self._gateway.get_state(thing)
         if state.door is None:
             return speech.NO_REPORT
         text = "La puerta está {}.".format(state.door)
         if state.door_pending:
             text += " Hay una orden pendiente para dejarla {}.".format(state.desired_door)
+        else:
+            text += speech.door_origin(state.door, state.origin)
         return text + self._stale(state)
+
+
+# ---------- Modo de operación y parámetros ----------
+
+class SettingCommandHandler(LinkedDeviceHandler):
+    """Base de los comandos que cambian un ajuste del Shadow (modo o parámetro).
+
+    Igual que la puerta: valida el slot, escribe desired (con origen "voz") y espera
+    hasta CONFIRM_TIMEOUT_S a que el ESP32 lo confirme en reported.
+    """
+
+    key = ""
+
+    def parse(self, handler_input: HandlerInput) -> Tuple[Any, Optional[str]]:
+        """Devuelve (valor, None) si el slot es válido o (None, mensaje) si no."""
+        raise NotImplementedError
+
+    def changed(self, value: Any) -> str:
+        raise NotImplementedError
+
+    def already(self, value: Any) -> str:
+        raise NotImplementedError
+
+    def pending(self, value: Any) -> str:
+        raise NotImplementedError
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
+        value, problem = self.parse(handler_input)
+        if problem:
+            return problem
+        current = self._gateway.get_state(thing)
+        if current.reported_value(self.key) == value and not current.is_pending(self.key):
+            return self.already(value) + self._stale(current)
+
+        self._gateway.request_desired(thing, **{self.key: value})
+        confirmed, latency_ms = self._gateway.wait_for(
+            thing, self.key, value, self._settings.confirm_timeout_s)
+        _log_event("comando_ajuste", thing=thing, atributo=self.key, valor=value,
+                   confirmado=confirmed, latencia_ms=latency_ms)
+        return self.changed(value) if confirmed else self.pending(value)
+
+
+class ChangeModeHandler(SettingCommandHandler):
+    """Cambia el modo: manual, automatico o bloqueo (slot modo, tipo TipoModo)."""
+
+    intent_name = "CambiarModoIntent"
+    key = KEY_MODE
+
+    def parse(self, handler_input: HandlerInput) -> Tuple[Any, Optional[str]]:
+        mode = _resolved_slot(handler_input, "modo")
+        if mode not in MODES:
+            return None, speech.ASK_MODE
+        return mode, None
+
+    def changed(self, value: Any) -> str:
+        return speech.mode_changed(value)
+
+    def already(self, value: Any) -> str:
+        return speech.mode_already(value)
+
+    def pending(self, value: Any) -> str:
+        return speech.mode_pending(value)
+
+
+class ChangeMaxDetectionsHandler(SettingCommandHandler):
+    """Cambia max_detecciones (slot numero, AMAZON.NUMBER, entre 1 y 20)."""
+
+    intent_name = "CambiarMaxDeteccionesIntent"
+    key = KEY_MAX_DETECTIONS
+
+    def parse(self, handler_input: HandlerInput) -> Tuple[Any, Optional[str]]:
+        text = _slot_text(handler_input, "numero")
+        if not text:
+            return None, speech.ASK_MAX_DETECTIONS
+        value = _int_in_range(text, MAX_DETECTIONS_MIN, MAX_DETECTIONS_MAX)
+        if value is None:
+            return None, speech.MAX_DETECTIONS_OUT_OF_RANGE
+        return value, None
+
+    def changed(self, value: Any) -> str:
+        return speech.max_detections_changed(value)
+
+    def already(self, value: Any) -> str:
+        return speech.max_detections_already(value)
+
+    def pending(self, value: Any) -> str:
+        return speech.max_detections_pending(value)
+
+
+class ChangeWindowHandler(SettingCommandHandler):
+    """Cambia ventana_min (slot minutos, AMAZON.NUMBER, entre 1 y 120)."""
+
+    intent_name = "CambiarVentanaIntent"
+    key = KEY_WINDOW_MIN
+
+    def parse(self, handler_input: HandlerInput) -> Tuple[Any, Optional[str]]:
+        text = _slot_text(handler_input, "minutos")
+        if not text:
+            return None, speech.ASK_WINDOW
+        value = _int_in_range(text, WINDOW_MINUTES_MIN, WINDOW_MINUTES_MAX)
+        if value is None:
+            return None, speech.WINDOW_OUT_OF_RANGE
+        return value, None
+
+    def changed(self, value: Any) -> str:
+        return speech.window_changed(value)
+
+    def already(self, value: Any) -> str:
+        return speech.window_already(value)
+
+    def pending(self, value: Any) -> str:
+        return speech.window_pending(value)
+
+
+class ModeQueryHandler(LinkedDeviceHandler):
+    """Modo de operación actual, leído de state.reported."""
+
+    intent_name = "ConsultarModoIntent"
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
+        state = self._gateway.get_state(thing)
+        if not state.has_report:
+            return speech.NO_REPORT
+        if state.mode not in MODES:
+            return speech.NO_MODE
+        text = speech.mode_status(state.mode)
+        if state.mode_pending:
+            text += speech.mode_pending_note(state.desired_mode)
+        return text + self._stale(state)
+
+
+class ParametersQueryHandler(LinkedDeviceHandler):
+    """Modo, máximo de detecciones y ventana, leídos de state.reported."""
+
+    intent_name = "ConsultarParametrosIntent"
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
+        state = self._gateway.get_state(thing)
+        if not state.has_report:
+            return speech.NO_REPORT
+        if state.mode not in MODES:
+            return speech.NO_MODE
+        parts = ["Modo {}.".format(speech.mode_name(state.mode))]
+        if state.max_detections is not None:
+            parts.append("Máximo de detecciones: {}.".format(state.max_detections))
+        if state.window_min is not None:
+            parts.append("Ventana: {}.".format(speech.minutes(state.window_min)))
+        pending = [key for key in (KEY_MODE, KEY_MAX_DETECTIONS, KEY_WINDOW_MIN)
+                   if state.is_pending(key)]
+        if pending:
+            parts.append("Hay cambios pendientes que el dispositivo aún no confirmó.")
+        return " ".join(parts) + self._stale(state)
 
 
 class HelpIntentHandler(AbstractRequestHandler):

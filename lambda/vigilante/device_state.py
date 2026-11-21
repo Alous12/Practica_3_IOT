@@ -6,8 +6,12 @@ from .config import (
     KEY_DETECTIONS,
     KEY_DOOR,
     KEY_LAST_DETECTION,
+    KEY_MAX_DETECTIONS,
+    KEY_MODE,
     KEY_MOTION,
+    KEY_ORIGIN,
     KEY_SENSOR_READY,
+    KEY_WINDOW_MIN,
 )
 
 
@@ -44,26 +48,45 @@ class DeviceState:
             last_report_epoch=_latest_timestamp(metadata),
         )
 
+    # --- Acceso genérico (cualquier atributo del Shadow) ---
+
+    def reported_value(self, key: str) -> Any:
+        return self.reported.get(key)
+
+    def desired_value(self, key: str) -> Any:
+        return self.desired.get(key)
+
+    def is_pending(self, key: str) -> bool:
+        """True si hay una orden en desired que el dispositivo aún no aplicó.
+
+        Un desired en null (lo borra la regla del Edge al actuar) no es una orden pendiente.
+        """
+        wanted = self.desired_value(key)
+        return wanted is not None and wanted != self.reported_value(key)
+
     @property
     def has_report(self) -> bool:
         return bool(self.reported)
 
+    # --- Puerta (actuador) ---
+
     @property
     def door(self) -> Optional[str]:
-        return self.reported.get(KEY_DOOR)
+        return self.reported_value(KEY_DOOR)
 
     @property
     def desired_door(self) -> Optional[str]:
-        return self.desired.get(KEY_DOOR)
+        return self.desired_value(KEY_DOOR)
 
     @property
     def door_pending(self) -> bool:
-        """True si hay una orden en desired que el dispositivo aún no aplicó."""
-        return self.desired_door is not None and self.desired_door != self.door
+        return self.is_pending(KEY_DOOR)
+
+    # --- PIR (sensor) ---
 
     @property
     def motion(self) -> Optional[bool]:
-        return self.reported.get(KEY_MOTION)
+        return self.reported_value(KEY_MOTION)
 
     @property
     def detections(self) -> int:
@@ -76,6 +99,39 @@ class DeviceState:
     @property
     def sensor_ready(self) -> bool:
         return bool(self.reported.get(KEY_SENSOR_READY, True))
+
+    # --- Modo, parámetros y origen ---
+
+    @property
+    def mode(self) -> Optional[str]:
+        """Modo que aplica el dispositivo; None si el firmware aún no lo reporta."""
+        return self.reported_value(KEY_MODE)
+
+    @property
+    def desired_mode(self) -> Optional[str]:
+        return self.desired_value(KEY_MODE)
+
+    @property
+    def mode_pending(self) -> bool:
+        return self.is_pending(KEY_MODE)
+
+    @property
+    def target_mode(self) -> Optional[str]:
+        """Modo que regirá: el pedido si aún está pendiente, si no el reportado."""
+        return self.desired_mode if self.mode_pending else self.mode
+
+    @property
+    def max_detections(self) -> Optional[int]:
+        return self.reported_value(KEY_MAX_DETECTIONS)
+
+    @property
+    def window_min(self) -> Optional[int]:
+        return self.reported_value(KEY_WINDOW_MIN)
+
+    @property
+    def origin(self) -> Optional[str]:
+        """Quién causó el último cambio: "voz", "edge" o "inicio"."""
+        return self.reported_value(KEY_ORIGIN)
 
     def seconds_since_report(self, now_epoch: float) -> Optional[int]:
         if self.last_report_epoch is None:

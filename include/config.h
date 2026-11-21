@@ -40,6 +40,29 @@
 #define DOOR_OPEN             "abierta"
 #define DOOR_CLOSED           "cerrada"
 
+// ---------- Modo de operación, parámetros y origen (deben coincidir con la Lambda) ----------
+#define KEY_MODE              "modo"              // desired y reported
+#define KEY_MAX_DETECTIONS    "max_detecciones"   // int (desired y reported)
+#define KEY_WINDOW_MIN        "ventana_min"       // int, minutos (desired y reported)
+#define KEY_ORIGIN            "origen"            // quién causó el último cambio
+
+#define MODE_MANUAL           "manual"            // la puerta solo obedece a la voz
+#define MODE_AUTO             "automatico"        // la regla del Edge cierra la puerta al detectar movimiento
+#define MODE_LOCKDOWN         "bloqueo"           // ídem; la puerta no se abre por voz
+
+#define ORIGIN_VOICE          "voz"               // orden de Alexa (la Lambda de la skill)
+#define ORIGIN_EDGE           "edge"              // la regla local del ESP32
+#define ORIGIN_CLOUD          "nube"              // una regla en la nube
+#define ORIGIN_BOOT           "inicio"            // valor al encender
+
+#define DEFAULT_MAX_DETECTIONS 3
+#define MAX_DETECTIONS_MIN    1
+#define MAX_DETECTIONS_MAX    20
+
+#define DEFAULT_WINDOW_MIN    10                  // minutos
+#define WINDOW_MINUTES_MIN    1
+#define WINDOW_MINUTES_MAX    120
+
 // ---------- Frecuencia de reporte ----------
 // Reporte por EVENTO: cada cambio del PIR o del actuador se publica de inmediato,
 // respetando una separación mínima entre publicaciones (anti-ráfagas).

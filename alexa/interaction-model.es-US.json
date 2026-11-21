@@ -121,9 +121,144 @@
             "está cerrada la puerta",
             "está abierta la puerta"
           ]
+        },
+        {
+          "name": "CambiarModoIntent",
+          "slots": [
+            {
+              "name": "modo",
+              "type": "TipoModo",
+              "samples": [
+                "{modo}",
+                "modo {modo}",
+                "el modo {modo}"
+              ]
+            }
+          ],
+          "samples": [
+            "cambia el modo a {modo}",
+            "cambia a modo {modo}",
+            "pon el modo {modo}",
+            "pon el modo en {modo}",
+            "activa el modo {modo}",
+            "pasa a modo {modo}",
+            "modo {modo}",
+            "cambia el modo",
+            "cambiar el modo de operación"
+          ]
+        },
+        {
+          "name": "ConsultarModoIntent",
+          "slots": [],
+          "samples": [
+            "en qué modo está",
+            "en qué modo está el dispositivo",
+            "qué modo tiene",
+            "cuál es el modo",
+            "cuál es el modo actual",
+            "modo actual"
+          ]
+        },
+        {
+          "name": "CambiarMaxDeteccionesIntent",
+          "slots": [
+            {
+              "name": "numero",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{numero}",
+                "{numero} detecciones"
+              ]
+            }
+          ],
+          "samples": [
+            "cambia el máximo de detecciones a {numero}",
+            "pon el máximo de detecciones en {numero}",
+            "máximo de detecciones {numero}",
+            "el máximo de detecciones es {numero}",
+            "permite {numero} detecciones",
+            "cambia el límite de detecciones a {numero}",
+            "cambia el máximo de detecciones"
+          ]
+        },
+        {
+          "name": "CambiarVentanaIntent",
+          "slots": [
+            {
+              "name": "minutos",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{minutos}",
+                "{minutos} minutos"
+              ]
+            }
+          ],
+          "samples": [
+            "cambia la ventana a {minutos} minutos",
+            "cambia la ventana a {minutos}",
+            "pon la ventana en {minutos} minutos",
+            "ventana de {minutos} minutos",
+            "la ventana es de {minutos} minutos",
+            "cuenta las detecciones en {minutos} minutos",
+            "cambia la ventana"
+          ]
+        },
+        {
+          "name": "ConsultarParametrosIntent",
+          "slots": [],
+          "samples": [
+            "cuáles son los parámetros",
+            "qué parámetros tiene",
+            "cómo está configurado",
+            "consulta la configuración",
+            "cuál es el máximo de detecciones",
+            "cuál es la ventana",
+            "dime la configuración"
+          ]
         }
       ],
-      "types": []
+      "types": [
+        {
+          "name": "TipoModo",
+          "values": [
+            {
+              "id": "MANUAL",
+              "name": {
+                "value": "manual",
+                "synonyms": [
+                  "normal",
+                  "por voz",
+                  "modo manual"
+                ]
+              }
+            },
+            {
+              "id": "AUTOMATICO",
+              "name": {
+                "value": "automatico",
+                "synonyms": [
+                  "automático",
+                  "automática",
+                  "auto",
+                  "modo automático"
+                ]
+              }
+            },
+            {
+              "id": "BLOQUEO",
+              "name": {
+                "value": "bloqueo",
+                "synonyms": [
+                  "bloqueado",
+                  "bloqueada",
+                  "máxima seguridad",
+                  "modo bloqueo"
+                ]
+              }
+            }
+          ]
+        }
+      ]
     },
     "dialog": {
       "intents": [
@@ -151,6 +286,54 @@
             "confirmation": "Confirm.Intent.Desvincular"
           },
           "slots": []
+        },
+        {
+          "name": "CambiarModoIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "modo",
+              "type": "TipoModo",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.CambiarModo.modo"
+              }
+            }
+          ]
+        },
+        {
+          "name": "CambiarMaxDeteccionesIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "numero",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.CambiarMaxDetecciones.numero"
+              }
+            }
+          ]
+        },
+        {
+          "name": "CambiarVentanaIntent",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "minutos",
+              "type": "AMAZON.NUMBER",
+              "confirmationRequired": false,
+              "elicitationRequired": true,
+              "prompts": {
+                "elicitation": "Elicit.Slot.CambiarVentana.minutos"
+              }
+            }
+          ]
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -175,6 +358,33 @@
           {
             "type": "SSML",
             "value": "<speak>Entendí el código <say-as interpret-as=\"digits\">{codigo}</say-as>. ¿Es correcto?</speak>"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.CambiarModo.modo",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Qué modo quieres? Puedes decir manual, automático o bloqueo."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.CambiarMaxDetecciones.numero",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿Cuál debe ser el máximo de detecciones? Di un número entre uno y veinte."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.CambiarVentana.minutos",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "¿De cuántos minutos debe ser la ventana? Di un número entre uno y ciento veinte."
           }
         ]
       },

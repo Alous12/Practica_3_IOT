@@ -79,10 +79,23 @@ class FakeIotData:
                 self.set_reported(thingName, **desired)
         return {"payload": io.BytesIO(json.dumps(self.shadows[thingName]).encode())}
 
+    def clear_desired(self, thing, *keys):
+        """Lo que hace la regla del Edge del ESP32: publica desired con esas claves en null."""
+        self._update_desired(thing, {key: None for key in keys})
+
+    def _update_desired(self, thing, attributes):
+        """Como AWS IoT: un valor null borra la clave de desired en lugar de guardarlo."""
+        desired = self.shadows.setdefault(thing, {"state": {}, "metadata": {}})["state"] \
+            .setdefault("desired", {})
+        for key, value in attributes.items():
+            if value is None:
+                desired.pop(key, None)
+            else:
+                desired[key] = value
+
     def update_thing_shadow(self, thingName, payload):
         body = json.loads(payload)
-        shadow = self.shadows.setdefault(thingName, {"state": {}, "metadata": {}})
-        shadow["state"].setdefault("desired", {}).update(body["state"]["desired"])
+        self._update_desired(thingName, body["state"]["desired"])
         if self.is_online(thingName):
             self._pending_polls[thingName] = self.lag_polls
         return {"payload": io.BytesIO(b"{}")}
