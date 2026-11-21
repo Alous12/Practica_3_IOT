@@ -31,6 +31,23 @@ void SmartObject::loop(unsigned long nowMs) {
     }
   }
 
+  // Antes del guard de red: el cierre local funciona sin WiFi/MQTT.
+  if (!rules_.empty()) {
+    JsonDocument snapshot;
+    collectState(snapshot.to<JsonObject>(), nowMs);
+    for (ControlRule *rule : rules_) {
+      if (rule->evaluate(snapshot.as<JsonObjectConst>())) {
+        origin_ = "edge";
+        rule->clearDesired(pendingDesired_.as<JsonObject>().isNull()
+                               ? pendingDesired_.to<JsonObject>()
+                               : pendingDesired_.as<JsonObject>());
+        reportPending_ = true;
+        forceReport_ = true;
+        collectState(snapshot.to<JsonObject>(), nowMs);
+      }
+    }
+  }
+
   if (!shadow_.connected()) {
     return;  // el estado se publicará completo al reconectarse
   }
@@ -46,12 +63,18 @@ void SmartObject::loop(unsigned long nowMs) {
 void SmartObject::handleDelta(JsonObjectConst delta) {
   bool changed = false;
   for (Actuator *actuator : actuators_) {
+    // Al reconectar puede llegar el get/accepted con una apertura anterior.
+    // El cierre local tiene prioridad hasta enviar la limpieza pendiente.
+    if (!pendingDesired_.as<JsonObjectConst>()[actuator->key()].isUnbound()) continue;
     JsonVariantConst value = delta[actuator->key()];
     if (!value.isNull() && actuator->applyDesired(value)) {
       changed = true;
     }
   }
   if (changed) {
+    const char *origin = delta["origen"] | "";
+    if (strcmp(origin, "voz") == 0) origin_ = "voz";
+    else if (strcmp(origin, "nube") == 0) origin_ = "nube";
     reportPending_ = true;
     forceReport_ = true;  // no falsear lastReportMs_: evitar errores al desbordar millis()
   }
@@ -60,6 +83,17 @@ void SmartObject::handleDelta(JsonObjectConst delta) {
 void SmartObject::publishState(unsigned long nowMs) {
   JsonDocument doc;
   JsonObject reported = doc.to<JsonObject>();
+  collectState(reported, nowMs);
+
+  if (shadow_.publishUpdate(reported, pendingDesired_.as<JsonObjectConst>())) {
+    pendingDesired_.clear();
+    reportPending_ = false;
+    forceReport_ = false;
+    lastReportMs_ = nowMs;
+  }
+}
+
+void SmartObject::collectState(JsonObject reported, unsigned long nowMs) const {
   for (Sensor *sensor : sensors_) {
     sensor->report(reported);
   }
@@ -68,10 +102,5 @@ void SmartObject::publishState(unsigned long nowMs) {
   }
   reported[KEY_UPTIME] = nowMs / 1000;
   reported[KEY_RSSI] = WiFi.RSSI();
-
-  if (shadow_.publishReported(reported)) {
-    reportPending_ = false;
-    forceReport_ = false;
-    lastReportMs_ = nowMs;
-  }
+  reported["origen"] = origin_;
 }

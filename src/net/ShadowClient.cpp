@@ -68,13 +68,20 @@ bool ShadowClient::ensure(unsigned long nowMs) {
 }
 
 bool ShadowClient::publishReported(JsonObjectConst reported) {
+  return publishUpdate(reported, JsonObjectConst());
+}
+
+bool ShadowClient::publishUpdate(JsonObjectConst reported, JsonObjectConst desired) {
   if (!mqtt_.connected()) {
     return false;
   }
   JsonDocument doc;
   doc["state"]["reported"] = reported;
+  if (desired.size() > 0) doc["state"]["desired"] = desired;
 
   char buffer[512];
+  // No enviar JSON truncado si crece el reporte con los ajustes de la P4.
+  if (measureJson(doc) >= sizeof(buffer)) return false;
   size_t len = serializeJson(doc, buffer, sizeof(buffer));
   bool ok = mqtt_.publish(topicUpdate_.c_str(), reinterpret_cast<const uint8_t *>(buffer), len);
   Serial.printf("[Shadow] reported %s %s\n", ok ? "->" : "FALLÓ", buffer);

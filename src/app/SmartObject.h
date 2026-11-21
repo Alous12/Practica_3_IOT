@@ -5,6 +5,7 @@
 #include "core/Actuator.h"
 #include "core/Sensor.h"
 #include "core/ShadowPort.h"
+#include "core/ControlRule.h"
 
 /**
  * Requerimientos: RF2: reportar eventos y latidos; RF3: distribuir y confirmar órdenes.
@@ -26,6 +27,7 @@ class SmartObject {
 
   void addSensor(Sensor *sensor) { sensors_.push_back(sensor); }
   void addActuator(Actuator *actuator) { actuators_.push_back(actuator); }
+  void addRule(ControlRule *rule) { rules_.push_back(rule); }
 
   void begin();
   void loop(unsigned long nowMs);
@@ -33,10 +35,14 @@ class SmartObject {
  private:
   void handleDelta(JsonObjectConst delta);
   void publishState(unsigned long nowMs);
+  void collectState(JsonObject reported, unsigned long nowMs) const;
 
   ShadowPort &shadow_;
   std::vector<Sensor *> sensors_;
   std::vector<Actuator *> actuators_;
+  std::vector<ControlRule *> rules_;
+  JsonDocument pendingDesired_;
+  const char *origin_ = "inicio";
   unsigned long minGapMs_;
   unsigned long periodMs_;
   unsigned long lastReportMs_ = 0;

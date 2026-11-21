@@ -36,6 +36,7 @@ class ShadowClient {
 
   /** Publica {"state":{"reported": <reported>}} en el tópico update. */
   bool publishReported(JsonObjectConst reported);
+  bool publishUpdate(JsonObjectConst reported, JsonObjectConst desired);
 
   /** Fuerza un intento de conexión inmediato (p. ej. al volver el WiFi). */
   void retryNow() { lastAttemptMs_ = 0; attempted_ = false; }

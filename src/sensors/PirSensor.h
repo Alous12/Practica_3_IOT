@@ -31,6 +31,8 @@ class PirSensor : public Sensor {
   void report(JsonObject reported) const override;
 
   bool motion() const { return motion_; }
+  /** Flanco aceptado en el ultimo update(); false al siguiente ciclo. */
+  bool motionStarted() const { return motionStarted_; }
 
  private:
   uint8_t pin_;
@@ -39,6 +41,7 @@ class PirSensor : public Sensor {
   unsigned long startedMs_ = 0;  // inicio del calentamiento, no del MCU
   bool ready_ = false;
   bool motion_ = false;          // estado filtrado (lo que se reporta)
+  bool motionStarted_ = false;
   bool rawLevel_ = false;        // última lectura cruda del pin
   unsigned long rawSinceMs_ = 0; // desde cuándo la lectura cruda no cambia
   uint32_t detections_ = 0;
