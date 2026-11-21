@@ -9,6 +9,8 @@
 #include "app/SmartObject.h"
 #include "config.h"
 #include "sensors/PirSensor.h"
+#include "settings/IntSetting.h"
+#include "settings/OperatingMode.h"
 
 #ifndef FIRMWARE_LOCAL_TEST
 #error "Seleccione un entorno de platformio.ini."
@@ -75,6 +77,11 @@ AwsShadowPort channel;
 namespace {
 PirSensor pir(PIR_PIN, PIR_WARMUP_MS);
 DoorLock door(SERVO_PIN, SERVO_ANGLE_CLOSED, SERVO_ANGLE_OPEN, SERVO_SETTLE_MS);
+OperatingMode mode;
+IntSetting maxDetections(KEY_MAX_DETECTIONS, DEFAULT_MAX_DETECTIONS,
+                         MIN_MAX_DETECTIONS, MAX_MAX_DETECTIONS);
+IntSetting windowMinutes(KEY_WINDOW_MIN, DEFAULT_WINDOW_MIN,
+                         MIN_WINDOW_MIN, MAX_WINDOW_MIN);
 SmartObject smartObject(channel, REPORT_MIN_GAP_MS, REPORT_PERIOD_MS);
 }
 
@@ -84,6 +91,9 @@ void setup() {
   Serial.printf("\n[Vigilante] Reinicio: %d\n", static_cast<int>(esp_reset_reason()));
   smartObject.addSensor(&pir);
   smartObject.addActuator(&door);
+  smartObject.addSetting(&mode);
+  smartObject.addSetting(&maxDetections);
+  smartObject.addSetting(&windowMinutes);
   smartObject.begin();
 #if FIRMWARE_LOCAL_TEST
   Serial.println("[LOCAL] Sin AWS ni Alexa. a=abrir; c=cerrar. PIR: esperar 60 s.");

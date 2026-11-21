@@ -25,7 +25,7 @@
 
 // ---------- Device Shadow ----------
 #define MQTT_PORT             8883
-#define MQTT_BUFFER_SIZE      2048  // get/accepted trae desired+reported+delta+metadata (>256 B)
+#define MQTT_BUFFER_SIZE      3072  // get/accepted trae desired+reported+delta+metadata (>256 B)
 #define THING_PREFIX          "vigilante-"  // los Things se llaman vigilante-<código de 6 dígitos>
 
 // Atributos del Shadow (deben coincidir con la Lambda)
@@ -39,6 +39,29 @@
 
 #define DOOR_OPEN             "abierta"
 #define DOOR_CLOSED           "cerrada"
+
+// ---------- Modo de operación, parámetros y origen del cambio ----------
+// Configuración que se cambia desde desired (voz, nube o edge) y se confirma en reported.
+#define KEY_MODE            "modo"             // MODE_* (desired y reported)
+#define KEY_MAX_DETECTIONS  "max_detecciones"  // int en [MIN, MAX] (desired y reported)
+#define KEY_WINDOW_MIN      "ventana_min"      // minutos, int en [MIN, MAX] (desired y reported)
+#define KEY_ORIGIN          "origen"           // ORIGIN_*: quién hizo el último cambio
+
+#define MODE_MANUAL   "manual"
+#define MODE_AUTO     "automatico"
+#define MODE_LOCKDOWN "bloqueo"
+
+#define ORIGIN_VOICE "voz"
+#define ORIGIN_EDGE  "edge"
+#define ORIGIN_CLOUD "nube"
+#define ORIGIN_BOOT  "inicio"
+
+#define DEFAULT_MAX_DETECTIONS 3
+#define MIN_MAX_DETECTIONS 1
+#define MAX_MAX_DETECTIONS 20
+#define DEFAULT_WINDOW_MIN 10
+#define MIN_WINDOW_MIN 1
+#define MAX_WINDOW_MIN 120
 
 // ---------- Frecuencia de reporte ----------
 // Reporte por EVENTO: cada cambio del PIR o del actuador se publica de inmediato,

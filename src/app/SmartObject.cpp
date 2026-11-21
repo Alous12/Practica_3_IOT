@@ -4,6 +4,12 @@
 
 #include "config.h"
 
+namespace {
+// Límite del texto de "origen": un valor enorme haría que reported no quepa en el
+// búfer de publicación y el dispositivo dejaría de reportar.
+constexpr size_t ORIGIN_MAX_LEN = 16;
+}  // namespace
+
 SmartObject::SmartObject(ShadowPort &shadow, unsigned long minGapMs, unsigned long periodMs)
     : shadow_(shadow), minGapMs_(minGapMs), periodMs_(periodMs) {}
 
@@ -51,6 +57,26 @@ void SmartObject::handleDelta(JsonObjectConst delta) {
       changed = true;
     }
   }
+  for (Setting *setting : settings_) {
+    JsonVariantConst value = delta[setting->key()];
+    if (!value.isNull() && setting->applyDesired(value)) {
+      changed = true;  // un parámetro cambió: confirmarlo en reported de inmediato
+    }
+  }
+
+  // Origen del cambio: se copia tal cual llega (voz, edge, nube...).
+  JsonVariantConst origin = delta[KEY_ORIGIN];
+  if (!origin.isNull()) {
+    const char *text = origin.is<const char *>() ? origin.as<const char *>() : nullptr;
+    if (text == nullptr || text[0] == '\0' || strlen(text) > ORIGIN_MAX_LEN) {
+      Serial.println("[Origen] Valor deseado inválido (se espera texto corto)");
+    } else if (strcmp(origin_.c_str(), text) != 0) {
+      origin_ = text;  // String copia el texto: el búfer JSON se libera tras el delta
+      Serial.printf("[Origen] %s\n", origin_.c_str());
+      changed = true;
+    }
+  }
+
   if (changed) {
     reportPending_ = true;
     forceReport_ = true;  // no falsear lastReportMs_: evitar errores al desbordar millis()
@@ -66,6 +92,10 @@ void SmartObject::publishState(unsigned long nowMs) {
   for (Actuator *actuator : actuators_) {
     actuator->report(reported);
   }
+  for (Setting *setting : settings_) {
+    setting->report(reported);
+  }
+  reported[KEY_ORIGIN] = origin_.c_str();  // ArduinoJson copia el texto
   reported[KEY_UPTIME] = nowMs / 1000;
   reported[KEY_RSSI] = WiFi.RSSI();
 

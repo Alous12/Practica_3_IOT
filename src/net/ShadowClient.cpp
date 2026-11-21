@@ -74,7 +74,14 @@ bool ShadowClient::publishReported(JsonObjectConst reported) {
   JsonDocument doc;
   doc["state"]["reported"] = reported;
 
-  char buffer[512];
+  // reported incluye sensores, puerta, modo, parámetros y origen (~350 B): 1024 deja margen.
+  char buffer[1024];
+  if (measureJson(doc) >= sizeof(buffer)) {
+    // serializeJson truncaría el JSON y AWS lo rechazaría: mejor no publicar.
+    Serial.printf("[Shadow] reported demasiado grande (%u B)\n",
+                  static_cast<unsigned>(measureJson(doc)));
+    return false;
+  }
   size_t len = serializeJson(doc, buffer, sizeof(buffer));
   bool ok = mqtt_.publish(topicUpdate_.c_str(), reinterpret_cast<const uint8_t *>(buffer), len);
   Serial.printf("[Shadow] reported %s %s\n", ok ? "->" : "FALLÓ", buffer);
