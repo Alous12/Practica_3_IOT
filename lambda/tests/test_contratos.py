@@ -135,6 +135,25 @@ def test_desvincular_pide_confirmacion_como_espera_la_lambda():
     assert dialog["DesvincularDispositivoIntent"]["confirmationRequired"] is True
 
 
+def test_tipo_modo_del_modelo_coincide_con_los_modos_de_la_lambda():
+    """Los valores canónicos de TipoModo son exactamente los que acepta la Lambda y el ESP32."""
+    types = {t["name"]: t for t in _model()["languageModel"]["types"]}
+    canonical = {v["name"]["value"] for v in types["TipoModo"]["values"]}
+    assert canonical == set(lambda_config.MODES)
+    slot = _model_intents()["CambiarModoIntent"]["slots"][0]
+    assert (slot["name"], slot["type"]) == ("modo", "TipoModo")
+
+
+@pytest.mark.parametrize("intent, slot_name", [
+    ("CambiarMaxDeteccionesIntent", "numero"), ("CambiarVentanaIntent", "minutos"),
+])
+def test_slots_de_los_parametros_son_numericos_y_se_piden(intent, slot_name):
+    slot = _model_intents()[intent]["slots"][0]
+    assert (slot["name"], slot["type"]) == (slot_name, "AMAZON.NUMBER")
+    dialog = {i["name"]: i for i in _model()["dialog"]["intents"]}
+    assert dialog[intent]["slots"][0]["elicitationRequired"] is True
+
+
 def test_todos_los_prompts_referenciados_existen():
     model = _model()
     declared = {p["id"] for p in model["prompts"]}
@@ -195,6 +214,31 @@ def test_claves_del_shadow_iguales_en_firmware_y_lambda(firmware_config):
     for name in ("KEY_DOOR", "KEY_MOTION", "KEY_DETECTIONS", "KEY_LAST_DETECTION",
                  "KEY_SENSOR_READY"):
         assert firmware_config[name] == getattr(lambda_config, name), name
+
+
+# Nombres acordados por el equipo: config.h y config.py deben definirlos con el mismo valor.
+AGREED_SHADOW_CONSTANTS = (
+    "KEY_MODE", "KEY_MAX_DETECTIONS", "KEY_WINDOW_MIN", "KEY_ORIGIN",
+    "MODE_MANUAL", "MODE_AUTO", "MODE_LOCKDOWN", "ORIGIN_VOICE",
+)
+# Si config.h también los define, deben coincidir con la Lambda.
+OPTIONAL_SHADOW_CONSTANTS = (
+    "MAX_DETECTIONS_MIN", "MAX_DETECTIONS_MAX", "WINDOW_MINUTES_MIN", "WINDOW_MINUTES_MAX",
+    "ORIGIN_EDGE", "ORIGIN_CLOUD", "ORIGIN_BOOT",
+)
+
+
+def test_modo_parametros_y_origen_iguales_en_firmware_y_lambda(firmware_config):
+    """Ampliación: claves, modos y origen. Se activa cuando config.h define KEY_MODE."""
+    if "KEY_MODE" not in firmware_config:
+        pytest.skip("config.h aún no tiene el modo de operación (ampliación del firmware)")
+    faltan = [name for name in AGREED_SHADOW_CONSTANTS if name not in firmware_config]
+    assert not faltan, f"config.h no define: {faltan}"
+    for name in AGREED_SHADOW_CONSTANTS:
+        assert firmware_config[name] == getattr(lambda_config, name), name
+    for name in OPTIONAL_SHADOW_CONSTANTS:
+        if name in firmware_config:
+            assert firmware_config[name] == getattr(lambda_config, name), name
 
 
 def test_valores_de_la_puerta_iguales_en_firmware_y_lambda(firmware_config):
@@ -306,6 +350,15 @@ def test_tabla_dynamodb_coincide_con_el_repositorio_de_vinculaciones():
 # --------------------------------------------------------------------------------------------
 # Empaquetado y punto de entrada de la Lambda
 # --------------------------------------------------------------------------------------------
+
+def test_lambda_logica_coincide_con_lo_que_se_despliega():
+    """lambda-logica/ documenta la Lambda desplegada: no puede quedar desactualizada."""
+    logic_dir = REPO_ROOT / "lambda-logica"
+    assert (logic_dir / "lambda_function.py").read_bytes() == \
+        (LAMBDA_DIR / "lambda_function.py").read_bytes()
+    assert _load_json(logic_dir / "politica-rol.json") == \
+        _load_json(AWS_DIR / "lambda-role-policy.json")
+
 
 def test_punto_de_entrada_de_lambda_se_importa(monkeypatch):
     """Handler configurado en la consola: lambda_function.lambda_handler (sin access keys)."""

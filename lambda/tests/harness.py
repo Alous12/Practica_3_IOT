@@ -43,9 +43,24 @@ def _strip_ssml(ssml: str) -> str:
     return re.sub(r"<[^>]+>", "", ssml)
 
 
+def _resolutions(slot_type, canonical):
+    """Bloque `resolutions` que agrega Alexa a un slot de tipo propio (p. ej. TipoModo)."""
+    authority = {"authority": "amzn1.er-authority.echo-sdk.amzn1.ask.skill.PRUEBA." + slot_type}
+    if canonical is None:
+        authority["status"] = {"code": "ER_SUCCESS_NO_MATCH"}
+    else:
+        authority["status"] = {"code": "ER_SUCCESS_MATCH"}
+        authority["values"] = [{"value": {"name": canonical, "id": canonical.upper()}}]
+    return {"resolutionsPerAuthority": [authority]}
+
+
 def build_event(request_type="IntentRequest", intent=None, user_id=USER, slots=None,
-                confirmation="NONE"):
-    """Arma un request de Alexa con la misma forma que el JSON Input del simulador."""
+                confirmation="NONE", resolved=None):
+    """Arma un request de Alexa con la misma forma que el JSON Input del simulador.
+
+    `resolved` ({slot: valor canónico o None}) simula la resolución de sinónimos de un
+    slot de tipo propio: Alexa entiende "automático" y entrega el valor "automatico".
+    """
     application = {"applicationId": "amzn1.ask.skill.PRUEBA"}
     user = {"userId": user_id}
     request = {
@@ -63,6 +78,8 @@ def build_event(request_type="IntentRequest", intent=None, user_id=USER, slots=N
                 for name, value in (slots or {}).items()
             },
         }
+        for name, canonical in (resolved or {}).items():
+            request["intent"]["slots"][name]["resolutions"] = _resolutions("TipoModo", canonical)
         request["dialogState"] = "COMPLETED"
     return {
         "version": "1.0",
@@ -110,15 +127,30 @@ class Harness:
             # El código del archivo de eventos se edita para probar en la consola de Lambda
             # con el Thing real; las pruebas fijan siempre el suyo para no depender de él.
             slots["codigo"]["value"] = overrides.get("codigo", THING_CODE)
+        for name in ("numero", "minutos"):
+            if name in slots and name in overrides:
+                slots[name]["value"] = overrides[name]
         if "confirmation" in overrides:
             event["request"]["intent"]["confirmationStatus"] = overrides["confirmation"]
         return self.send(event)
 
-    def ask(self, intent, user_id=USER, codigo=None, confirmation="NONE") -> str:
-        """Equivale a escribir una frase en el simulador que Alexa resuelve a `intent`."""
-        slots = {"codigo": codigo} if codigo is not None else None
-        return self.send(build_event(intent=intent, user_id=user_id, slots=slots,
-                                     confirmation=confirmation))
+    def ask(self, intent, user_id=USER, codigo=None, confirmation="NONE", slots=None,
+            resolved=None) -> str:
+        """Equivale a escribir una frase en el simulador que Alexa resuelve a `intent`.
+
+        `slots` = {nombre: texto reconocido}; `resolved` = {nombre: valor canónico} para
+        slots de tipo propio (TipoModo).
+        """
+        slots = dict(slots or {})
+        if codigo is not None:
+            slots["codigo"] = codigo
+        return self.send(build_event(intent=intent, user_id=user_id, slots=slots or None,
+                                     confirmation=confirmation, resolved=resolved))
+
+    def set_mode(self, mode, spoken=None, user_id=USER) -> str:
+        """"cambia el modo a <spoken>": Alexa resuelve el sinónimo al valor canónico `mode`."""
+        return self.ask("CambiarModoIntent", user_id=user_id, slots={"modo": spoken or mode},
+                        resolved={"modo": mode})
 
     def launch(self, user_id=USER) -> str:
         """Equivale a "abre vigilante inteligente"."""

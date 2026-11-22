@@ -2,11 +2,11 @@
 import json
 import logging
 import time
-from typing import Tuple
+from typing import Any, Tuple
 
 from botocore.exceptions import ClientError
 
-from .config import KEY_DOOR
+from .config import KEY_DOOR, KEY_ORIGIN, ORIGIN_VOICE
 from .device_state import DeviceState
 
 logger = logging.getLogger(__name__)
@@ -47,18 +47,33 @@ class DeviceGateway:
             raise
         return DeviceState.from_shadow(json.loads(response["payload"].read()))
 
-    def request_door(self, thing_name: str, value: str) -> None:
-        """RF5: escribe state.desired.puerta; el dispositivo lo recibe por el tópico delta."""
-        payload = {"state": {"desired": {KEY_DOOR: value}}}
+    def request_desired(self, thing_name: str, **attributes: Any) -> None:
+        """Escribe atributos en state.desired, siempre con "origen": "voz".
+
+        El ESP32 recibe el cambio por el tópico delta, lo aplica y copia el origen a
+        reported.origen, así se distingue una orden de voz de una acción del Edge.
+        """
+        desired = dict(attributes)
+        desired[KEY_ORIGIN] = ORIGIN_VOICE
+        payload = {"state": {"desired": desired}}
         self._data.update_thing_shadow(thingName=thing_name, payload=json.dumps(payload).encode())
 
-    def wait_for_door(self, thing_name: str, value: str, timeout_s: float) -> Tuple[bool, int]:
-        """Espera a que reported.puerta == value. Devuelve (confirmado, milisegundos)."""
+    def request_door(self, thing_name: str, value: str) -> None:
+        """RF5: escribe state.desired.puerta (con origen "voz")."""
+        self.request_desired(thing_name, **{KEY_DOOR: value})
+
+    def wait_for(self, thing_name: str, key: str, value: Any,
+                 timeout_s: float) -> Tuple[bool, int]:
+        """Espera a que reported[key] == value. Devuelve (confirmado, milisegundos)."""
         start = self._clock()
         while True:
             elapsed = self._clock() - start
-            if self.get_state(thing_name).door == value:
+            if self.get_state(thing_name).reported_value(key) == value:
                 return True, int(elapsed * 1000)
             if elapsed >= timeout_s:
                 return False, int(elapsed * 1000)
             self._sleep(self._poll_interval_s)
+
+    def wait_for_door(self, thing_name: str, value: str, timeout_s: float) -> Tuple[bool, int]:
+        """Espera a que reported.puerta == value."""
+        return self.wait_for(thing_name, KEY_DOOR, value, timeout_s)

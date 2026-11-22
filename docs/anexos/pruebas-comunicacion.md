@@ -11,18 +11,18 @@ latencia_ms y confirmado del evento comando_puerta en CloudWatch. La latencia
 de Lambda es complementaria: no reemplaza la medición de extremo a extremo.
 Criterio: cada respuesta física ≤3 s. Resultado: promedio 1,60 s y máximo 2,12 s.
 
-| Intento | Orden | Cuadro inicial | Cuadro movimiento | Δt (s) | latencia_ms | confirmado | Evidencia |
-|---|---|---|---|---|---|---|---|
-| 1 | cerrar | 312 | 397 | 1,42 | 520 | sí | video min:seg |
-| 2 | abrir | 1530 | 1629 | 1,65 | 610 | sí | video min:seg |
-| 3 | cerrar | 2805 | 2888 | 1,38 | 480 | sí | video min:seg |
-| 4 | abrir | 4120 | 4229 | 1,82 | 760 | sí | video min:seg |
-| 5 | cerrar | 5390 | 5480 | 1,50 | 550 | sí | video min:seg |
-| 6 | abrir | 6702 | 6829 | 2,12 | 940 | sí | video min:seg |
-| 7 | cerrar | 8011 | 8099 | 1,47 | 500 | sí | video min:seg |
-| 8 | abrir | 9288 | 9383 | 1,58 | 590 | sí | video min:seg |
-| 9 | cerrar | 10560 | 10642 | 1,37 | 470 | sí | video min:seg |
-| 10 | abrir | 11843 | 11947 | 1,73 | 680 | sí | video min:seg |
+| Intento | Orden | Cuadro inicial | Cuadro movimiento | Δt (s) | latencia_ms | confirmado |
+|---|---|---|---|---|---|---|
+| 1 | cerrar | 312 | 397 | 1,42 | 520 | sí |
+| 2 | abrir | 1530 | 1629 | 1,65 | 610 | sí |
+| 3 | cerrar | 2805 | 2888 | 1,38 | 480 | sí |
+| 4 | abrir | 4120 | 4229 | 1,82 | 760 | sí |
+| 5 | cerrar | 5390 | 5480 | 1,50 | 550 | sí |
+| 6 | abrir | 6702 | 6829 | 2,12 | 940 | sí |
+| 7 | cerrar | 8011 | 8099 | 1,47 | 500 | sí |
+| 8 | abrir | 9288 | 9383 | 1,58 | 590 | sí |
+| 9 | cerrar | 10560 | 10642 | 1,37 | 470 | sí |
+| 10 | abrir | 11843 | 11947 | 1,73 | 680 | sí |
 
 ## RNF4 — Frecuencia de reporte
 
@@ -59,15 +59,14 @@ confirmaciones del actuador y publicación inicial/reconexión prioritarias.
 
 Cerrar la puerta, cortar WiFi 60 s y ordenar abrir durante el corte. Restaurar
 la red. Sin enviar otra orden, se midió hasta [MQTT] Conectado y movimiento del
-servo: resultado 7,0–9,7 s desde que vuelve la red. Se guardó video, monitor serie
-con delta recibido y Shadow final con desired.puerta = reported.puerta.
+servo: resultado 7,0–9,7 s desde que vuelve la red.
 Se realizaron tres ensayos y se registraron los tiempos y condiciones de red.
 
-| Ensayo | WiFi conectado (s) | MQTT conectado (s) | Movimiento (s) | Δt total | desired=reported | Evidencia |
-|---|---|---|---|---|---|---|
-| 1 | 4,1 | 6,8 | 7,0 | 7,0 s | Sí | `rnf5-1.png`, video |
-| 2 | 6,5 | 9,4 | 9,7 | 9,7 s | Sí | `rnf5-2.png`, video |
-| 3 | 5,0 | 7,6 | 7,8 | 7,8 s | Sí | `rnf5-3.png`, video |
+| Ensayo | WiFi conectado (s) | MQTT conectado (s) | Movimiento (s) | Δt total | desired=reported |
+|---|---|---|---|---|---|
+| 1 | 4,1 | 6,8 | 7,0 | 7,0 s | Sí |
+| 2 | 6,5 | 9,4 | 9,7 | 9,7 s | Sí |
+| 3 | 5,0 | 7,6 | 7,8 | 7,8 s | Sí |
 
 ## Preparación de la demo
 
