@@ -17,14 +17,18 @@ from botocore.exceptions import ClientError
 
 from . import speech
 from .config import (
+    ALARM_OFF,
+    ALARM_ON,
     AUTOLOCK_MODES,
     DOOR_CLOSED,
     DOOR_OPEN,
+    KEY_ALARM,
     KEY_MAX_DETECTIONS,
     KEY_MODE,
     KEY_WINDOW_MIN,
     MAX_DETECTIONS_MAX,
     MAX_DETECTIONS_MIN,
+    MODE_MANUAL,
     MODES,
     WINDOW_MINUTES_MAX,
     WINDOW_MINUTES_MIN,
@@ -326,6 +330,58 @@ class DoorStatusHandler(LinkedDeviceHandler):
         return text + self._stale(state)
 
 
+# ---------- Alarma (buzzer) ----------
+
+class AlarmCommandHandler(LinkedDeviceHandler):
+    """Escribe state.desired.alarma (origen "voz") y espera la confirmación en reported."""
+
+    target = ALARM_ON
+    verb = "encender"
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
+        current = self._gateway.get_state(thing)
+        if current.alarm == self.target and not current.alarm_pending:
+            return speech.alarm_already(self.target) + self._stale(current)
+
+        self._gateway.request_desired(thing, **{KEY_ALARM: self.target})
+        confirmed, latency_ms = self._gateway.wait_for(
+            thing, KEY_ALARM, self.target, self._settings.confirm_timeout_s)
+        _log_event("comando_alarma", thing=thing, objetivo=self.target,
+                   confirmado=confirmed, latencia_ms=latency_ms)
+        if confirmed:
+            return speech.alarm_changed(self.target)
+        return speech.alarm_pending(self.verb)
+
+
+class TurnOnAlarmHandler(AlarmCommandHandler):
+    intent_name = "EncenderAlarmaIntent"
+    target = ALARM_ON
+    verb = "encender"
+
+
+class TurnOffAlarmHandler(AlarmCommandHandler):
+    intent_name = "ApagarAlarmaIntent"
+    target = ALARM_OFF
+    verb = "apagar"
+
+
+class AlarmStatusHandler(LinkedDeviceHandler):
+    """Dice si la alarma suena y, si la activó una regla (edge o nube), quién fue."""
+
+    intent_name = "EstadoAlarmaIntent"
+
+    def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
+        state = self._gateway.get_state(thing)
+        if not state.has_report:
+            return speech.NO_REPORT
+        if state.alarm not in (ALARM_ON, ALARM_OFF):
+            return speech.NO_ALARM
+        text = speech.alarm_status(state.alarm, state.origin)
+        if state.alarm_pending:
+            text += speech.alarm_pending_note(state.desired_alarm)
+        return text + self._stale(state)
+
+
 # ---------- Modo de operación y parámetros ----------
 
 class SettingCommandHandler(LinkedDeviceHandler):
@@ -350,6 +406,14 @@ class SettingCommandHandler(LinkedDeviceHandler):
     def pending(self, value: Any) -> str:
         raise NotImplementedError
 
+    def extra_desired(self, value: Any) -> dict:
+        """Otros atributos que viajan en el mismo desired que el ajuste (por defecto, ninguno)."""
+        return {}
+
+    def extra_note(self, value: Any, current) -> str:
+        """Frase sobre esos atributos extra (por defecto, ninguna)."""
+        return ""
+
     def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         value, problem = self.parse(handler_input)
         if problem:
@@ -358,12 +422,15 @@ class SettingCommandHandler(LinkedDeviceHandler):
         if current.reported_value(self.key) == value and not current.is_pending(self.key):
             return self.already(value) + self._stale(current)
 
-        self._gateway.request_desired(thing, **{self.key: value})
+        desired = {self.key: value}
+        desired.update(self.extra_desired(value))
+        self._gateway.request_desired(thing, **desired)
         confirmed, latency_ms = self._gateway.wait_for(
             thing, self.key, value, self._settings.confirm_timeout_s)
         _log_event("comando_ajuste", thing=thing, atributo=self.key, valor=value,
                    confirmado=confirmed, latencia_ms=latency_ms)
-        return self.changed(value) if confirmed else self.pending(value)
+        text = self.changed(value) if confirmed else self.pending(value)
+        return text + self.extra_note(value, current)
 
 
 class ChangeModeHandler(SettingCommandHandler):
@@ -386,6 +453,15 @@ class ChangeModeHandler(SettingCommandHandler):
 
     def pending(self, value: Any) -> str:
         return speech.mode_pending(value)
+
+    def extra_desired(self, value: Any) -> dict:
+        # Volver a manual apaga la alarma en el mismo desired: el dueño retoma el control.
+        return {KEY_ALARM: ALARM_OFF} if value == MODE_MANUAL else {}
+
+    def extra_note(self, value: Any, current) -> str:
+        if value == MODE_MANUAL and current.alarm == ALARM_ON:
+            return speech.MANUAL_ALARM_OFF
+        return ""
 
 
 class ChangeMaxDetectionsHandler(SettingCommandHandler):
