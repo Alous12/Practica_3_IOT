@@ -118,6 +118,7 @@ def alarm_pending_note(alarm: str) -> str:
 
 
 MANUAL_ALARM_OFF = " También envié la orden de apagar la alarma."
+LOCKDOWN_DOOR_CLOSED = " También envié la orden de cerrar la puerta."
 
 
 def door_origin(door: Optional[str], origin: Optional[str]) -> str:

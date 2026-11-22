@@ -23,11 +23,13 @@ from .config import (
     DOOR_CLOSED,
     DOOR_OPEN,
     KEY_ALARM,
+    KEY_DOOR,
     KEY_MAX_DETECTIONS,
     KEY_MODE,
     KEY_WINDOW_MIN,
     MAX_DETECTIONS_MAX,
     MAX_DETECTIONS_MIN,
+    MODE_LOCKDOWN,
     MODE_MANUAL,
     MODES,
     WINDOW_MINUTES_MAX,
@@ -455,12 +457,20 @@ class ChangeModeHandler(SettingCommandHandler):
         return speech.mode_pending(value)
 
     def extra_desired(self, value: Any) -> dict:
-        # Volver a manual apaga la alarma en el mismo desired: el dueño retoma el control.
-        return {KEY_ALARM: ALARM_OFF} if value == MODE_MANUAL else {}
+        # En el mismo desired que el modo:
+        # - manual apaga la alarma (el dueño retoma el control);
+        # - bloqueo cierra la puerta (igual que hace vigilante-logica).
+        if value == MODE_MANUAL:
+            return {KEY_ALARM: ALARM_OFF}
+        if value == MODE_LOCKDOWN:
+            return {KEY_DOOR: DOOR_CLOSED}
+        return {}
 
     def extra_note(self, value: Any, current) -> str:
         if value == MODE_MANUAL and current.alarm == ALARM_ON:
             return speech.MANUAL_ALARM_OFF
+        if value == MODE_LOCKDOWN and current.door == DOOR_OPEN:
+            return speech.LOCKDOWN_DOOR_CLOSED
         return ""
 
 

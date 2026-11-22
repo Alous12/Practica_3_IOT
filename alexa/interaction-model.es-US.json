@@ -215,6 +215,45 @@
             "cuál es la ventana",
             "dime la configuración"
           ]
+        },
+        {
+          "name": "EncenderAlarmaIntent",
+          "slots": [],
+          "samples": [
+            "enciende la alarma",
+            "activa la alarma",
+            "haz sonar la alarma",
+            "suena la alarma",
+            "prende la alarma",
+            "enciende el buzzer",
+            "activa la sirena"
+          ]
+        },
+        {
+          "name": "ApagarAlarmaIntent",
+          "slots": [],
+          "samples": [
+            "apaga la alarma",
+            "desactiva la alarma",
+            "silencia la alarma",
+            "calla la alarma",
+            "detén la alarma",
+            "apaga el buzzer",
+            "apaga la sirena",
+            "ya basta de alarma"
+          ]
+        },
+        {
+          "name": "EstadoAlarmaIntent",
+          "slots": [],
+          "samples": [
+            "está sonando la alarma",
+            "la alarma está encendida",
+            "cómo está la alarma",
+            "estado de la alarma",
+            "está activa la alarma",
+            "la alarma está sonando"
+          ]
         }
       ],
       "types": [
