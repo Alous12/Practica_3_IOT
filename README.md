@@ -47,8 +47,13 @@ Practica_3_IOT/
 │   ├── events/               eventos de prueba para la consola de Lambda
 │   ├── tests/                pruebas de la skill, contratos entre capas y guion de Alexa
 │   └── build.ps1 / build.sh  generan build/lambda_deployment.zip
+├── lambda-almacenamiento/    Lambda vigilante-almacenamiento: guarda lecturas y cambios en
+│                             vigilante_historico (invocada por vigilante_lecturas y vigilante_eventos)
+├── lambda-logica/            Lambda vigilante-logica: regla de la Nube (RF13); cuenta detecciones
+│                             en la ventana y escribe el bloqueo en desired (invocada por vigilante_deteccion)
 ├── alexa/interaction-model.es-US.json   modelo de interacción (JSON Editor de la consola)
-├── aws/                      política de IoT, política del rol de la Lambda y tabla de DynamoDB
+├── aws/                      política de IoT, políticas de los roles de las Lambdas y tablas de DynamoDB
+│   └── iot-rules/            SQL de las reglas de AWS IoT (vigilante_lecturas, _eventos, _deteccion)
 └── docs/                     informe y anexos
 ```
 

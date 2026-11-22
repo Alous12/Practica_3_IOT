@@ -20,11 +20,13 @@ from .config import (
     AUTOLOCK_MODES,
     DOOR_CLOSED,
     DOOR_OPEN,
+    KEY_DOOR,
     KEY_MAX_DETECTIONS,
     KEY_MODE,
     KEY_WINDOW_MIN,
     MAX_DETECTIONS_MAX,
     MAX_DETECTIONS_MIN,
+    MODE_LOCKDOWN,
     MODES,
     WINDOW_MINUTES_MAX,
     WINDOW_MINUTES_MIN,
@@ -350,6 +352,10 @@ class SettingCommandHandler(LinkedDeviceHandler):
     def pending(self, value: Any) -> str:
         raise NotImplementedError
 
+    def extra_desired(self, value: Any) -> dict:
+        """Atributos que se escriben junto al ajuste en el mismo desired (por defecto, ninguno)."""
+        return {}
+
     def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         value, problem = self.parse(handler_input)
         if problem:
@@ -358,7 +364,8 @@ class SettingCommandHandler(LinkedDeviceHandler):
         if current.reported_value(self.key) == value and not current.is_pending(self.key):
             return self.already(value) + self._stale(current)
 
-        self._gateway.request_desired(thing, **{self.key: value})
+        # Una sola escritura: el ajuste y sus extras llegan al ESP32 en el mismo delta.
+        self._gateway.request_desired(thing, **{**self.extra_desired(value), self.key: value})
         confirmed, latency_ms = self._gateway.wait_for(
             thing, self.key, value, self._settings.confirm_timeout_s)
         _log_event("comando_ajuste", thing=thing, atributo=self.key, valor=value,
@@ -377,6 +384,14 @@ class ChangeModeHandler(SettingCommandHandler):
         if mode not in MODES:
             return None, speech.ASK_MODE
         return mode, None
+
+    def extra_desired(self, value: Any) -> dict:
+        """El bloqueo por voz también cierra la puerta, igual que el bloqueo de la Nube.
+
+        Solo se espera la confirmación del modo; la puerta la confirma el ESP32 en el
+        mismo reporte.
+        """
+        return {KEY_DOOR: DOOR_CLOSED} if value == MODE_LOCKDOWN else {}
 
     def changed(self, value: Any) -> str:
         return speech.mode_changed(value)

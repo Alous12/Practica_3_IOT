@@ -13,6 +13,7 @@
 // ---------- Pines (ESP32 DOIT DevKit V1) ----------
 #define PIR_PIN               27   // salida digital del HC-SR501 (3.3 V)
 #define SERVO_PIN             25   // señal PWM del servo SG90 (se movió de GPIO 13 durante el diagnóstico)
+#define BUZZER_PIN            26   // señal del buzzer (alarma); suelto: a través de 220 Ω
 
 // ---------- Sensor PIR (HC-SR501) ----------
 // El HC-SR501 necesita ~60 s tras energizarse para estabilizarse.
@@ -22,6 +23,12 @@
 #define SERVO_ANGLE_CLOSED    90    // grados con la puerta cerrada (ajustar al montaje)
 #define SERVO_ANGLE_OPEN      0     // grados con la puerta abierta
 #define SERVO_SETTLE_MS       700UL // tiempo de movimiento antes de soltar el servo
+
+// ---------- Actuador: alarma con buzzer ----------
+#define BUZZER_ACTIVE         1         // 1 = buzzer activo (pita con nivel alto); 0 = pasivo (necesita PWM)
+#define BUZZER_TONE_HZ        2000      // frecuencia del tono si el buzzer es pasivo
+#define ALARM_BEEP_MS         500UL     // pitido intermitente: 500 ms sí, 500 ms no
+#define ALARM_MAX_MS          30000UL   // la alarma se apaga sola tras 30 s (AlarmRule)
 
 // ---------- Device Shadow ----------
 #define MQTT_PORT             8883
@@ -39,6 +46,10 @@
 
 #define DOOR_OPEN             "abierta"
 #define DOOR_CLOSED           "cerrada"
+
+#define KEY_ALARM             "alarma"            // "encendida" | "apagada"  (desired y reported)
+#define ALARM_ON              "encendida"
+#define ALARM_OFF             "apagada"
 
 // ---------- Modo de operación, parámetros y origen (deben coincidir con la Lambda) ----------
 #define KEY_MODE              "modo"              // desired y reported
