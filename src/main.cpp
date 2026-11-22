@@ -9,6 +9,7 @@
 #include "app/SmartObject.h"
 #include "config.h"
 #include "sensors/PirSensor.h"
+#include "rules/AutoLockRule.h"
 #include "settings/IntSetting.h"
 #include "settings/OperatingMode.h"
 
@@ -25,8 +26,12 @@ class LocalShadowPort : public ShadowPort {
  public:
   bool connected() override { return true; }
   bool publishReported(JsonObjectConst reported) override {
+    return publishUpdate(reported, JsonObjectConst());
+  }
+  bool publishUpdate(JsonObjectConst reported, JsonObjectConst desired) override {
     JsonDocument doc;
     doc["state"]["reported"] = reported;
+    if (desired.size() > 0) doc["state"]["desired"] = desired;
     Serial.printf("[LOCAL t_ms=%lu] ", millis());
     serializeJson(doc, Serial);
     Serial.println();
@@ -67,6 +72,9 @@ class AwsShadowPort : public ShadowPort {
  public:
   bool connected() override { return shadow.connected(); }
   bool publishReported(JsonObjectConst value) override { return shadow.publishReported(value); }
+  bool publishUpdate(JsonObjectConst reported, JsonObjectConst desired) override {
+    return shadow.publishUpdate(reported, desired);
+  }
   void onDelta(DeltaHandler handler) override { shadow.onDelta(handler); }
   void onConnected(ConnectedHandler handler) override { shadow.onConnected(handler); }
 };
@@ -79,10 +87,11 @@ PirSensor pir(PIR_PIN, PIR_WARMUP_MS);
 DoorLock door(SERVO_PIN, SERVO_ANGLE_CLOSED, SERVO_ANGLE_OPEN, SERVO_SETTLE_MS);
 OperatingMode mode;
 IntSetting maxDetections(KEY_MAX_DETECTIONS, DEFAULT_MAX_DETECTIONS,
-                         MIN_MAX_DETECTIONS, MAX_MAX_DETECTIONS);
+                         MAX_DETECTIONS_MIN, MAX_DETECTIONS_MAX);
 IntSetting windowMinutes(KEY_WINDOW_MIN, DEFAULT_WINDOW_MIN,
-                         MIN_WINDOW_MIN, MAX_WINDOW_MIN);
+                         WINDOW_MINUTES_MIN, WINDOW_MINUTES_MAX);
 SmartObject smartObject(channel, REPORT_MIN_GAP_MS, REPORT_PERIOD_MS);
+AutoLockRule autoLock(pir, door);
 }
 
 void setup() {
@@ -94,6 +103,7 @@ void setup() {
   smartObject.addSetting(&mode);
   smartObject.addSetting(&maxDetections);
   smartObject.addSetting(&windowMinutes);
+  smartObject.addRule(&autoLock);
   smartObject.begin();
 #if FIRMWARE_LOCAL_TEST
   Serial.println("[LOCAL] Sin AWS ni Alexa. a=abrir; c=cerrar. PIR: esperar 60 s.");

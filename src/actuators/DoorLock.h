@@ -29,6 +29,8 @@ class DoorLock : public Actuator {
   void report(JsonObject reported) const override;
 
   bool isClosed() const { return closed_; }
+  /** true si se inicio un cierre; no repite PWM si ya estaba cerrada. */
+  bool close();
 
   /**
    * Solo para calibrar (tools/prueba_hardware): mueve el servo a un ángulo libre
@@ -45,6 +47,7 @@ class DoorLock : public Actuator {
   int openAngle_;
   unsigned long settleMs_;
   bool closed_ = true;  // estado seguro por defecto: cerrada
+  bool positioned_ = false;  // el primer begin() siempre ordena la posicion segura
   bool moving_ = false;
   unsigned long moveStartedMs_ = 0;
 };

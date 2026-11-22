@@ -68,13 +68,19 @@ bool ShadowClient::ensure(unsigned long nowMs) {
 }
 
 bool ShadowClient::publishReported(JsonObjectConst reported) {
+  return publishUpdate(reported, JsonObjectConst());
+}
+
+bool ShadowClient::publishUpdate(JsonObjectConst reported, JsonObjectConst desired) {
   if (!mqtt_.connected()) {
     return false;
   }
   JsonDocument doc;
   doc["state"]["reported"] = reported;
+  if (desired.size() > 0) doc["state"]["desired"] = desired;
 
-  // reported incluye sensores, puerta, modo, parámetros y origen (~350 B): 1024 deja margen.
+  // reported (sensores, puerta, modo, parámetros y origen, ~350 B) más la limpieza
+  // opcional de desired: 1024 deja margen.
   char buffer[1024];
   if (measureJson(doc) >= sizeof(buffer)) {
     // serializeJson truncaría el JSON y AWS lo rechazaría: mejor no publicar.

@@ -9,6 +9,7 @@
 #include "core/Sensor.h"
 #include "core/Setting.h"
 #include "core/ShadowPort.h"
+#include "core/ControlRule.h"
 
 /**
  * Requerimientos: RF2: reportar eventos y latidos; RF3: distribuir y confirmar órdenes.
@@ -21,9 +22,12 @@
  * - Recibe los deltas del Shadow y los reparte al actuador o parámetro (Setting)
  *   dueño de cada clave; guarda además el origen del cambio ("origen").
  * - Tras aplicar un delta, confirma el nuevo estado en reported.
+ * - Evalúa las reglas locales (ControlRule) aun sin red; si una actúa, el origen
+ *   pasa a "edge" y se limpia en desired lo que la regla indique.
  *
- * No conoce sensores, actuadores ni parámetros concretos: trabaja con las
- * interfaces Sensor, Actuator y Setting, de modo que se pueden agregar más sin rediseñar.
+ * No conoce sensores, actuadores, parámetros ni reglas concretos: trabaja con las
+ * interfaces Sensor, Actuator, Setting y ControlRule, de modo que se pueden agregar más
+ * sin rediseñar.
  */
 class SmartObject {
  public:
@@ -32,6 +36,7 @@ class SmartObject {
   void addSensor(Sensor *sensor) { sensors_.push_back(sensor); }
   void addActuator(Actuator *actuator) { actuators_.push_back(actuator); }
   void addSetting(Setting *setting) { settings_.push_back(setting); }
+  void addRule(ControlRule *rule) { rules_.push_back(rule); }
 
   void begin();
   void loop(unsigned long nowMs);
@@ -39,11 +44,14 @@ class SmartObject {
  private:
   void handleDelta(JsonObjectConst delta);
   void publishState(unsigned long nowMs);
+  void collectState(JsonObject reported, unsigned long nowMs) const;
 
   ShadowPort &shadow_;
   std::vector<Sensor *> sensors_;
   std::vector<Actuator *> actuators_;
   std::vector<Setting *> settings_;
+  std::vector<ControlRule *> rules_;
+  JsonDocument pendingDesired_;  // atributos de desired a limpiar tras una acción local
   String origin_ = ORIGIN_BOOT;  // quién hizo el último cambio (KEY_ORIGIN)
   unsigned long minGapMs_;
   unsigned long periodMs_;

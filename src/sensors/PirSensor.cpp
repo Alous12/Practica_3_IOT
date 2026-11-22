@@ -27,6 +27,7 @@ void PirSensor::begin() {
   startedMs_ = millis();
   ready_ = false;
   motion_ = false;
+  motionStarted_ = false;
   rawLevel_ = false;
   rawSinceMs_ = startedMs_;
   detections_ = 0;
@@ -34,6 +35,7 @@ void PirSensor::begin() {
 }
 
 bool PirSensor::update(unsigned long nowMs) {
+  motionStarted_ = false;
   bool becameReady = false;
   if (!ready_) {
     // Durante el calentamiento el módulo da pulsos falsos: no se lee ni se cuenta nada.
@@ -57,6 +59,7 @@ bool PirSensor::update(unsigned long nowMs) {
 
   motion_ = level;
   if (motion_) {  // flanco de subida = una detección nueva
+    motionStarted_ = true;
     detections_++;
     // Hora real si TimeSync (capa de red) ya sincronizó NTP; si no, 0 = sin hora.
     const time_t epoch = time(nullptr);

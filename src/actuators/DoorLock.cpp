@@ -56,21 +56,30 @@ void DoorLock::report(JsonObject reported) const {
 }
 
 void DoorLock::moveTo(bool closed) {
+  if (positioned_ && closed_ == closed) return;
   if (!servo_.attached()) {
     servo_.attach(pin_, SERVO_MIN_US, SERVO_MAX_US);
   }
   servo_.write(closed ? closedAngle_ : openAngle_);
   closed_ = closed;
+  positioned_ = true;
   moving_ = true;
   moveStartedMs_ = millis();
   Serial.printf("[Puerta] %s\n", closed ? "Cerrando" : "Abriendo");
 }
 
 void DoorLock::calibrate(int angle) {
+  positioned_ = false;  // la calibracion libre invalida la posicion logica previa
   if (!servo_.attached()) {
     servo_.attach(pin_, SERVO_MIN_US, SERVO_MAX_US);
   }
   servo_.write(angle < 0 ? 0 : (angle > 180 ? 180 : angle));
   moving_ = true;  // loop() lo suelta tras settleMs_, igual que un movimiento normal
   moveStartedMs_ = millis();
+}
+
+bool DoorLock::close() {
+  if (positioned_ && closed_) return false;
+  moveTo(true);
+  return true;
 }
