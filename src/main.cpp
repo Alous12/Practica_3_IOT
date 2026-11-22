@@ -10,6 +10,13 @@
 #include "config.h"
 #include "sensors/PirSensor.h"
 #include "rules/AutoLockRule.h"
+#if __has_include("actuators/Buzzer.h")
+#include "actuators/Buzzer.h"
+#include "rules/AlarmRule.h"
+#define FIRMWARE_HAS_BUZZER 1
+#else
+#define FIRMWARE_HAS_BUZZER 0
+#endif
 #include "settings/IntSetting.h"
 #include "settings/OperatingMode.h"
 
@@ -92,6 +99,10 @@ IntSetting windowMinutes(KEY_WINDOW_MIN, DEFAULT_WINDOW_MIN,
                          WINDOW_MINUTES_MIN, WINDOW_MINUTES_MAX);
 SmartObject smartObject(channel, REPORT_MIN_GAP_MS, REPORT_PERIOD_MS);
 AutoLockRule autoLock(pir, door);
+#if FIRMWARE_HAS_BUZZER
+// Alejandro crea y registra `buzzer` arriba, junto a los otros actuadores.
+AlarmRule alarmRule(pir, buzzer);
+#endif
 }
 
 void setup() {
@@ -104,6 +115,9 @@ void setup() {
   smartObject.addSetting(&maxDetections);
   smartObject.addSetting(&windowMinutes);
   smartObject.addRule(&autoLock);
+#if FIRMWARE_HAS_BUZZER
+  smartObject.addRule(&alarmRule);
+#endif
   smartObject.begin();
 #if FIRMWARE_LOCAL_TEST
   Serial.println("[LOCAL] Sin AWS ni Alexa. a=abrir; c=cerrar. PIR: esperar 60 s.");
