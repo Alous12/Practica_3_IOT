@@ -1,3 +1,5 @@
 # Dependencias que se empaquetan en el .zip de la Lambda.
 # boto3/botocore ya vienen en el runtime de Python de Lambda: NO se empaquetan.
 ask-sdk-core==1.19.0
+# botocore (incluido en Lambda) exige python-dateutil < 3: no empaquetar una versión incompatible.
+python-dateutil>=2.8.2,<3.0.0

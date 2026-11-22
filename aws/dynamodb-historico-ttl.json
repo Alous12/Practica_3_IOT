@@ -1,0 +1,4 @@
+{
+  "TableName": "vigilante_historico",
+  "TimeToLiveSpecification": {"Enabled": true, "AttributeName": "expira"}
+}

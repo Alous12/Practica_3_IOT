@@ -107,6 +107,16 @@ def test_cambio_de_modo_sin_confirmar_queda_pendiente():
     assert "cambio pendiente al modo bloqueo" in h.say("11_consultar_modo.json")
 
 
+def test_modo_bloqueo_por_voz_tambien_cierra_la_puerta(h):
+    """"activa el modo bloqueo": igual que el bloqueo de la Nube, deja la puerta cerrada."""
+    text = h.set_mode("bloqueo")
+    assert desired(h) == {"modo": "bloqueo", "puerta": "cerrada", "origen": "voz"}
+    assert "aún no lo confirmó" not in text  # se esperó y se confirmó el modo
+    assert reported(h)["modo"] == "bloqueo"
+    assert reported(h)["puerta"] == "cerrada"
+    assert reported(h)["origen"] == "voz"
+
+
 # ---------- ConsultarModoIntent ----------
 
 @pytest.mark.parametrize("mode, spoken", [

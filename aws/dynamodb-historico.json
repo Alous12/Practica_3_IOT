@@ -1,0 +1,14 @@
+{
+  "TableName": "vigilante_historico",
+  "AttributeDefinitions": [
+    {"AttributeName": "thingName", "AttributeType": "S"},
+    {"AttributeName": "tipo_ts", "AttributeType": "S"}
+  ],
+  "KeySchema": [
+    {"AttributeName": "thingName", "KeyType": "HASH"},
+    {"AttributeName": "tipo_ts", "KeyType": "RANGE"}
+  ],
+  "BillingMode": "PAY_PER_REQUEST",
+  "TableClass": "STANDARD",
+  "Tags": [{"Key": "proyecto", "Value": "vigilante-inteligente"}]
+}
