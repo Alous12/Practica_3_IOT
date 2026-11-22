@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Optional
 
 from .config import (
+    KEY_ALARM,
     KEY_DETECTIONS,
     KEY_DOOR,
     KEY_LAST_DETECTION,
@@ -81,6 +82,21 @@ class DeviceState:
     @property
     def door_pending(self) -> bool:
         return self.is_pending(KEY_DOOR)
+
+    # --- Alarma (buzzer) ---
+
+    @property
+    def alarm(self) -> Optional[str]:
+        """"encendida" o "apagada"; None si el firmware aún no la reporta."""
+        return self.reported_value(KEY_ALARM)
+
+    @property
+    def desired_alarm(self) -> Optional[str]:
+        return self.desired_value(KEY_ALARM)
+
+    @property
+    def alarm_pending(self) -> bool:
+        return self.is_pending(KEY_ALARM)
 
     # --- PIR (sensor) ---
 

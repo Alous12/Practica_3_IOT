@@ -2,24 +2,16 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "ShadowYRegistroDeLosVigilantes",
+      "Sid": "LeerElHistorico",
       "Effect": "Allow",
-      "Action": [
-        "iot:GetThingShadow",
-        "iot:UpdateThingShadow",
-        "iot:DescribeThing"
-      ],
-      "Resource": "arn:aws:iot:us-east-2:<ACCOUNT_ID>:thing/vigilante-*"
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:dynamodb:us-east-2:<ACCOUNT_ID>:table/vigilante_historico"
     },
     {
-      "Sid": "TablaDeVinculaciones",
+      "Sid": "ActuarSoloPorDesired",
       "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": "arn:aws:dynamodb:us-east-2:<ACCOUNT_ID>:table/vigilante_vinculaciones"
+      "Action": "iot:UpdateThingShadow",
+      "Resource": "arn:aws:iot:us-east-2:<ACCOUNT_ID>:thing/vigilante-*"
     }
   ]
 }

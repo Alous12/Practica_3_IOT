@@ -69,6 +69,35 @@ def test_modo_ya_aplicado_no_escribe(h):
     assert "desired" not in h.shadow_state()
 
 
+def test_pasar_a_bloqueo_cierra_la_puerta_en_el_mismo_desired(h):
+    """Igual que vigilante-logica: bloqueo lleva "puerta": "cerrada" junto al modo."""
+    text = h.set_mode("bloqueo")                       # el fixture deja la puerta abierta
+    assert "cambié al modo bloqueo" in text
+    assert "También envié la orden de cerrar la puerta" in text
+    assert desired(h) == {"modo": "bloqueo", "puerta": "cerrada", "origen": "voz"}
+    assert reported(h)["puerta"] == "cerrada"
+
+
+def test_pasar_a_bloqueo_con_la_puerta_cerrada_no_lo_menciona(h):
+    h.data.set_reported(THING, puerta="cerrada")
+    text = h.set_mode("bloqueo")
+    assert "cerrar la puerta" not in text
+    assert desired(h)["puerta"] == "cerrada"
+
+
+def test_pasar_a_automatico_no_toca_la_puerta(h):
+    h.set_mode("automatico")
+    assert "puerta" not in desired(h)
+
+
+def test_bloqueo_sin_confirmar_deja_pendiente_tambien_la_puerta():
+    h = Harness(device_online=False)
+    h.say("02_vincular.json")
+    h.data.set_reported(THING, modo="manual", puerta="abierta")
+    assert "aún no lo confirmó" in h.set_mode("bloqueo")
+    assert "orden pendiente para dejarla cerrada" in h.say("07_estado_puerta.json")
+
+
 def test_cambio_de_modo_sin_confirmar_queda_pendiente():
     h = Harness(device_online=False)
     h.say("02_vincular.json")

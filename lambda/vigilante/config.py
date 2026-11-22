@@ -11,6 +11,11 @@ KEY_SENSOR_READY = "sensor_listo"
 DOOR_OPEN = "abierta"
 DOOR_CLOSED = "cerrada"
 
+# Alarma (buzzer): reported lo escribe el ESP32; desired, la skill y vigilante-logica.
+KEY_ALARM = "alarma"
+ALARM_ON = "encendida"
+ALARM_OFF = "apagada"
+
 # Modo de operación y parámetros (desired los escribe la skill; reported, el ESP32).
 KEY_MODE = "modo"
 KEY_MAX_DETECTIONS = "max_detecciones"

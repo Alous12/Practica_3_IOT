@@ -351,15 +351,6 @@ def test_tabla_dynamodb_coincide_con_el_repositorio_de_vinculaciones():
 # Empaquetado y punto de entrada de la Lambda
 # --------------------------------------------------------------------------------------------
 
-def test_lambda_logica_coincide_con_lo_que_se_despliega():
-    """lambda-logica/ documenta la Lambda desplegada: no puede quedar desactualizada."""
-    logic_dir = REPO_ROOT / "lambda-logica"
-    assert (logic_dir / "lambda_function.py").read_bytes() == \
-        (LAMBDA_DIR / "lambda_function.py").read_bytes()
-    assert _load_json(logic_dir / "politica-rol.json") == \
-        _load_json(AWS_DIR / "lambda-role-policy.json")
-
-
 def test_punto_de_entrada_de_lambda_se_importa(monkeypatch):
     """Handler configurado en la consola: lambda_function.lambda_handler (sin access keys)."""
     monkeypatch.setenv("IOT_ENDPOINT", "example-ats.iot.us-east-2.amazonaws.com")

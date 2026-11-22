@@ -2,12 +2,14 @@
 from typing import Optional
 
 from .config import (
+    ALARM_ON,
     MAX_DETECTIONS_MAX,
     MAX_DETECTIONS_MIN,
     MODE_AUTO,
     MODE_LOCKDOWN,
     MODE_MANUAL,
     ORIGIN_BOOT,
+    ORIGIN_CLOUD,
     ORIGIN_EDGE,
     WINDOW_MINUTES_MAX,
     WINDOW_MINUTES_MIN,
@@ -85,6 +87,40 @@ def window_pending(value: int) -> str:
             "Se aplicará en cuanto se conecte.".format(minutes(value)))
 
 
+def alarm_changed(alarm: str) -> str:
+    return "Listo, la alarma quedó {}.".format(alarm)
+
+
+def alarm_already(alarm: str) -> str:
+    return "La alarma ya está {}.".format(alarm)
+
+
+def alarm_pending(verb: str) -> str:
+    return ("Envié la orden de {} la alarma, pero el dispositivo aún no la confirmó. "
+            "Se aplicará en cuanto se conecte.".format(verb))
+
+
+def alarm_status(alarm: str, origin: Optional[str]) -> str:
+    """Estado de la alarma y, si suena por una regla, quién la activó."""
+    if alarm != ALARM_ON:
+        return "La alarma está apagada."
+    text = "La alarma está sonando."
+    if origin == ORIGIN_EDGE:
+        text += " La activó el sistema automáticamente al detectar movimiento."
+    elif origin == ORIGIN_CLOUD:
+        text += (" La activó la nube al superar el máximo de detecciones "
+                 "dentro de la ventana configurada.")
+    return text
+
+
+def alarm_pending_note(alarm: str) -> str:
+    return " Hay una orden pendiente para dejarla {}.".format(alarm)
+
+
+MANUAL_ALARM_OFF = " También envié la orden de apagar la alarma."
+LOCKDOWN_DOOR_CLOSED = " También envié la orden de cerrar la puerta."
+
+
 def door_origin(door: Optional[str], origin: Optional[str]) -> str:
     """Explica quién dejó la puerta así, si no fue una orden de voz."""
     if origin == ORIGIN_EDGE and door == "cerrada":
@@ -122,7 +158,7 @@ def stale_warning(seconds_since_report: Optional[int], stale_after_s: int) -> st
 
 
 WELCOME_LINKED = ("Bienvenido a Vigilante Inteligente. Puedes preguntarme si hay movimiento, "
-                  "pedirme que cierre o abra la puerta, preguntar si la puerta está cerrada "
+                  "pedirme que cierre o abra la puerta, encender o apagar la alarma, "
                   "o cambiar el modo de operación. ¿Qué deseas hacer?")
 WELCOME_UNLINKED = ("Bienvenido a Vigilante Inteligente. Aún no tienes un dispositivo vinculado. "
                     "Di: vincula mi dispositivo con el código, seguido de los seis dígitos que "
@@ -131,6 +167,7 @@ NOT_LINKED = ("Aún no tienes un dispositivo vinculado. Di: vincula mi dispositi
               "seguido de los seis dígitos que muestra tu dispositivo.")
 HELP = ("Puedes decir: vincula mi dispositivo con el código uno dos tres cuatro cinco seis; "
         "hay movimiento; cierra la puerta; abre la puerta; la puerta está cerrada; "
+        "enciende la alarma; apaga la alarma; está sonando la alarma; "
         "cambia el modo a manual, automático o bloqueo; en qué modo está; "
         "cambia el máximo de detecciones a cinco; cambia la ventana a diez minutos; "
         "cuáles son los parámetros; qué dispositivo tengo vinculado; "
@@ -144,6 +181,8 @@ MAX_DETECTIONS_OUT_OF_RANGE = ("El máximo de detecciones debe ser un número en
                                .format(MAX_DETECTIONS_MIN, MAX_DETECTIONS_MAX))
 WINDOW_OUT_OF_RANGE = ("La ventana debe ser un número de minutos entre {} y {}."
                        .format(WINDOW_MINUTES_MIN, WINDOW_MINUTES_MAX))
+NO_ALARM = ("Tu dispositivo todavía no informó el estado de la alarma. "
+            "Verifica que esté encendido y con el firmware actualizado.")
 NO_MODE = ("Tu dispositivo todavía no informó su modo de operación. "
            "Verifica que esté encendido y con el firmware actualizado.")
 REPROMPT = "¿Algo más?"
