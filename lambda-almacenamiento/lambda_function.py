@@ -47,6 +47,7 @@ FIELDS = {
     "max_detecciones": int_between(1, 20),
     "ventana_min": int_between(1, 120),
     "origen": one_of("voz", "edge", "nube", "inicio"),
+    "alarma": one_of("encendida", "apagada"),
     "uptime_s": int_between(0, 10_000_000_000),
     "rssi": int_between(-120, 0),
 }
@@ -112,7 +113,7 @@ def event_records(message):
     now = clean(message.get("actual"))
     origin = now.get("origen")
     records = []
-    for key in ("puerta", "modo"):
+    for key in ("puerta", "modo", "alarma"):
         if key in now and key in before and now[key] != before[key]:
             record = base_record(thing, key, epoch, millis=False)
             record.update({key: now[key], "anterior": before[key]})

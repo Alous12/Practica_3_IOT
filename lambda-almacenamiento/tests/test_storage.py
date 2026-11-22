@@ -74,6 +74,80 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             storage.lambda_handler(self.reading, None)
 
+    def test_alarm_example_records_alarm_and_detection(self):
+        event = {
+            "tipo": "cambio", "thingName": "vigilante-123456", "ts": 1795169742,
+            "anterior": {"movimiento": False, "detecciones": 4,
+                         "puerta": "cerrada", "modo": "bloqueo", "alarma": "apagada"},
+            "actual": {"movimiento": True, "detecciones": 5,
+                       "puerta": "cerrada", "modo": "bloqueo", "alarma": "encendida",
+                       "origen": "edge"},
+        }
+        result = storage.lambda_handler(event, None)
+        self.assertEqual(result["claves"], ["alarma#2026-11-20T10:15:42Z",
+                                          "deteccion#2026-11-20T10:15:42Z"])
+        self.assertEqual(result["guardados"], 2)
+        alarm = self.db.put_item.call_args_list[0].kwargs["Item"]
+        self.assertEqual(alarm["alarma"], {"S": "encendida"})
+        self.assertEqual(alarm["anterior"], {"S": "apagada"})
+        self.assertEqual(alarm["origen"], {"S": "edge"})
+
+    def test_alarm_turn_off_retains_each_origin(self):
+        for origin in ("voz", "edge", "nube"):
+            with self.subTest(origin=origin):
+                self.db.reset_mock()
+                event = {
+                    "tipo": "cambio", "thingName": "vigilante-123456", "ts": 1795169742,
+                    "anterior": {**self.state, "alarma": "encendida"},
+                    "actual": {**self.state, "alarma": "apagada", "origen": origin},
+                }
+                result = storage.lambda_handler(event, None)
+                self.assertEqual(result["guardados"], 1)
+                item = self.db.put_item.call_args.kwargs["Item"]
+                self.assertEqual(item["tipo"], {"S": "alarma"})
+                self.assertEqual(item["alarma"], {"S": "apagada"})
+                self.assertEqual(item["anterior"], {"S": "encendida"})
+                self.assertEqual(item["origen"], {"S": origin})
+
+    def test_invalid_alarm_is_discarded_without_writes(self):
+        reading = {**self.reading, "reported": {**self.state, "alarma": "rota"}}
+        event = {
+            "tipo": "cambio", "thingName": "vigilante-123456", "ts": 1795169742,
+            "anterior": {**self.state, "alarma": "apagada"},
+            "actual": {**self.state, "alarma": "rota"},
+        }
+        for message in (reading, event):
+            with self.subTest(tipo=message["tipo"]):
+                result = storage.lambda_handler(message, None)
+                self.assertTrue(result["descartado"])
+                self.assertEqual(result["guardados"], 0)
+                self.assertIn("alarma", result["motivo"])
+        self.db.put_item.assert_not_called()
+
+    def test_alarm_is_optional_for_older_firmware(self):
+        result = storage.lambda_handler(self.reading, None)
+        self.assertFalse(result["descartado"])
+        self.assertEqual(result["guardados"], 1)
+        self.assertNotIn("alarma", self.db.put_item.call_args.kwargs["Item"])
+
+    def test_unchanged_alarm_does_not_create_event(self):
+        state = {**self.state, "alarma": "encendida"}
+        event = {
+            "tipo": "cambio", "thingName": "vigilante-123456", "ts": 1795169742,
+            "anterior": state, "actual": dict(state),
+        }
+        result = storage.lambda_handler(event, None)
+        self.assertFalse(result["descartado"])
+        self.assertEqual(result["guardados"], 0)
+        self.db.put_item.assert_not_called()
+
+    def test_reading_preserves_valid_alarm_state(self):
+        for alarm in ("encendida", "apagada"):
+            with self.subTest(alarma=alarm):
+                message = {**self.reading, "reported": {**self.state, "alarma": alarm}}
+                self.assertEqual(storage.lambda_handler(message, None)["guardados"], 1)
+                self.assertEqual(self.db.put_item.call_args.kwargs["Item"]["alarma"], {"S": alarm})
+
 
 if __name__ == "__main__":
     unittest.main()
