@@ -69,6 +69,35 @@ def test_modo_ya_aplicado_no_escribe(h):
     assert "desired" not in h.shadow_state()
 
 
+def test_manual_ya_aplicado_con_la_alarma_apagada_no_escribe(h):
+    h.data.set_reported(THING, alarma="apagada")
+    text = h.set_mode("manual")
+    assert text.startswith("El dispositivo ya está en modo manual.")
+    assert "alarma" not in text
+    assert "desired" not in h.shadow_state()
+
+
+def test_manual_ya_aplicado_con_la_alarma_sonando_la_apaga(h):
+    """"activa el modo manual" estando ya en manual también silencia la alarma."""
+    h.data.set_reported(THING, alarma="encendida", origen="edge")
+    text = h.set_mode("manual")
+    assert "ya está en modo manual" in text
+    assert "Apagué la alarma" in text
+    assert desired(h) == {"alarma": "apagada", "origen": "voz"}
+    assert reported(h)["alarma"] == "apagada"
+    assert reported(h)["modo"] == "manual"
+
+
+def test_manual_ya_aplicado_con_la_alarma_sin_confirmar_queda_pendiente():
+    h = Harness(device_online=False)
+    h.say("02_vincular.json")
+    h.data.set_reported(THING, modo="manual", alarma="encendida")
+    text = h.set_mode("manual")
+    assert "ya está en modo manual" in text
+    assert "aún no la confirmó" in text
+    assert h.shadow_state()["desired"] == {"alarma": "apagada", "origen": "voz"}
+
+
 def test_pasar_a_bloqueo_cierra_la_puerta_en_el_mismo_desired(h):
     """Igual que vigilante-logica: bloqueo lleva "puerta": "cerrada" junto al modo."""
     text = h.set_mode("bloqueo")                       # el fixture deja la puerta abierta

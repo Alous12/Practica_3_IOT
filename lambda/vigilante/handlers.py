@@ -416,13 +416,18 @@ class SettingCommandHandler(LinkedDeviceHandler):
         """Frase sobre esos atributos extra (por defecto, ninguna)."""
         return ""
 
+    def when_already(self, thing: str, value: Any, current) -> str:
+        """Acción opcional si el ajuste ya tenía ese valor; devuelve una frase extra."""
+        return ""
+
     def handle_linked(self, thing: str, handler_input: HandlerInput) -> str:
         value, problem = self.parse(handler_input)
         if problem:
             return problem
         current = self._gateway.get_state(thing)
         if current.reported_value(self.key) == value and not current.is_pending(self.key):
-            return self.already(value) + self._stale(current)
+            return (self.already(value) + self.when_already(thing, value, current)
+                    + self._stale(current))
 
         desired = {self.key: value}
         desired.update(self.extra_desired(value))
@@ -472,6 +477,17 @@ class ChangeModeHandler(SettingCommandHandler):
         if value == MODE_LOCKDOWN and current.door == DOOR_OPEN:
             return speech.LOCKDOWN_DOOR_CLOSED
         return ""
+
+    def when_already(self, thing: str, value: Any, current) -> str:
+        """Pedir manual estando ya en manual igual apaga la alarma si está sonando."""
+        if value != MODE_MANUAL or current.alarm != ALARM_ON:
+            return ""
+        self._gateway.request_desired(thing, **{KEY_ALARM: ALARM_OFF})
+        confirmed, latency_ms = self._gateway.wait_for(
+            thing, KEY_ALARM, ALARM_OFF, self._settings.confirm_timeout_s)
+        _log_event("comando_alarma", thing=thing, objetivo=ALARM_OFF, motivo="modo_manual",
+                   confirmado=confirmed, latencia_ms=latency_ms)
+        return speech.MANUAL_ALREADY_ALARM_OFF if confirmed else speech.MANUAL_ALREADY_ALARM_PENDING
 
 
 class ChangeMaxDetectionsHandler(SettingCommandHandler):

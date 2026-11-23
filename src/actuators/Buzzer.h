@@ -1,8 +1,16 @@
 #pragma once
 
+// BUZZER_ACTIVE decide los miembros de la clase: debe estar definido aquí, antes de la
+// declaración, para que Buzzer tenga el mismo tamaño en todos los archivos (ODR).
+#include "config.h"
+
 #include <ESP32PWM.h>
 
 #include "core/Actuator.h"
+
+#ifndef BUZZER_ACTIVE
+#error "BUZZER_ACTIVE debe definirse en include/config.h (1 = activo, 0 = pasivo)."
+#endif
 
 /**
  * Alarma con buzzer (segundo actuador).
@@ -47,7 +55,7 @@ class Buzzer : public Actuator {
   bool on_ = false;          // estado lógico (lo que se reporta)
   bool sounding_ = false;    // fase del pitido intermitente (pin en alto o tono activo)
   unsigned long onSinceMs_ = 0;
-#if !BUZZER_ACTIVE
-  ESP32PWM pwm_;
+#if BUZZER_ACTIVE == 0
+  ESP32PWM pwm_;  // solo el buzzer pasivo necesita un canal LEDC
 #endif
 };

@@ -118,6 +118,9 @@ def alarm_pending_note(alarm: str) -> str:
 
 
 MANUAL_ALARM_OFF = " También envié la orden de apagar la alarma."
+MANUAL_ALREADY_ALARM_OFF = " Apagué la alarma."
+MANUAL_ALREADY_ALARM_PENDING = (" Envié la orden de apagar la alarma, pero el dispositivo aún no "
+                                "la confirmó.")
 LOCKDOWN_DOOR_CLOSED = " También envié la orden de cerrar la puerta."
 
 

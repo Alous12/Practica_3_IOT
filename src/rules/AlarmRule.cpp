@@ -1,8 +1,7 @@
 #include "rules/AlarmRule.h"
 
-// Buzzer y sus constantes son el aporte de Alejandro. Hasta que se integren,
-// el firmware existente sigue compilando; las pruebas usan un doble de Buzzer.
-#if __has_include("actuators/Buzzer.h")
+// En las pruebas (test/luciana/run.ps1) "actuators/Buzzer.h" resuelve al doble de
+// test/luciana/alarm_stubs/, que se incluye antes que src/.
 #include <Arduino.h>
 #include <cstring>
 
@@ -34,4 +33,3 @@ void AlarmRule::clearDesired(JsonObject desired) const {
   desired[KEY_ALARM] = nullptr;
   desired[KEY_ORIGIN] = nullptr;
 }
-#endif
