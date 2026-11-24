@@ -1,6 +1,6 @@
-# Estimaciones del borrador y verificación por completar
+# Estimaciones de pruebas pendientes y verificación
 
-Actualizado el 24/11/2026 por Luciana. La rama de trabajo es `lu`; la base del informe es `19a17cd`. Este anexo permite completar el borrador sin confundir observación, configuración prevista y supuestos.
+Actualizado el 24/11/2026 por Luciana. Este anexo acompaña la versión final del informe y separa los resultados observados, las estimaciones para pruebas no ejecutadas y las verificaciones pendientes de despliegue.
 
 **M** = dato observado con fuente conservada. **E** = escenario orientativo solicitado para campos sin medición. **Código** = comportamiento previsto y probado con dobles; no es despliegue verificado. Una E no permite aprobar un RNF, no es un intervalo estadístico y no crea un promedio/máximo experimental. No se fabrican capturas, logs, CSV de ensayos ni resultados individuales.
 
@@ -8,29 +8,29 @@ Actualizado el 24/11/2026 por Luciana. La rama de trabajo es `lu`; la base del i
 
 | Prueba | Resultado M | Evidencia |
 |---|---|---|
-| P-A1, parte de estabilidad | Captura continua 1800 s; 132 publicaciones; sin indicios de reinicio/retroceso de uptime | [Log](lu-sesion-20261124/lu-monitor-serie.txt), [resumen calculado](lu-sesion-20261124/lu-resultado-integridad.json) |
-| LU-04 | 132 lecturas guardadas / 132 publicaciones, 100 % observado | [Exportación 186 filas](lu-sesion-20261124/lu-historico-lecturas-exportado.csv), [cruce 132 filas](lu-sesion-20261124/lu-cruce-publicaciones-historico.csv) |
-| LU-05, tramo AWS | 17 intervalos; media 160,824 ms; máximo 378 ms | [Muestras](lu-sesion-20261124/lu-cloudwatch-tramo-almacenamiento.csv) |
-| LU-07, apagado Edge lógico | 7 ciclos, media 29,997 s; mínimo 29,996 y máximo 29,998 s | [Todos los ciclos](lu-sesion-20261124/lu-alarmas-serie.csv) |
-| G-01, latidos | 19 intervalos de 59,995–60,001 s | [Intervalos](lu-sesion-20261124/lu-latidos-serie.csv) |
-| §5.3 | Cuatro muestras completas; 132 lecturas de cohorte | [Muestras](lu-sesion-20261124/lu-muestras-dynamodb.csv) |
+| P-A1, parte de estabilidad | Captura continua 1800 s; 132 publicaciones; sin indicios de reinicio/retroceso de uptime | [Log](lu-monitor-serie.txt), [resumen calculado](lu-resumen-serial.json) |
+| LU-04 | 132 lecturas guardadas / 132 publicaciones, 100 % observado | [Exportación 186 filas](lu-historico-lecturas-exportado.csv), [cruce 132 filas](lu-cruce-publicaciones-historico.csv) |
+| LU-05, tramo AWS | 17 intervalos; media 160,824 ms; máximo 378 ms | [Muestras](lu-cloudwatch-tramo-almacenamiento.csv) |
+| LU-07, apagado Edge lógico | 7 ciclos, media 29,997 s; mínimo 29,996 y máximo 29,998 s | [Todos los ciclos](lu-alarmas-serie.csv) |
+| G-01, latidos | 19 intervalos de 59,995–60,001 s | [Intervalos](lu-latidos-serie.csv) |
+| §5.3 | Cuatro muestras completas; 132 lecturas de cohorte | [Muestras](lu-muestras-dynamodb.csv) |
 
-La observación serie del temporizador y del latido tiene resolución de recepción del PC; no es un cronómetro del sonido o del movimiento. La fuente original y la reproducción están en [README de la sesión](lu-sesion-20261124/README.md).
+La observación serie del temporizador y del latido tiene resolución de recepción del PC; no es un cronómetro del sonido o del movimiento. Se conservan el [registro serie](lu-monitor-serie.txt), el [texto original de CloudWatch](lu-cloudwatch-texto-original.txt) y los archivos de cálculo citados en la tabla.
 
 ## Escenarios E utilizados en el informe
 
-| Prueba | Escenario E para orientar el borrador | Fundamento y supuestos | Qué falta para sustituirlo por M |
+| Prueba | Escenario E orientativo, no medido | Fundamento y supuestos | Ensayo necesario para obtener M |
 |---|---|---|---|
-| P-A1 completo | El registro apoya estabilidad, pero no permite estimar falsos positivos o respuesta mecánica | Se observó continuidad y actividad lógica, sin video ni pasadas controladas | Ejecutar el guion físico completo; anotar pilas, montaje, respuesta y sonido |
+| P-A1 completo | El registro apoya estabilidad, pero no permite estimar falsos positivos o respuesta mecánica | Se observó continuidad y actividad lógica, sin pasadas controladas | Ejecutar el guion físico completo; anotar pilas, montaje, respuesta y sonido |
 | LU-05 extremo a extremo | **0,2–1,9 s** en red estable | Sumar al tramo AWS observado de 0,111–0,378 s un supuesto de transporte de 0,1–1,5 s; redondeo de escenario. Se desconoce el transporte real | Diez emisiones con hora UTC de inicio acreditada y log posterior a escritura correspondiente; medir máximo |
-| N-01 | **0,4–5,5 s** detección → bloqueo en un escenario normal | Presupuesto supuesto: reporte/red 0,1–1,5 s + evaluación/consulta/ejecución 0,2–2 s + delta/aplicación 0,1–2 s. No está calibrado con vigilante-logica | Cinco ensayos en automático, umbral 3 y ventana 1 min; esperar 70 s entre ensayos según §4.7 y restaurar ventana 10 al terminar; video, CloudWatch y Shadow con origen nube |
+| N-01 | **0,4–5,5 s** detección → bloqueo en un escenario normal | Presupuesto supuesto: reporte/red 0,1–1,5 s + evaluación/consulta/ejecución 0,2–2 s + delta/aplicación 0,1–2 s. No está calibrado con vigilante-logica | Cinco ensayos en automático, umbral 3 y ventana 1 min; esperar 70 s entre ensayos según §4.7 y restaurar ventana 10 al terminar; conservar logs de CloudWatch y Shadow con origen nube |
 | N-02 | Resultado esperado **sin_accion**; decisión **0,3–2 s** | Dos detecciones y umbral 3; comportamiento probado con dobles. El tiempo es supuesto | Ensayo integrado, log real con conteo 2 y prueba de ausencia de bloqueo |
 | S-01, S-05, S-07, S-09, S-12 | **0,3–2 s** | Consultas o rechazo de rango; presupuesto de ida/vuelta y backend, sin activación física. Cold start/red pueden excederlo | Capturar cada paso con JSON de entrada/salida y medir desde envío |
 | S-02/03/04/06/08/10/11/13 | **0,8–4 s** | Presupuesto general de diálogo y, cuando corresponda, modificación/confirmación. S-03 es un rechazo; se conserva un escenario amplio, no una comparación de rendimiento | Capturas reales y medida de cada paso; S-11/S-13 con condiciones iniciales correctas |
-| V-01 puerta y alarma | **0,8–4 s** | Escenario de voz/simulador + Lambda + Shadow. Puede superar el RNF de 3 s, por lo que no se da por cumplido | Diez órdenes de cada actuador, video y logs de confirmación. No empezar a contar después de la respuesta |
-| LU-06 | Reacción lógica **0,05–0,5 s** sin bloqueos | Filtro PIR de 50 ms y evaluación local. El desplazamiento mecánico, la acústica y TLS/MQTT pueden añadir tiempo | Diez videos por efecto; condición inicial puerta abierta; medir hasta movimiento/primer pitido |
+| V-01 puerta y alarma | **0,8–4 s** | Escenario de voz/simulador + Lambda + Shadow. Puede superar el RNF de 3 s, por lo que no se da por cumplido | Diez órdenes de cada actuador y logs de confirmación. No empezar a contar después de la respuesta |
+| LU-06 | Reacción lógica **0,05–0,5 s** sin bloqueos | Filtro PIR de 50 ms y evaluación local. El desplazamiento mecánico, la acústica y TLS/MQTT pueden añadir tiempo | Diez mediciones por efecto con las marcas de tiempo del monitor serie; condición inicial puerta abierta; medir hasta movimiento/primer pitido |
 | LU-07 voz/Nube | Aproximadamente **30 s** si no se apaga antes por orden | `ALARM_MAX_MS`, sin renovación del plazo mientras ya está encendida; no mide la respuesta física | Encendidos por cada origen y su apagado real; comparar duración y origen |
-| LU-08 offline | Cierre/alarma locales y apagado cercano a **30 s** | Las reglas se evalúan antes de la comprobación de red; pruebas con transporte simulado | Video con hotspot apagado, log, reconexión y Shadow final |
+| LU-08 offline | Cierre/alarma locales y apagado cercano a **30 s** | Las reglas se evalúan antes de la comprobación de red; pruebas con transporte simulado | Ensayo con hotspot apagado; conservar monitor serie, reconexión y Shadow final |
 | G-01 evento | **0,05–1 s** en red estable | Filtro, publicación por cambio y transporte supuesto; confirmaciones tienen prioridad | Hora del evento y recepción MQTT sincronizadas; los latidos medidos no prueban este retardo |
 | G-02 reconexión | **5–30 s** tras restaurar una red estable | Escenario supuesto con reintentos de conexión; no deducido de un corte de esta sesión | Tres cortes de 60 s; anotar restauración, conexión, sincronización y orden pendiente |
 | G-03 precisión | Referencia **98,3 % y 0 falsos positivos**, solo si se reproduce P3 | Antecedente de P3 con el mismo sensor; el buzzer y montaje cambian, por eso no se adopta como resultado P4 | 20 pasadas a 1/2/3 m y 10 min sin presencia; sin denominador controlado no se estima precisión nueva |
@@ -43,7 +43,7 @@ Los intervalos E son supuestos de planificación y pueden excederse. No se obtie
 |---|---|---|
 | §3.2.1 | [Lecturas](lu-historico-lecturas-real.png), [eventos de alarma](lu-historico-alarmas-real.png), CSV de lecturas | Las tres reglas activas, SQL de eventos, claves/capacidad de tabla, TTL **habilitado** y atributo, Shadow P4, otros tipos de evento |
 | §3.3 | Modelo JSON versionado con 20 intents; pruebas automáticas previas | Lista real de los 20 intents y compilación correcta del modelo vigente |
-| §4.7 | Ningún log de bloqueo real conservado en esta sesión | CloudWatch `bloqueo_activado` y `sin_accion` de vigilante-logica, Shadow con origen nube y video |
+| §4.7 | Ningún log de bloqueo real conservado en esta sesión | CloudWatch `bloqueo_activado` y `sin_accion` de vigilante-logica y Shadow con origen nube |
 | S-01 a S-13 | Respuestas esperadas y pruebas con dobles | Trece capturas con JSON Input/Output y las condiciones del guion |
 | LU-05 | Texto original y tabla de 17 intervalos AWS | Emisiones UTC sincronizadas para el tramo completo |
 
@@ -68,10 +68,10 @@ Conservar las capturas originales y ocultar identificadores de cuenta/Skill ID a
 
 La ubicación de la arquitectura corresponde a [AWS Lambda: configuración de arquitectura](https://docs.aws.amazon.com/lambda/latest/dg/foundation-arch.html). La activación de TTL es una configuración de la tabla independiente del contenido del ítem: [AWS DynamoDB: habilitar TTL](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/time-to-live-ttl-how-to.html). Documentación consultada el 24/11/2026; estas referencias no verifican la cuenta del equipo.
 
-## Orden de cierre de la entrega
+## Pruebas recomendadas para completar la validación
 
 1. Revisar lo ya medido en el informe y mantener el vínculo al CSV y al log.
-2. Priorizar un video de Edge/offline y las capturas de configuración: aportan evidencia que el histórico de lecturas no puede dar.
+2. Priorizar un ensayo Edge/offline y las capturas de configuración: aportan evidencia que el histórico de lecturas no puede dar.
 3. Ejecutar N-01/N-02 y el guion P4 de Alexa con tiempos y condiciones iniciales correctas.
 4. Completar LU-05 con un inicio acreditado, V-01 y G-02/G-03. Exportar los eventos para conteos por día/origen.
-5. Sustituir cada E por su resultado M, calcular promedio y máximo sobre muestras reales y actualizar el estado del RNF. Hasta entonces el informe es un borrador con resultados parciales, aunque las celdas tengan una estimación.
+5. Si se ejecutan estos ensayos, sustituir cada E por sus resultados M y calcular promedio y máximo únicamente sobre muestras reales. En esta versión final, los RNF sin medición permanecen identificados como pendientes de validar; las estimaciones no los aprueban.
