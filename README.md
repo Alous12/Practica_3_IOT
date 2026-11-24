@@ -2,7 +2,8 @@
 
 Objeto inteligente que vigila un objeto valioso con un **sensor PIR HC-SR501** y controla la **cerradura de la puerta con un servo SG90**. Se integra con **Alexa** a través de **AWS Lambda**, **Amazon DynamoDB** y el **Device Shadow de AWS IoT Core** (MQTT sobre TLS). Alexa nunca habla directamente con el dispositivo: todo pasa por el Shadow. Cada usuario de Alexa vincula su propio dispositivo con un código de 6 dígitos.
 
-- **Informe técnico:** [`docs/INFORME.md`](docs/INFORME.md)
+- **Informe técnico de la Práctica 4:** [`docs/INFORME_P4.md`](docs/INFORME_P4.md) (buzzer como alarma, reglas de AWS IoT, histórico en DynamoDB y lógica en el Edge y en la Nube)
+- **Informe técnico de la Práctica 3:** [`docs/INFORME.md`](docs/INFORME.md)
 - **Evidencias:** [`docs/anexos/`](docs/anexos/)
 
 | Integrante | Capa |
