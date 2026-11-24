@@ -1,0 +1,8 @@
+{
+  "ciclos_completos": 19,
+  "ciclos_edge_con_limpieza_y_apagado_edge": 7,
+  "media_logica_edge_s": 29.997,
+  "minimo_logico_edge_s": 29.996,
+  "maximo_logico_edge_s": 29.998,
+  "alcance": "Timestamps de recepcion serie del PC; duracion del estado logico. No mide sonido, primeros pitidos ni apagado sin red."
+}

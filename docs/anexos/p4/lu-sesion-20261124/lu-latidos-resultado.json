@@ -1,0 +1,6 @@
+{
+  "pares_observados": 19,
+  "minimo_s": 59.995,
+  "maximo_s": 60.001,
+  "alcance": "Pares consecutivos sin cambios de estado excepto uptime/RSSI, uptime creciente y sin eventos serie intermedios. No se seleccionan por el intervalo obtenido. No mide retardo evento a MQTT."
+}

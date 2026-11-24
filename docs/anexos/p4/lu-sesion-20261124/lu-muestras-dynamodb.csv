@@ -1,0 +1,5 @@
+thingName,tipo_ts,alarma,detecciones,epoch,expira,fecha,max_detecciones,modo,movimiento,origen,puerta,rssi,sensor_listo,tipo,ultima_deteccion,uptime_s,ventana_min
+vigilante-123456,lectura#2026-11-24T18:20:41.568Z,apagada,15,1795544441,1798136441,2026-11-24T18:20:41.568Z,2,bloqueo,false,voz,cerrada,'-60,true,lectura,1795544370,386,10
+vigilante-123456,lectura#2026-11-24T18:20:45.952Z,encendida,16,1795544445,1798136445,2026-11-24T18:20:45.952Z,2,bloqueo,true,edge,cerrada,'-62,true,lectura,1795544445,390,10
+vigilante-123456,lectura#2026-11-24T18:26:55.245Z,encendida,42,1795544815,1798136815,2026-11-24T18:26:55.245Z,2,bloqueo,true,edge,cerrada,'-77,true,lectura,1795544814,760,10
+vigilante-123456,lectura#2026-11-24T18:50:35.951Z,apagada,60,1795546235,1798138235,2026-11-24T18:50:35.951Z,2,bloqueo,false,edge,cerrada,'-77,true,lectura,1795546145,2180,10

@@ -31,23 +31,23 @@ El script C++ utiliza `.pio/libdeps/esp32dev/ArduinoJson/src` de forma predeterm
 
 - [x] Revisar los aportes independientes `informeRuben` (`f36d67a`) y `Rama_Ale` (`8162bc3`) sin fusionar sus ramas.
 - [x] La persona designada integra los tres aportes en `docs/INFORME_P4.md` después de los commits de cada integrante. Hecho el 24/11/2026; los archivos parciales se retiraron y quedan en el historial de git.
-- [ ] Exportación CSV real de `vigilante_historico`, con Thing y ventana UTC de prueba.
-- [ ] Conteos de integridad de una ventana de 30 min.
-- [ ] Diez muestras de latencia de almacenamiento con relojes comparables.
+- [x] Exportación real de 186 lecturas de `vigilante-123456`; 132 corresponden a la sesión. Archivos y procedencia en [lu-sesion-20261124/README.md](lu-sesion-20261124/README.md).
+- [x] LU-04: 132/132 publicaciones emparejadas, 100 % observado en 1800 s. Se comparan 12 atributos y multiplicidad, sin reutilizar claves.
+- [x] LU-05 parcial: 17 intervalos regla IoT → log posterior a PutItem, media 160,824 ms y máximo 378 ms.
+- [ ] LU-05 completo: diez emisiones UTC acreditadas → log posterior a PutItem. La recepción serie del PC no es un inicio de emisión sincronizado.
 - [ ] Diez muestras físicas de cierre Edge y diez de primer pitido.
 - [ ] Video de reglas con hotspot apagado, apagado de alarma a los 30 s y reconexión.
 - [ ] Captura de `alarma#` con valor anterior/origen y de la alarma inválida rechazada.
 - [x] Incorporar en la sección 5 la estimación de costo de Alejandro, identificada como estimación y condicionada a sus supuestos.
 - [x] Actualizar RF15 con los tres diseños textuales y consultas de Rubén, sin tratarlos como un tablero implementado ni como datos medidos.
-- [ ] Resultado físico P4 de estabilidad, voz y nube: las tablas respectivas de Alejandro/Rubén todavía están incompletas en las versiones revisadas.
+- [x] Seguimiento serie de 30 min: 0 indicios de reinicio y 0 retrocesos de uptime. LU-07: 7 apagados Edge lógicos de 29,996–29,998 s. G-01: 19 latidos de 59,995–60,001 s.
+- [x] Actualizar el informe de la rama lu con resultados M y escenarios E separados; conservar supuestos y capturas/verificación faltantes en [lu-estimaciones-y-verificacion.md](lu-estimaciones-y-verificacion.md).
+- [ ] Video y guion físico completo de P-A1; tiempos y capturas de voz y Nube, precisión PIR y reconexión siguen sin ensayo conservado.
 
-Los CSV `lu-mediciones-*.csv` son plantillas vacías, no resultados. No completar valores por estimación ni reutilizar las mediciones de P3 como nuevas de P4.
+Los CSV `lu-mediciones-*.csv` siguen siendo plantillas para ensayos sin completar; los resultados M están en `lu-sesion-20261124/`. A petición de la usuaria, el informe incluye escenarios E explícitamente etiquetados. No se introducen como muestras experimentales, no acreditan RNF y no se reutiliza P3 como resultado medido de P4.
 
-## Entrega independiente e integración posterior
+## Actualización de la rama lu
 
-1. Cada integrante conserva y entrega su archivo en su rama. Este aporte y sus anexos quedan únicamente en `lu`; revisar otras ramas no significa fusionarlas.
-2. Copiar de `docs/APORTE_LU_INFORME_P4.md` solo los contenidos de 1.2, 1.3, 2.2, 2.4c, 2.5b, 2.6, 2.9c, 3.1b y 5 en los títulos correspondientes.
-3. Agregar filas LU-01 a LU-09 a la única tabla del plan de pruebas; conservar las filas de Alejandro y Rubén.
-4. Incorporar el párrafo de conclusión, las tres recomendaciones y las filas del índice de anexos. No duplicar secciones completas de otros autores.
-5. Los enlaces del aporte están calculados desde `docs/`; al pegarlos en `docs/INFORME_P4.md` siguen funcionando.
-6. Sustituir estados pendientes solo cuando existan evidencias verificables. Abrir el Markdown en GitHub y comprobar los diagramas Mermaid y los enlaces antes de hacer la entrega.
+El informe ya fue unificado por la persona designada. Esta actualización edita `docs/INFORME_P4.md` en la rama `lu` y añade evidencias de Lu, sin fusionar otras ramas, hacer commits ni publicar cambios. El equipo puede revisar el diff y decidir cómo integrarlo.
+
+Las capturas reales de lecturas/alarma se adjuntaron. La activación de TTL, reglas desplegadas, LOCKDOWN, ZIP de skill, modelo compilado, binario instalado y arquitectura de Lambda siguen sujetos a verificación; no se pueden acreditar con valores estimados.
