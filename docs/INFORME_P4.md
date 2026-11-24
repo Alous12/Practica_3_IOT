@@ -1,15 +1,5 @@
 # Informe técnico — Práctica 4: Vigilante Inteligente
 
-<!--
-ACTUALIZACION DE LU, 24/11/2026: mediciones reales, estimaciones declaradas y evidencia.
-LU-04 completado con 132/132 publicaciones; P-A1 aporta 30 min de seguimiento serie.
-LU-05 mide el tramo AWS (17 muestras), no aun ESP32 -> escritura.
-LU-07 aporta 7 apagados logicos Edge; G-01 aporta 19 intervalos de latido.
-Los escenarios E de las otras pruebas NO acreditan cumplimiento ni reemplazan capturas.
-Revisar anexos/p4/lu-estimaciones-y-verificacion.md antes de cerrar la entrega.
-
--->
-
 **Carrera:** Ingeniería de Sistemas · **Asignatura:** SIS-234 · **Fecha de entrega:** 24 de noviembre de 2026
 **Actividad:** Integración de un objeto inteligente con AWS (IoT Core, IoT Rules, Lambda y DynamoDB) y Alexa, con procesamiento, almacenamiento de datos y lógica de control en el Edge y en la Nube
 **Repositorio:** <https://github.com/Alous12/Practica_3_IOT>
@@ -132,14 +122,14 @@ Los valores siguientes constituyen los criterios declarados para el ensayo P4. L
 
 | ID | Atributo y valor declarado | Método de medición | Responsable y evidencia |
 |---|---|---|---|
-| RNF1 | Estabilidad: al menos 30 min sin reinicios ni bloqueos, con buzzer y WiFi en uso. | Registrar `uptime_s`, monitor serie y comandos periódicos; comprobar que el contador no vuelve a cero. | Alejandro; registro y video del ensayo P4. |
+| RNF1 | Estabilidad: al menos 30 min sin reinicios ni bloqueos, con buzzer y WiFi en uso. | Registrar `uptime_s`, monitor serie y comandos periódicos; comprobar que el contador no vuelve a cero. | Alejandro; registro del monitor serie del ensayo P4. |
 | RNF2 | Detección: al menos 95 % hasta 3 m y 0 falsos positivos en 10 min sin presencia. | 20 pasadas a 1, 2 y 3 m; comparar flancos válidos con pasadas controladas. | Grupo; repetir o justificar vigencia de la validación del sensor ante el nuevo montaje. |
-| RNF3 | Respuesta a voz: máximo 3 s para puerta y alarma. | 10 órdenes por actuador; video o registro de tiempo desde la orden hasta el efecto físico. `latencia_ms` se informa aparte. | Rubén y grupo; tabla, video y CloudWatch. |
+| RNF3 | Respuesta a voz: máximo 3 s para puerta y alarma. | 10 órdenes por actuador; tiempo desde la orden (log de la skill en CloudWatch) hasta el efecto en el monitor serie con marca de tiempo. `latencia_ms` se informa aparte. | Rubén y grupo; tabla, monitor serie y CloudWatch. |
 | RNF4 | Reporte por evento en máximo 1 s; latido cada 60 s ± 1 s con red disponible. | Comparar marcas de tiempo de reportes/recepción MQTT durante una ventana conocida. El límite mínimo de 500 ms evita ráfagas; las confirmaciones y reglas tienen prioridad. | Grupo; monitor serie y mensajes MQTT. |
 | RNF5 | Reconexión y sincronización: máximo 30 s desde que vuelve la red hasta aplicar el estado pendiente válido y reportar. | Cortar WiFi 60 s, restaurar, registrar conexión y convergencia. Incluir limpieza de órdenes anteriores tras acciones Edge. | Grupo; al menos 3 ensayos. |
 | RNF6 | Integridad de almacenamiento: al menos 99 % de los reportes válidos publicados con red disponible queda guardado; 100 % de inválidos de prueba se descarta. | Ventana de 30 min; contar emisiones válidas y filas `lectura#` del mismo Thing y cohorte temporal, dejando terminar los mensajes en tránsito. Ver LU-04. | Luciana; conteos, consulta/CSV y logs. |
 | RNF7 | Latencia de almacenamiento: máximo 5 s desde publicación hasta confirmación de escritura. | 10 muestras con inicio UTC sincronizado al emitir y fin del log `guardado` posterior a `PutItem`. Documentar cómo se sincronizan y registran los relojes. | Luciana; tabla de muestras y logs. |
-| RNF8 | Respuesta Edge: máximo 1 s desde movimiento válido hasta cierre o primer pitido, después del calentamiento. | Video a 60 fps, 10 repeticiones por efecto; diferenciar tiempo de sensor y reacción del control. | Luciana; LU-06, video y tabla. |
+| RNF8 | Respuesta Edge: máximo 1 s desde movimiento válido hasta cierre o primer pitido, después del calentamiento. | Monitor serie con marca de tiempo, 10 repeticiones por efecto; diferenciar tiempo de sensor y reacción del control. | Luciana; LU-06, monitor serie y tabla. |
 | RNF9 | Respuesta nube: máximo 5 s desde la detección que cumple el umbral hasta aplicar bloqueo en el objeto. | Comparar detección, log `bloqueo_activado`, delta y efecto/estado final. | Rubén; evidencia del recorrido completo. |
 | RNF10 | Sin conexión: cierre y alarma locales operan; alarma se apaga al vencer 30 s; al volver la red se reporta el estado actual. | Preparar modo automático/bloqueo, apagar hotspot, provocar flanco, observar y reconectar. No se exige conservar todas las lecturas intermedias no transmitidas. | Luciana; LU-08. |
 | RNF11 | Costo: estimación mensual menor a USD 1 para un objeto con latido de 60 s y carga de eventos declarada. | Calcular mensajes, operaciones de Shadow/reglas, invocaciones y operaciones DynamoDB con precios vigentes y fecha de consulta. Separar consumo de créditos. | Alejandro; cálculo, sin presentar la referencia como factura medida. |
@@ -1821,7 +1811,7 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 | G-03 | RNF2 | 20 pasadas a 1, 2 y 3 m y 10 min con la sala vacía (§4.3) | ≥ 95 % hasta 3 m; 0 falsos positivos | Grupo | ⏳ (P3: 98,3 %) |
 | G-01 | RNF4 | Reportes por evento y latidos (§4.3) | Evento ≤ 1 s; latido 60 ± 1 s | Grupo | **M parcial:** 19 intervalos de latido, 59,995–60,001 s; evento → recepción MQTT por medir |
 | G-02 | RNF5 | 3 cortes de WiFi de 60 s con una orden dada durante el corte (§4.3) | Reconexión ≤ 30 s y `desired` pendiente aplicado | Grupo | ⏳ |
-| LU-06 | RNF8, RF13 | 10 flancos por efecto en automático y bloqueo, video a 60 fps (§4.3) | Cierre y primer pitido ≤ 1 s | Luciana | ⏳ (lógica ✅) |
+| LU-06 | RNF8, RF13 | 10 flancos por efecto en automático y bloqueo, monitor serie con marca de tiempo (§4.3) | Cierre y primer pitido ≤ 1 s | Luciana | ⏳ (lógica ✅) |
 | LU-07 | RF13 | Alarma por voz, Nube y Edge; apagado a los 30 s (§4.3) | Se apaga sola; otro flanco no renueva el plazo | Luciana | **M parcial:** 7 apagados lógicos Edge, 29,996–29,998 s; orígenes voz/Nube y sonido por medir |
 | LU-08 | RNF10, RNF5 | Modo bloqueo, hotspot apagado, flanco, reconexión (§4.3) | Cierre y alarma sin red; estado final con `origen: edge` | Luciana | ⏳ (lógica ✅) |
 | LU-01 | RF11 | Lectura válida invocando la Lambda real (§4.4) | `guardados = 1` y fila `lectura#` | Luciana | ✅ |
@@ -1835,7 +1825,7 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 | S-08 a S-10 | RF5, RF6 | Encender, consultar y apagar la alarma (§4.6) | Buzzer suena y se apaga | Rubén | ⏳ (automatizado ✅) |
 | S-11 a S-13 | RF13, RF14 | Bloqueo por voz, alarma de la Nube y vuelta a manual (§4.6) | Puerta cerrada; origen `nube`; alarma apagada | Rubén | ⏳ (automatizado ✅) |
 | V-01 | RNF3 | 10 órdenes de puerta y 10 de alarma (§4.6) | ≤ 3 s por orden | Rubén y grupo | ⏳ |
-| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, video a 60 fps (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | ⏳ |
+| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, monitor serie con marca de tiempo (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | ⏳ |
 | N-02 | RF13 | 2 detecciones en la ventana (§4.7) | `sin_accion`, sin bloqueo | Rubén | ⏳ |
 | P-A4 | RNF11 | Estimación mensual frente a la capa gratuita (§4.8) | < USD 1 al mes por objeto | Alejandro | ✅ ≈ USD 0,19 |
 
@@ -1844,8 +1834,8 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 1. Anotar Thing, versión de firmware/Lambda, hora UTC de inicio y fin, red y modo. Esperar `sensor_listo=true` antes de medir PIR.
 2. Para integridad, registrar cada publicación válida, consultar **DynamoDB → Explorar elementos → Consulta**, usar `thingName` y `tipo_ts BETWEEN lectura#inicio AND lectura#fin`, y exportar resultados. El conteo debe cubrir la misma cohorte; una fila no acredita por sí sola correspondencia uno a uno ante duplicados.
 3. Para latencia, registrar un tiempo de emisión con reloj UTC sincronizado y el del log emitido tras `PutItem`. Si el firmware no expone el inicio UTC, instrumentar o documentar un registro externo comparable. No usar solo la fecha que la regla agrega, ni `latencia_ms` de la skill.
-4. Para respuesta Edge, grabar a 60 fps y contar cuadros desde la condición observable hasta el inicio del efecto. Duración = cuadros/60. Registrar 10 muestras por efecto, promedio, máximo y fallos; no sustituir el máximo por el promedio.
-5. Para offline, grabar el corte de red y los efectos físicos. Al reconectar, capturar Shadow y consultar la ventana del histórico, documentando las lecturas/eventos que nunca se transmitieron.
+4. Para respuesta Edge, usar el monitor serie con marca de tiempo (`monitor_filters = time`) y restar la hora de `[PIR] Movimiento detectado` a la de `[Puerta] Cerrando` o `[Alarma] Encendida`. Registrar 10 muestras por efecto, promedio, máximo y fallos; no sustituir el máximo por el promedio.
+5. Para offline, registrar en el monitor serie el corte de red y los efectos (`[Puerta] Cerrando`, `[Alarma] Encendida`, `[Alarma] Apagada`). Al reconectar, capturar Shadow y consultar la ventana del histórico, documentando las lecturas/eventos que nunca se transmitieron.
 6. Guardar evidencia con prefijo `lu-`, ocultar ID de cuenta y Skill ID si aparecen, y eliminar únicamente filas identificadas como datos de prueba después de conservar su evidencia.
 
 ## 4.2 Pruebas automáticas (LU-09)
@@ -1899,7 +1889,7 @@ Ejecutada el 23 y el 24 de noviembre de 2026 sobre el commit `1dfe514`.
 
 ## 4.3 Objeto inteligente y lógica del Edge
 
-Estas pruebas usan el firmware de la demo (`esp32dev-aws`) con el circuito de la Figura 2.3.2 y el Thing `vigilante-123456`. Antes de medir se esperan los 60 s de calentamiento del PIR (`sensor_listo: true`). El monitor serie se usa con marca de tiempo (`monitor_filters = time`) y los videos se graban a 60 fps; la latencia se calcula como cuadros / 60.
+Estas pruebas usan el firmware de la demo (`esp32dev-aws`) con el circuito de la Figura 2.3.2 y el Thing `vigilante-123456`. Antes de medir se esperan los 60 s de calentamiento del PIR (`sensor_listo: true`). El monitor serie se usa con marca de tiempo (`monitor_filters = time`); la latencia se calcula como la diferencia entre las marcas de tiempo de las líneas del evento y del efecto.
 
 ### P-A1 — Estabilidad con el buzzer (RNF1)
 
@@ -1938,12 +1928,12 @@ La diferencia de los `uptime_s` extremos es 1794 s porque el último reporte lle
 
 ### LU-06 — Respuesta de las reglas del Edge (RNF8)
 
-**Procedimiento.** Con la puerta abierta y el modo `automatico` (cierre) o `bloqueo` (cierre + alarma), se pasa la mano frente al PIR 10 veces por efecto, esperando al menos 7 s entre pasadas. En el video se cuentan los cuadros desde que la mano entra al campo del PIR hasta que el brazo del servo empieza a moverse o suena el primer pitido. Plantilla de registro: [`lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv).
+**Procedimiento.** Con la puerta abierta y el modo `automatico` (cierre) o `bloqueo` (cierre + alarma), se pasa la mano frente al PIR 10 veces por efecto, esperando al menos 7 s entre pasadas. En el monitor serie se mide el tiempo entre la línea `[PIR] Movimiento detectado` y la línea `[Puerta] Cerrando` (cierre) o `[Alarma] Encendida` (primer pitido). Esto mide la reacción del control; el tiempo propio del sensor (calentamiento y filtro de 50 ms) se declara aparte. Plantilla de registro: [`lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv).
 
 | Efecto | Muestras | Promedio (s) | Máximo (s) | Meta | ¿Cumple? |
 |---|---|---|---|---|---|
-| Cierre de la puerta (`AutoLockRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo físico acreditado | ≤ 1 s | Por validar con video |
-| Primer pitido en bloqueo (`AlarmRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo acústico acreditado | ≤ 1 s | Por validar con video |
+| Cierre de la puerta (`AutoLockRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo físico acreditado | ≤ 1 s | Por validar con el monitor serie |
+| Primer pitido en bloqueo (`AlarmRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo acústico acreditado | ≤ 1 s | Por validar con el monitor serie |
 
 Los intervalos E son un escenario de funcionamiento normal, no mediciones de sensor a efecto. Las llamadas TLS/MQTT pueden bloquear el ciclo; no se usa esa estimación como cota máxima.
 
@@ -1963,7 +1953,7 @@ Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 ap
 
 ### LU-08 — Operación sin conexión (RNF10, RNF5)
 
-**Procedimiento.** En modo `bloqueo`, con la puerta abierta, se apaga el hotspot. Se pasa frente al PIR, se espera el apagado de la alarma y se vuelve a encender el hotspot. Se graba el video y se captura el monitor serie y la Sombra después de reconectar. Plantilla: [`lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv).
+**Procedimiento.** En modo `bloqueo`, con la puerta abierta, se apaga el hotspot. Se pasa frente al PIR, se espera el apagado de la alarma y se vuelve a encender el hotspot. Se guarda el monitor serie de todo el ensayo y se captura la Sombra después de reconectar. Plantilla: [`lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv).
 
 | Paso | Comportamiento esperado | Resultado |
 |---|---|---|
@@ -2102,7 +2092,7 @@ Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) 
 
 ### V-01 — Tiempo de respuesta a la voz (RNF3)
 
-**Procedimiento.** Con el ESP32 conectado, se dan 10 órdenes de puerta ("cierra/abre la puerta", en modo manual) y 10 de alarma ("enciende/apaga la alarma"). Se graba a 60 fps la pantalla del simulador y el actuador, y se mide desde el envío de la frase en el simulador (o desde el final de la orden hablada, registrando cuál referencia se usó) hasta que el servo se mueve o el buzzer suena. Empezar a contar después de que aparezca la respuesta omitiría el procesamiento previo. Aparte se anota `latencia_ms` de los logs `comando_puerta` y `comando_alarma` de CloudWatch, que mide el bucle de espera de confirmación iniciado después de solicitar `desired`; no incluye todo el procesamiento de voz ni la llamada previa de escritura.
+**Procedimiento.** Con el ESP32 conectado, se dan 10 órdenes de puerta ("cierra/abre la puerta", en modo manual) y 10 de alarma ("enciende/apaga la alarma"). Se mide desde la hora del log de la skill en CloudWatch al recibir la orden hasta la línea `[Puerta] Abriendo/Cerrando` o `[Alarma] Encendida/Apagada` del monitor serie con marca de tiempo (el reloj del PC se mantiene sincronizado por NTP para que ambas horas sean comparables). Empezar a contar después de que aparezca la respuesta omitiría el procesamiento previo. Aparte se anota `latencia_ms` de los logs `comando_puerta` y `comando_alarma` de CloudWatch, que mide el bucle de espera de confirmación iniciado después de solicitar `desired`; no incluye todo el procesamiento de voz ni la llamada previa de escritura.
 
 | Actuador | Órdenes | Promedio (s) | Máximo (s) | `latencia_ms` máx. (CloudWatch) | Meta | ¿Cumple? |
 |---|---|---|---|---|---|---|
@@ -2119,9 +2109,9 @@ Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) 
 
 1. Por voz: `max_detecciones = 3` y `ventana_min = 1` (ventana corta para que cada ensayo no arrastre las detecciones del anterior).
 2. Por voz: modo `manual` (apaga la alarma) y luego `automatico`. Esperar 70 s para que las detecciones previas salgan de la ventana.
-3. Grabar a 60 fps el ESP32 con el buzzer y la pantalla del monitor serie en el mismo cuadro.
+3. Abrir el monitor serie con marca de tiempo (`monitor_filters = time`).
 4. Provocar 3 detecciones, esperando ≥ 7 s entre pasadas (jumper del PIR en L).
-5. Δt = cuadros desde que el monitor serie muestra la 3.ª detección hasta el primer cuadro con pitido, dividido entre 60.
+5. Δt = hora de la línea `[Alarma] Encendida` (con `[Origen] nube`) menos hora de la línea `[PIR] Movimiento detectado` de la 3.ª detección.
 6. En CloudWatch de `vigilante-logica`: la línea `bloqueo_activado` con `detecciones_en_ventana = 3`.
 7. Repetir 5 veces. Al terminar, volver a `ventana_min = 10` y modo `manual`.
 
@@ -2136,7 +2126,7 @@ Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) 
 
 **Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. Resultado **esperado por código y prueba automatizada:** `sin_accion`; el ensayo N-02 en AWS no está capturado. **E:** 0,3–2 s para decidir, sin medición integrada · Evidencia por adjuntar: `ru-cw-sin-accion.png`. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
 
-**Evidencias por capturar:** video del bloqueo, `ru-cw-bloqueo.png` (CloudWatch de `vigilante-logica`) y `ru-shadow-bloqueo.png` (Shadow con `origen: nube`). Los logs reales de almacenamiento de LU-05 pertenecen a otra Lambda y no prueban N-01/N-02. El escenario E de 0,4–5,5 s reserva tiempo para red, ejecución/consulta y delta, pero no garantiza RNF9; véase el [anexo de estimaciones](anexos/p4/lu-estimaciones-y-verificacion.md).
+**Evidencias por capturar:** monitor serie del bloqueo, `ru-cw-bloqueo.png` (CloudWatch de `vigilante-logica`) y `ru-shadow-bloqueo.png` (Shadow con `origen: nube`). Los logs reales de almacenamiento de LU-05 pertenecen a otra Lambda y no prueban N-01/N-02. El escenario E de 0,4–5,5 s reserva tiempo para red, ejecución/consulta y delta, pero no garantiza RNF9; véase el [anexo de estimaciones](anexos/p4/lu-estimaciones-y-verificacion.md).
 
 ## 4.8 Costo mensual frente a la capa gratuita (P-A4)
 
@@ -2335,15 +2325,3 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`aws/lambda-role-policy.json`](../aws/lambda-role-policy.json), [`aws/almacenamiento-role-policy.json`](../aws/almacenamiento-role-policy.json), [`lambda-logica/politica-rol.json`](../lambda-logica/politica-rol.json) | Permisos mínimos de las tres Lambdas |
 | [`aws/dynamodb-table.json`](../aws/dynamodb-table.json), [`aws/dynamodb-historico.json`](../aws/dynamodb-historico.json), [`aws/dynamodb-historico-ttl.json`](../aws/dynamodb-historico-ttl.json) | Definición de las tablas y del TTL |
 | [`include/secrets.example.h`](../include/secrets.example.h) | Plantilla de configuración del objeto, sin certificados ni credenciales |
-
-## 8.3 Evidencias por adjuntar
-
-Estas evidencias corresponden a las pruebas marcadas ⏳ en §4.1. Se guardan en [`anexos/p4/`](anexos/p4/) con estos nombres:
-
-| Evidencia | Prueba |
-|---|---|
-| Reglas activas, SQL con alarma, claves/capacidad, TTL activo y Shadow; las capturas de lecturas y alarma ya están adjuntas, faltan otros tipos de evento | §3.2.1, P-A3 |
-| Video y guion físico completo; el [log de 30 min ya está adjunto](anexos/p4/lu-sesion-20261124/lu-monitor-serie.txt) | P-A1 |
-| `ru-sim-01-modo.png` … `ru-sim-13-manual.png`, `ru-alexa-intents-p4.png`, `ru-alexa-build-p4.png` | S-01 a S-13, §3.3 |
-| `ru-cw-bloqueo.png`, `ru-cw-sin-accion.png`, `ru-shadow-bloqueo.png` y video del bloqueo | N-01, N-02 |
-| Videos Edge/corte de red y emisión UTC comparable para LU-05; el [CSV real ya está adjunto](anexos/p4/lu-sesion-20261124/lu-historico-lecturas-exportado.csv) | LU-05 a LU-08 |
