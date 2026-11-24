@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1180" viewBox="0 0 1600 1180" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" role="img" aria-label="Diagrama de conexiones del Vigilante Inteligente, Práctica 4: ESP32 con el PIR en el GPIO 27, el servo en el GPIO 25 y el buzzer activo en el GPIO 26; el porta pilas de 6 V alimenta el PIR y el servo y todas las tierras están unidas.">
+  <title>Vigilante Inteligente — Diagrama de conexiones (Práctica 4)</title>
+  <rect width="1600" height="1180" fill="#f5f7fa"/>
+
+  <!-- Títulos -->
+  <text x="60" y="76" font-size="40" fill="#1f2937">Vigilante Inteligente | Diagrama de conexiones (Práctica 4)</text>
+  <text x="60" y="124" font-size="24" fill="#1f2937">ESP32 DevKit + PIR HC-SR501 + servo SG90 + buzzer activo + porta pilas 4 × AA (6 V)</text>
+
+  <!-- Cajas -->
+  <g fill="#f5f7fa" stroke="#5b7499" stroke-width="2.5">
+    <rect x="78" y="213" width="450" height="600" rx="12"/>
+    <rect x="601" y="161" width="278" height="138" rx="12"/>
+    <rect x="1053" y="213" width="454" height="244" rx="12"/>
+    <rect x="1053" y="543" width="454" height="254" rx="12"/>
+    <rect x="1053" y="873" width="454" height="200" rx="12"/>
+  </g>
+  <!-- Resalte del componente nuevo -->
+  <rect x="1046" y="866" width="468" height="214" rx="16" fill="none" stroke="#c9a400" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="1500" y="858" font-size="18" fill="#8a7000" text-anchor="end">Nuevo en la P4</text>
+
+  <!-- Textos de las cajas -->
+  <g fill="#1f2937">
+    <text x="101" y="258" font-size="30">ESP32</text>
+    <text x="110" y="301" font-size="22">USB ← PC: alimentación de la placa</text>
+    <text x="110" y="330" font-size="16">(no alimenta al servo ni al PIR)</text>
+    <text x="300" y="498" font-size="22">GPIO 27</text>
+    <text x="300" y="578" font-size="22">GPIO 25</text>
+    <text x="300" y="658" font-size="22" font-weight="600">GPIO 26</text>
+    <text x="300" y="768" font-size="22">GND</text>
+
+    <text x="624" y="206" font-size="30">Porta pilas</text>
+    <text x="624" y="261" font-size="22">4 × AA = 6 V</text>
+    <text x="800" y="221" font-size="24" fill="#d63b3b">+</text>
+    <text x="802" y="268" font-size="24">−</text>
+
+    <text x="1076" y="258" font-size="30">PIR HC-SR501</text>
+    <text x="1090" y="313" font-size="22">VCC (+6 V)</text>
+    <text x="1090" y="363" font-size="22">OUT (3,3 V)</text>
+    <text x="1090" y="418" font-size="22">GND</text>
+
+    <text x="1076" y="588" font-size="30">Servo SG90</text>
+    <text x="1090" y="643" font-size="22">Rojo: +6 V</text>
+    <text x="1090" y="698" font-size="22">Señal: naranja / amarillo</text>
+    <text x="1090" y="758" font-size="22">Marrón: GND</text>
+
+    <text x="1076" y="918" font-size="30">Buzzer activo (alarma)</text>
+    <text x="1090" y="963" font-size="22">+ (pata larga): señal del GPIO 26</text>
+    <text x="1090" y="1018" font-size="22">− (pata corta): GND</text>
+    <text x="1090" y="1052" font-size="16" fill="#4b5563">Suena con nivel alto; intermitente por firmware</text>
+  </g>
+
+  <!-- Cables -->
+  <g fill="none" stroke-width="4" stroke-linejoin="round">
+    <!-- +6 V (rojo) -->
+    <path d="M879 215 H950 V640 H1053" stroke="#d63b3b"/>
+    <path d="M950 310 H1053" stroke="#d63b3b"/>
+    <!-- GND común (oscuro) -->
+    <path d="M879 262 H990 V1100" stroke="#2f3a4a"/>
+    <path d="M990 415 H1053" stroke="#2f3a4a"/>
+    <path d="M990 755 H1053" stroke="#2f3a4a"/>
+    <path d="M990 1010 H1053" stroke="#2f3a4a"/>
+    <path d="M528 760 H620 V1100 H990" stroke="#2f3a4a"/>
+    <!-- PIR OUT → GPIO 27 (verde) -->
+    <path d="M528 490 H800 V360 H1053" stroke="#1f8a5b"/>
+    <!-- Servo señal → GPIO 25 (azul) -->
+    <path d="M528 570 H900 V695 H1053" stroke="#2f7fc9"/>
+    <!-- Buzzer + → GPIO 26 (amarillo) -->
+    <path d="M528 650 H860 V955 H1053" stroke="#d9a400"/>
+  </g>
+
+  <!-- Uniones -->
+  <g fill="#d63b3b"><circle cx="950" cy="310" r="7"/></g>
+  <g fill="#2f3a4a">
+    <circle cx="990" cy="415" r="7"/>
+    <circle cx="990" cy="755" r="7"/>
+    <circle cx="990" cy="1010" r="7"/>
+  </g>
+
+  <text x="75" y="852" font-size="18" fill="#1f2937">Punto = unión; cruce sin punto = sin conexión.</text>
+
+  <!-- Pie -->
+  <g fill="#1f2937" font-size="21">
+    <text x="60" y="1138">El porta pilas alimenta el servo y el PIR; su negativo se une al GND del ESP32 (tierra común). El buzzer toma su</text>
+    <text x="60" y="1166">corriente del GPIO 26 (3,3 V). Señales: PIR OUT → GPIO 27; servo → GPIO 25; buzzer → GPIO 26.</text>
+  </g>
+</svg>
