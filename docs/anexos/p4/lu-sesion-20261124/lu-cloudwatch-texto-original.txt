@@ -1,0 +1,289 @@
+2026-11-24T18:28:05.340Z
+INIT_START Runtime Version: python:3.13.mainlinev2.v86 Runtime Version ARN: arn:aws:lambda:us-east-2::runtime:94107394b7943d336b78c01af71e42f453f8186ba74ab877f115e1908ea07783
+2026-11-24T18:28:05.691Z
+[INFO] 2026-11-24T18:28:05.690Z Found credentials in environment variables.
+2026-11-24T18:28:39.342Z
+START RequestId: 8eee9547-458e-4077-b8e9-861261a00dee Version: $LATEST
+2026-11-24T18:28:39.644Z
+[INFO]	2026-11-24T18:28:39.644Z	8eee9547-458e-4077-b8e9-861261a00dee	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:28:39.266Z"
+}
+
+
+[INFO] 2026-11-24T18:28:39.644Z 8eee9547-458e-4077-b8e9-861261a00dee {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:28:39.266Z"}
+2026-11-24T18:28:39.662Z
+END RequestId: 8eee9547-458e-4077-b8e9-861261a00dee
+2026-11-24T18:28:39.662Z
+REPORT RequestId: 8eee9547-458e-4077-b8e9-861261a00dee Duration: 319.01 ms Billed Duration: 800 ms Memory Size: 128 MB Max Memory Used: 89 MB Init Duration: 480.77 ms
+2026-11-24T18:29:39.294Z
+START RequestId: e77b2da8-72c3-4b85-a93f-35d9138da91c Version: $LATEST
+2026-11-24T18:29:39.341Z
+[INFO]	2026-11-24T18:29:39.341Z	e77b2da8-72c3-4b85-a93f-35d9138da91c	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:29:39.227Z"
+}
+
+
+[INFO] 2026-11-24T18:29:39.341Z e77b2da8-72c3-4b85-a93f-35d9138da91c {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:29:39.227Z"}
+2026-11-24T18:29:39.362Z
+END RequestId: e77b2da8-72c3-4b85-a93f-35d9138da91c
+2026-11-24T18:29:39.362Z
+REPORT RequestId: e77b2da8-72c3-4b85-a93f-35d9138da91c Duration: 66.92 ms Billed Duration: 67 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:30:39.320Z
+START RequestId: 7b27affd-220f-45d9-948d-651ad3d89381 Version: $LATEST
+2026-11-24T18:30:39.380Z
+[INFO]	2026-11-24T18:30:39.380Z	7b27affd-220f-45d9-948d-651ad3d89381	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:30:39.245Z"
+}
+
+
+[INFO] 2026-11-24T18:30:39.380Z 7b27affd-220f-45d9-948d-651ad3d89381 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:30:39.245Z"}
+2026-11-24T18:30:39.400Z
+END RequestId: 7b27affd-220f-45d9-948d-651ad3d89381
+2026-11-24T18:30:39.400Z
+REPORT RequestId: 7b27affd-220f-45d9-948d-651ad3d89381 Duration: 79.79 ms Billed Duration: 80 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:31:39.328Z
+START RequestId: de9cdd04-6b88-4967-befb-b59b1db9b3b8 Version: $LATEST
+2026-11-24T18:31:39.379Z
+[INFO]	2026-11-24T18:31:39.379Z	de9cdd04-6b88-4967-befb-b59b1db9b3b8	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:31:39.246Z"
+}
+
+
+[INFO] 2026-11-24T18:31:39.379Z de9cdd04-6b88-4967-befb-b59b1db9b3b8 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:31:39.246Z"}
+2026-11-24T18:31:39.400Z
+END RequestId: de9cdd04-6b88-4967-befb-b59b1db9b3b8
+2026-11-24T18:31:39.400Z
+REPORT RequestId: de9cdd04-6b88-4967-befb-b59b1db9b3b8 Duration: 71.30 ms Billed Duration: 72 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:32:39.386Z
+START RequestId: 6214f2e2-90cb-4746-b9b0-ba47e1cea45b Version: $LATEST
+2026-11-24T18:32:39.439Z
+[INFO]	2026-11-24T18:32:39.439Z	6214f2e2-90cb-4746-b9b0-ba47e1cea45b	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:32:39.295Z"
+}
+
+
+[INFO] 2026-11-24T18:32:39.439Z 6214f2e2-90cb-4746-b9b0-ba47e1cea45b {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:32:39.295Z"}
+2026-11-24T18:32:39.460Z
+END RequestId: 6214f2e2-90cb-4746-b9b0-ba47e1cea45b
+2026-11-24T18:32:39.460Z
+REPORT RequestId: 6214f2e2-90cb-4746-b9b0-ba47e1cea45b Duration: 73.07 ms Billed Duration: 74 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:33:39.356Z
+START RequestId: b0182161-57b1-4582-a273-1a254b2a0028 Version: $LATEST
+
+START RequestId: b0182161-57b1-4582-a273-1a254b2a0028 Version: $LATEST
+2026-11-24T18:33:39.399Z
+[INFO] 2026-11-24T18:33:39.399Z b0182161-57b1-4582-a273-1a254b2a0028 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:33:39.270Z"}
+2026-11-24T18:33:39.401Z
+END RequestId: b0182161-57b1-4582-a273-1a254b2a0028
+2026-11-24T18:33:39.401Z
+REPORT RequestId: b0182161-57b1-4582-a273-1a254b2a0028 Duration: 44.08 ms Billed Duration: 45 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:34:39.477Z
+START RequestId: d6c1a2b6-cfd9-48c8-afec-0397bebc9dd9 Version: $LATEST
+2026-11-24T18:34:39.518Z
+[INFO]	2026-11-24T18:34:39.518Z	d6c1a2b6-cfd9-48c8-afec-0397bebc9dd9	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:34:39.295Z"
+}
+
+
+[INFO] 2026-11-24T18:34:39.518Z d6c1a2b6-cfd9-48c8-afec-0397bebc9dd9 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:34:39.295Z"}
+2026-11-24T18:34:39.520Z
+END RequestId: d6c1a2b6-cfd9-48c8-afec-0397bebc9dd9
+2026-11-24T18:34:39.520Z
+REPORT RequestId: d6c1a2b6-cfd9-48c8-afec-0397bebc9dd9 Duration: 43.44 ms Billed Duration: 44 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:35:39.421Z
+START RequestId: 55171552-5262-4974-a846-a72c37a53114 Version: $LATEST
+2026-11-24T18:35:39.478Z
+[INFO]	2026-11-24T18:35:39.478Z	55171552-5262-4974-a846-a72c37a53114	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:35:39.332Z"
+}
+
+
+[INFO] 2026-11-24T18:35:39.478Z 55171552-5262-4974-a846-a72c37a53114 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:35:39.332Z"}
+2026-11-24T18:35:39.500Z
+END RequestId: 55171552-5262-4974-a846-a72c37a53114
+2026-11-24T18:35:39.500Z
+REPORT RequestId: 55171552-5262-4974-a846-a72c37a53114 Duration: 78.02 ms Billed Duration: 79 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:36:39.331Z
+START RequestId: c05bf0a7-4907-4837-b50b-09f4afd99ead Version: $LATEST
+2026-11-24T18:36:39.357Z
+[INFO]	2026-11-24T18:36:39.357Z	c05bf0a7-4907-4837-b50b-09f4afd99ead	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:36:39.241Z"
+}
+
+
+[INFO] 2026-11-24T18:36:39.357Z c05bf0a7-4907-4837-b50b-09f4afd99ead {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:36:39.241Z"}
+2026-11-24T18:36:39.398Z
+END RequestId: c05bf0a7-4907-4837-b50b-09f4afd99ead
+2026-11-24T18:36:39.398Z
+REPORT RequestId: c05bf0a7-4907-4837-b50b-09f4afd99ead Duration: 66.67 ms Billed Duration: 67 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:37:39.327Z
+START RequestId: 6c2b8b34-d5b8-44fc-a527-29bda279a507 Version: $LATEST
+2026-11-24T18:37:39.377Z
+[INFO]	2026-11-24T18:37:39.377Z	6c2b8b34-d5b8-44fc-a527-29bda279a507	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:37:39.227Z"
+}
+
+
+[INFO] 2026-11-24T18:37:39.377Z 6c2b8b34-d5b8-44fc-a527-29bda279a507 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:37:39.227Z"}
+2026-11-24T18:37:39.398Z
+END RequestId: 6c2b8b34-d5b8-44fc-a527-29bda279a507
+2026-11-24T18:37:39.398Z
+REPORT RequestId: 6c2b8b34-d5b8-44fc-a527-29bda279a507 Duration: 71.12 ms Billed Duration: 72 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:38:39.390Z
+START RequestId: d6a13eab-3698-496b-90be-62808d616300 Version: $LATEST
+2026-11-24T18:38:39.438Z
+[INFO]	2026-11-24T18:38:39.438Z	d6a13eab-3698-496b-90be-62808d616300	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:38:39.264Z"
+}
+
+
+[INFO] 2026-11-24T18:38:39.438Z d6a13eab-3698-496b-90be-62808d616300 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:38:39.264Z"}
+2026-11-24T18:38:39.458Z
+END RequestId: d6a13eab-3698-496b-90be-62808d616300
+2026-11-24T18:38:39.458Z
+REPORT RequestId: d6a13eab-3698-496b-90be-62808d616300 Duration: 67.62 ms Billed Duration: 68 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:39:39.367Z
+START RequestId: 22a98248-ccba-4b24-b9af-0856888c5d21 Version: $LATEST
+2026-11-24T18:39:39.417Z
+[INFO]	2026-11-24T18:39:39.417Z	22a98248-ccba-4b24-b9af-0856888c5d21	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:39:39.241Z"
+}
+
+
+[INFO] 2026-11-24T18:39:39.417Z 22a98248-ccba-4b24-b9af-0856888c5d21 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:39:39.241Z"}
+2026-11-24T18:39:39.438Z
+END RequestId: 22a98248-ccba-4b24-b9af-0856888c5d21
+2026-11-24T18:39:39.438Z
+REPORT RequestId: 22a98248-ccba-4b24-b9af-0856888c5d21 Duration: 70.44 ms Billed Duration: 71 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:40:39.334Z
+START RequestId: 7ba3d116-a366-4ec2-90cb-a868629a88a2 Version: $LATEST
+2026-11-24T18:40:39.356Z
+[INFO]	2026-11-24T18:40:39.356Z	7ba3d116-a366-4ec2-90cb-a868629a88a2	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:40:39.245Z"
+}
+
+
+[INFO] 2026-11-24T18:40:39.356Z 7ba3d116-a366-4ec2-90cb-a868629a88a2 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:40:39.245Z"}
+2026-11-24T18:40:39.397Z
+END RequestId: 7ba3d116-a366-4ec2-90cb-a868629a88a2
+2026-11-24T18:40:39.397Z
+REPORT RequestId: 7ba3d116-a366-4ec2-90cb-a868629a88a2 Duration: 62.73 ms Billed Duration: 63 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:41:39.353Z
+START RequestId: e9669fff-d04a-4887-b87c-e69d657efd27 Version: $LATEST
+2026-11-24T18:41:39.396Z
+[INFO]	2026-11-24T18:41:39.396Z	e9669fff-d04a-4887-b87c-e69d657efd27	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:41:39.266Z"
+}
+
+
+[INFO] 2026-11-24T18:41:39.396Z e9669fff-d04a-4887-b87c-e69d657efd27 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:41:39.266Z"}
+2026-11-24T18:41:39.417Z
+END RequestId: e9669fff-d04a-4887-b87c-e69d657efd27
+2026-11-24T18:41:39.417Z
+REPORT RequestId: e9669fff-d04a-4887-b87c-e69d657efd27 Duration: 63.21 ms Billed Duration: 64 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:42:39.800Z
+START RequestId: 3c808d8a-7a24-438b-b091-e3eec1aa632d Version: $LATEST
+2026-11-24T18:42:39.855Z
+[INFO]	2026-11-24T18:42:39.855Z	3c808d8a-7a24-438b-b091-e3eec1aa632d	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:42:39.707Z"
+}
+
+
+[INFO] 2026-11-24T18:42:39.855Z 3c808d8a-7a24-438b-b091-e3eec1aa632d {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:42:39.707Z"}
+2026-11-24T18:42:39.876Z
+END RequestId: 3c808d8a-7a24-438b-b091-e3eec1aa632d
+2026-11-24T18:42:39.876Z
+REPORT RequestId: 3c808d8a-7a24-438b-b091-e3eec1aa632d Duration: 75.63 ms Billed Duration: 76 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:43:39.345Z
+START RequestId: d22a664b-0aa5-410a-8ab8-389792221709 Version: $LATEST
+2026-11-24T18:43:39.395Z
+[INFO]	2026-11-24T18:43:39.395Z	d22a664b-0aa5-410a-8ab8-389792221709	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:43:39.266Z"
+}
+
+
+[INFO] 2026-11-24T18:43:39.395Z d22a664b-0aa5-410a-8ab8-389792221709 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:43:39.266Z"}
+2026-11-24T18:43:39.416Z
+END RequestId: d22a664b-0aa5-410a-8ab8-389792221709
+2026-11-24T18:43:39.416Z
+REPORT RequestId: d22a664b-0aa5-410a-8ab8-389792221709 Duration: 70.51 ms Billed Duration: 71 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:44:39.407Z
+START RequestId: d3bd4c9c-c1d5-4d7a-b2dd-5f42c8672c17 Version: $LATEST
+2026-11-24T18:44:39.459Z
+[INFO]	2026-11-24T18:44:39.458Z	d3bd4c9c-c1d5-4d7a-b2dd-5f42c8672c17	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "lectura#2026-11-24T18:44:39.260Z"
+}
+
+
+[INFO] 2026-11-24T18:44:39.458Z d3bd4c9c-c1d5-4d7a-b2dd-5f42c8672c17 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "lectura#2026-11-24T18:44:39.260Z"}
+2026-11-24T18:44:39.475Z
+END RequestId: d3bd4c9c-c1d5-4d7a-b2dd-5f42c8672c17
+2026-11-24T18:44:39.475Z
+REPORT RequestId: d3bd4c9c-c1d5-4d7a-b2dd-5f42c8672c17 Duration: 67.97 ms Billed Duration: 68 ms Memory Size: 128 MB Max Memory Used: 90 MB
+2026-11-24T18:44:53.495Z
+START RequestId: 5f7a8eff-6feb-47e6-8de0-9b86bf8b8194 Version: $LATEST
+2026-11-24T18:44:53.515Z
+[INFO]	2026-11-24T18:44:53.515Z	5f7a8eff-6feb-47e6-8de0-9b86bf8b8194	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "alarma#2026-11-24T18:44:53Z"
+}
+
+
+[INFO] 2026-11-24T18:44:53.515Z 5f7a8eff-6feb-47e6-8de0-9b86bf8b8194 {"evento": "guardado", "thing": "vigilante-123456", "tipo_ts": "alarma#2026-11-24T18:44:53Z"}
+2026-11-24T18:44:53.535Z
+[INFO]	2026-11-24T18:44:53.535Z	5f7a8eff-6feb-47e6-8de0-9b86bf8b8194	
+{
+    "evento": "guardado",
+    "thing": "vigilante-123456",
+    "tipo_ts": "deteccion#2026-11-24T18:44:53Z"
+}

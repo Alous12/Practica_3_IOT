@@ -1,0 +1,17 @@
+{
+  "puerto": "COM4",
+  "ventana_completa": true,
+  "duracion_objetivo_s": 1800,
+  "inicio_utc_pc": "2026-11-24T18:20:41.968Z",
+  "fin_utc_pc_exclusivo": "2026-11-24T18:50:41.968Z",
+  "referencia_tiempo": "UTC de recepcion serial en PC; no sello de emision MCU",
+  "publicaciones_reported_con_publish_ok": 132,
+  "fallos_publicacion_observados": 0,
+  "indicios_reinicio_en_log": [],
+  "disminuciones_uptime": [],
+  "primero_uptime_s": 386,
+  "ultimo_uptime_s": 2180,
+  "error": null,
+  "integridad_porcentaje": null,
+  "pendiente": "Exportar DynamoDB, comprobar Thing y ventana, validar mensajes y comparar la cohorte. No inferir integridad o latencia solo de este log."
+}

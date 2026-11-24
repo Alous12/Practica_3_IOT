@@ -1,0 +1,10 @@
+{
+  "muestras": 17,
+  "media_ms": 160.824,
+  "mediana_ms": 144.0,
+  "minimo_ms": 111.0,
+  "maximo_ms": 378.0,
+  "copias_duplicadas_eliminadas": 17,
+  "alcance": "Regla IoT a log guardado posterior a PutItem. No es tiempo puro de DynamoDB ni latencia ESP32 a almacenamiento.",
+  "lu05_extremo_a_extremo_completo": false
+}

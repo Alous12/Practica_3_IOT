@@ -1,0 +1,290 @@
+# Puerto COM4; 115200 baud; lectura sin comandos.
+# UTC = recepcion en PC; no es sello UTC de emision del ESP32.
+2026-11-24T18:20:41.968Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":15,"ultima_deteccion":1795544370,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":386,"rssi":-60}}}
+2026-11-24T18:20:46.279Z | [PIR] Movimiento detectado (#16)
+2026-11-24T18:20:46.281Z | [Alarma] Encendida
+2026-11-24T18:20:46.310Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":16,"ultima_deteccion":1795544445,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":390,"rssi":-62},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:20:47.496Z | [PIR] Sin movimiento
+2026-11-24T18:20:47.523Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":16,"ultima_deteccion":1795544445,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":392,"rssi":-62}}}
+2026-11-24T18:20:56.392Z | [Shadow] delta recibido epoch_ms=1795544455768 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:20:56.393Z | [Alarma] Apagada
+2026-11-24T18:20:56.395Z | [Origen] voz
+2026-11-24T18:20:56.418Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":16,"ultima_deteccion":1795544445,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":401,"rssi":-57}}}
+2026-11-24T18:21:22.380Z | [PIR] Movimiento detectado (#17)
+2026-11-24T18:21:22.381Z | [Alarma] Encendida
+2026-11-24T18:21:22.411Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":17,"ultima_deteccion":1795544481,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":427,"rssi":-58},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:21:23.596Z | [PIR] Sin movimiento
+2026-11-24T18:21:23.623Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":17,"ultima_deteccion":1795544481,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":428,"rssi":-60}}}
+2026-11-24T18:21:27.883Z | [PIR] Movimiento detectado (#18)
+2026-11-24T18:21:27.910Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":18,"ultima_deteccion":1795544487,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":432,"rssi":-57}}}
+2026-11-24T18:21:29.100Z | [PIR] Sin movimiento
+2026-11-24T18:21:29.127Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":18,"ultima_deteccion":1795544487,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":433,"rssi":-59}}}
+2026-11-24T18:21:34.560Z | [PIR] Movimiento detectado (#19)
+2026-11-24T18:21:34.587Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":19,"ultima_deteccion":1795544493,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":439,"rssi":-59}}}
+2026-11-24T18:21:35.776Z | [PIR] Sin movimiento
+2026-11-24T18:21:35.803Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":19,"ultima_deteccion":1795544493,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":440,"rssi":-57}}}
+2026-11-24T18:21:38.685Z | [Shadow] delta recibido epoch_ms=1795544498062 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:21:38.687Z | [Alarma] Apagada
+2026-11-24T18:21:38.688Z | [Origen] voz
+2026-11-24T18:21:38.711Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":19,"ultima_deteccion":1795544493,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":443,"rssi":-59}}}
+2026-11-24T18:21:39.834Z | [PIR] Movimiento detectado (#20)
+2026-11-24T18:21:39.837Z | [Alarma] Encendida
+2026-11-24T18:21:39.864Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":20,"ultima_deteccion":1795544499,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":444,"rssi":-59},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:21:41.050Z | [PIR] Sin movimiento
+2026-11-24T18:21:41.077Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":20,"ultima_deteccion":1795544499,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":445,"rssi":-61}}}
+2026-11-24T18:21:49.438Z | [Shadow] delta recibido epoch_ms=1795544508815 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:21:49.439Z | [Alarma] Apagada
+2026-11-24T18:21:49.440Z | [Origen] voz
+2026-11-24T18:21:49.463Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":20,"ultima_deteccion":1795544499,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":454,"rssi":-63}}}
+2026-11-24T18:21:49.684Z | [PIR] Movimiento detectado (#21)
+2026-11-24T18:21:49.685Z | [Alarma] Encendida
+2026-11-24T18:21:49.713Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":21,"ultima_deteccion":1795544509,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":454,"rssi":-68},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:21:50.900Z | [PIR] Sin movimiento
+2026-11-24T18:21:50.927Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":21,"ultima_deteccion":1795544509,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":455,"rssi":-70}}}
+2026-11-24T18:21:54.705Z | [PIR] Movimiento detectado (#22)
+2026-11-24T18:21:54.731Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":22,"ultima_deteccion":1795544514,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":459,"rssi":-60}}}
+2026-11-24T18:21:55.922Z | [PIR] Sin movimiento
+2026-11-24T18:21:55.949Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":22,"ultima_deteccion":1795544514,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":460,"rssi":-69}}}
+2026-11-24T18:22:08.264Z | [PIR] Movimiento detectado (#23)
+2026-11-24T18:22:08.290Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":23,"ultima_deteccion":1795544527,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":472,"rssi":-64}}}
+2026-11-24T18:22:09.480Z | [PIR] Sin movimiento
+2026-11-24T18:22:09.509Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":23,"ultima_deteccion":1795544527,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":474,"rssi":-63}}}
+2026-11-24T18:22:11.556Z | [Shadow] delta recibido epoch_ms=1795544530933 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:22:11.557Z | [Alarma] Apagada
+2026-11-24T18:22:11.558Z | [Origen] voz
+2026-11-24T18:22:11.581Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":23,"ultima_deteccion":1795544527,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":476,"rssi":-64}}}
+2026-11-24T18:23:04.961Z | [PIR] Movimiento detectado (#24)
+2026-11-24T18:23:04.962Z | [Alarma] Encendida
+2026-11-24T18:23:04.991Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":24,"ultima_deteccion":1795544584,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":529,"rssi":-61},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:23:06.175Z | [PIR] Sin movimiento
+2026-11-24T18:23:06.202Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":24,"ultima_deteccion":1795544584,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":530,"rssi":-61}}}
+2026-11-24T18:23:10.098Z | [PIR] Movimiento detectado (#25)
+2026-11-24T18:23:10.125Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":25,"ultima_deteccion":1795544589,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":534,"rssi":-61}}}
+2026-11-24T18:23:11.315Z | [PIR] Sin movimiento
+2026-11-24T18:23:11.341Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":25,"ultima_deteccion":1795544589,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":535,"rssi":-61}}}
+2026-11-24T18:23:15.542Z | [PIR] Movimiento detectado (#26)
+2026-11-24T18:23:15.569Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":26,"ultima_deteccion":1795544594,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":540,"rssi":-73}}}
+2026-11-24T18:23:16.758Z | [PIR] Sin movimiento
+2026-11-24T18:23:16.785Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":26,"ultima_deteccion":1795544594,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":541,"rssi":-58}}}
+2026-11-24T18:23:17.091Z | [Shadow] delta recibido epoch_ms=1795544596469 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:23:17.093Z | [Alarma] Apagada
+2026-11-24T18:23:17.094Z | [Origen] voz
+2026-11-24T18:23:17.117Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":26,"ultima_deteccion":1795544594,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":541,"rssi":-57}}}
+2026-11-24T18:23:17.125Z | [Shadow] delta recibido epoch_ms=1795544596500 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:23:17.154Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":26,"ultima_deteccion":1795544594,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":541,"rssi":-57}}}
+2026-11-24T18:23:30.624Z | [PIR] Movimiento detectado (#27)
+2026-11-24T18:23:30.626Z | [Alarma] Encendida
+2026-11-24T18:23:30.654Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":27,"ultima_deteccion":1795544610,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":555,"rssi":-68},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:23:31.840Z | [PIR] Sin movimiento
+2026-11-24T18:23:31.867Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":27,"ultima_deteccion":1795544610,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":556,"rssi":-63}}}
+2026-11-24T18:23:47.244Z | [PIR] Movimiento detectado (#28)
+2026-11-24T18:23:47.269Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":28,"ultima_deteccion":1795544626,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":571,"rssi":-62}}}
+2026-11-24T18:23:48.459Z | [PIR] Sin movimiento
+2026-11-24T18:23:48.486Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":28,"ultima_deteccion":1795544626,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":573,"rssi":-61}}}
+2026-11-24T18:23:52.865Z | [PIR] Movimiento detectado (#29)
+2026-11-24T18:23:52.892Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":29,"ultima_deteccion":1795544632,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":577,"rssi":-58}}}
+2026-11-24T18:23:54.080Z | [PIR] Sin movimiento
+2026-11-24T18:23:54.107Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":29,"ultima_deteccion":1795544632,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":578,"rssi":-64}}}
+2026-11-24T18:23:59.432Z | [PIR] Movimiento detectado (#30)
+2026-11-24T18:23:59.457Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":30,"ultima_deteccion":1795544638,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":584,"rssi":-55}}}
+2026-11-24T18:24:00.622Z | [Alarma] Apagada
+2026-11-24T18:24:00.652Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":30,"ultima_deteccion":1795544638,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":585,"rssi":-63},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:24:00.655Z | [PIR] Sin movimiento
+2026-11-24T18:24:01.149Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":30,"ultima_deteccion":1795544638,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":585,"rssi":-64}}}
+2026-11-24T18:24:04.454Z | [PIR] Movimiento detectado (#31)
+2026-11-24T18:24:04.455Z | [Alarma] Encendida
+2026-11-24T18:24:04.483Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":31,"ultima_deteccion":1795544643,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":589,"rssi":-63},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:24:05.669Z | [PIR] Sin movimiento
+2026-11-24T18:24:05.696Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":31,"ultima_deteccion":1795544643,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":590,"rssi":-60}}}
+2026-11-24T18:24:09.432Z | [PIR] Movimiento detectado (#32)
+2026-11-24T18:24:09.457Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":32,"ultima_deteccion":1795544648,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":594,"rssi":-56}}}
+2026-11-24T18:24:10.645Z | [PIR] Sin movimiento
+2026-11-24T18:24:10.672Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":32,"ultima_deteccion":1795544648,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":595,"rssi":-60}}}
+2026-11-24T18:24:22.624Z | [Shadow] delta recibido epoch_ms=1795544662003 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:24:22.626Z | [Alarma] Apagada
+2026-11-24T18:24:22.627Z | [Origen] voz
+2026-11-24T18:24:22.650Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":32,"ultima_deteccion":1795544648,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":607,"rssi":-74}}}
+2026-11-24T18:25:12.151Z | [PIR] Movimiento detectado (#33)
+2026-11-24T18:25:12.153Z | [Alarma] Encendida
+2026-11-24T18:25:12.182Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":33,"ultima_deteccion":1795544711,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":656,"rssi":-61},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:25:13.366Z | [PIR] Sin movimiento
+2026-11-24T18:25:13.393Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":33,"ultima_deteccion":1795544711,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":658,"rssi":-76}}}
+2026-11-24T18:25:21.205Z | [PIR] Movimiento detectado (#34)
+2026-11-24T18:25:21.231Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":34,"ultima_deteccion":1795544720,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":665,"rssi":-67}}}
+2026-11-24T18:25:21.557Z | [Shadow] delta recibido epoch_ms=1795544720936 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:25:21.559Z | [Alarma] Apagada
+2026-11-24T18:25:21.560Z | [Origen] voz
+2026-11-24T18:25:21.583Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":34,"ultima_deteccion":1795544720,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":666,"rssi":-52}}}
+2026-11-24T18:25:21.591Z | [Shadow] delta recibido epoch_ms=1795544720966 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:25:21.619Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":34,"ultima_deteccion":1795544720,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":666,"rssi":-61}}}
+2026-11-24T18:25:22.421Z | [PIR] Sin movimiento
+2026-11-24T18:25:22.448Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":34,"ultima_deteccion":1795544720,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":667,"rssi":-78}}}
+2026-11-24T18:25:59.083Z | [PIR] Movimiento detectado (#35)
+2026-11-24T18:25:59.084Z | [Alarma] Encendida
+2026-11-24T18:25:59.113Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":35,"ultima_deteccion":1795544758,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":703,"rssi":-56},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:26:00.298Z | [PIR] Sin movimiento
+2026-11-24T18:26:00.326Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":35,"ultima_deteccion":1795544758,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":704,"rssi":-60}}}
+2026-11-24T18:26:04.215Z | [PIR] Movimiento detectado (#36)
+2026-11-24T18:26:04.241Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":36,"ultima_deteccion":1795544763,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":708,"rssi":-62}}}
+2026-11-24T18:26:05.429Z | [PIR] Sin movimiento
+2026-11-24T18:26:05.457Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":36,"ultima_deteccion":1795544763,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":710,"rssi":-64}}}
+2026-11-24T18:26:06.868Z | [Shadow] delta recibido epoch_ms=1795544766247 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:26:06.870Z | [Alarma] Apagada
+2026-11-24T18:26:06.871Z | [Origen] voz
+2026-11-24T18:26:06.894Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":36,"ultima_deteccion":1795544763,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":711,"rssi":-63}}}
+2026-11-24T18:26:09.632Z | [PIR] Movimiento detectado (#37)
+2026-11-24T18:26:09.634Z | [Alarma] Encendida
+2026-11-24T18:26:09.662Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":37,"ultima_deteccion":1795544769,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":714,"rssi":-58},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:26:10.846Z | [PIR] Sin movimiento
+2026-11-24T18:26:10.874Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":37,"ultima_deteccion":1795544769,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":715,"rssi":-52}}}
+2026-11-24T18:26:14.446Z | [Shadow] delta recibido epoch_ms=1795544773825 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:26:14.448Z | [Alarma] Apagada
+2026-11-24T18:26:14.449Z | [Origen] voz
+2026-11-24T18:26:14.472Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":37,"ultima_deteccion":1795544769,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":719,"rssi":-62}}}
+2026-11-24T18:26:14.907Z | [PIR] Movimiento detectado (#38)
+2026-11-24T18:26:14.909Z | [Alarma] Encendida
+2026-11-24T18:26:14.938Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":38,"ultima_deteccion":1795544774,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":719,"rssi":-59},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:26:16.122Z | [PIR] Sin movimiento
+2026-11-24T18:26:16.148Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":38,"ultima_deteccion":1795544774,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":720,"rssi":-56}}}
+2026-11-24T18:26:20.854Z | [PIR] Movimiento detectado (#39)
+2026-11-24T18:26:20.880Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":39,"ultima_deteccion":1795544780,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":725,"rssi":-54}}}
+2026-11-24T18:26:22.068Z | [PIR] Sin movimiento
+2026-11-24T18:26:22.096Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":39,"ultima_deteccion":1795544780,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":726,"rssi":-60}}}
+2026-11-24T18:26:26.451Z | [PIR] Movimiento detectado (#40)
+2026-11-24T18:26:26.478Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":40,"ultima_deteccion":1795544785,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":731,"rssi":-64}}}
+2026-11-24T18:26:27.667Z | [PIR] Sin movimiento
+2026-11-24T18:26:27.694Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":40,"ultima_deteccion":1795544785,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":732,"rssi":-61}}}
+2026-11-24T18:26:32.508Z | [PIR] Movimiento detectado (#41)
+2026-11-24T18:26:32.533Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":41,"ultima_deteccion":1795544791,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":737,"rssi":-70}}}
+2026-11-24T18:26:33.722Z | [PIR] Sin movimiento
+2026-11-24T18:26:33.749Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":41,"ultima_deteccion":1795544791,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":738,"rssi":-72}}}
+2026-11-24T18:26:39.535Z | [Shadow] delta recibido epoch_ms=1795544798914 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:26:39.537Z | [Alarma] Apagada
+2026-11-24T18:26:39.538Z | [Origen] voz
+2026-11-24T18:26:39.560Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":41,"ultima_deteccion":1795544791,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":744,"rssi":-68}}}
+2026-11-24T18:26:55.519Z | [PIR] Movimiento detectado (#42)
+2026-11-24T18:26:55.520Z | [Alarma] Encendida
+2026-11-24T18:26:55.549Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":42,"ultima_deteccion":1795544814,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":760,"rssi":-77},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:26:56.732Z | [PIR] Sin movimiento
+2026-11-24T18:26:56.759Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":42,"ultima_deteccion":1795544814,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":761,"rssi":-71}}}
+2026-11-24T18:27:03.395Z | [Shadow] delta recibido epoch_ms=1795544822774 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:27:03.397Z | [Alarma] Apagada
+2026-11-24T18:27:03.398Z | [Origen] voz
+2026-11-24T18:27:03.420Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":42,"ultima_deteccion":1795544814,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":768,"rssi":-59}}}
+2026-11-24T18:27:13.904Z | [PIR] Movimiento detectado (#43)
+2026-11-24T18:27:13.906Z | [Alarma] Encendida
+2026-11-24T18:27:13.935Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":43,"ultima_deteccion":1795544833,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":778,"rssi":-60},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:27:15.119Z | [PIR] Sin movimiento
+2026-11-24T18:27:15.146Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":43,"ultima_deteccion":1795544833,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":779,"rssi":-59}}}
+2026-11-24T18:27:19.314Z | [PIR] Movimiento detectado (#44)
+2026-11-24T18:27:19.341Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":44,"ultima_deteccion":1795544838,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":783,"rssi":-60}}}
+2026-11-24T18:27:20.086Z | [Shadow] delta recibido epoch_ms=1795544839466 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:27:20.088Z | [Alarma] Apagada
+2026-11-24T18:27:20.089Z | [Origen] voz
+2026-11-24T18:27:20.112Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":44,"ultima_deteccion":1795544838,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":784,"rssi":-59}}}
+2026-11-24T18:27:20.528Z | [PIR] Sin movimiento
+2026-11-24T18:27:20.609Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":44,"ultima_deteccion":1795544838,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":785,"rssi":-59}}}
+2026-11-24T18:27:36.169Z | [PIR] Movimiento detectado (#45)
+2026-11-24T18:27:36.172Z | [Alarma] Encendida
+2026-11-24T18:27:36.201Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":45,"ultima_deteccion":1795544855,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":800,"rssi":-66},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:27:37.383Z | [PIR] Sin movimiento
+2026-11-24T18:27:37.411Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":45,"ultima_deteccion":1795544855,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":802,"rssi":-66}}}
+2026-11-24T18:27:41.512Z | [PIR] Movimiento detectado (#46)
+2026-11-24T18:27:41.539Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":46,"ultima_deteccion":1795544860,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":806,"rssi":-65}}}
+2026-11-24T18:27:42.728Z | [PIR] Sin movimiento
+2026-11-24T18:27:42.755Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":46,"ultima_deteccion":1795544860,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":807,"rssi":-69}}}
+2026-11-24T18:27:47.905Z | [PIR] Movimiento detectado (#47)
+2026-11-24T18:27:47.931Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":47,"ultima_deteccion":1795544867,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":812,"rssi":-72}}}
+2026-11-24T18:27:49.120Z | [PIR] Sin movimiento
+2026-11-24T18:27:49.147Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":47,"ultima_deteccion":1795544867,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":813,"rssi":-70}}}
+2026-11-24T18:27:53.323Z | [PIR] Movimiento detectado (#48)
+2026-11-24T18:27:53.349Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":48,"ultima_deteccion":1795544872,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":817,"rssi":-60}}}
+2026-11-24T18:27:54.537Z | [PIR] Sin movimiento
+2026-11-24T18:27:54.564Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":48,"ultima_deteccion":1795544872,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":819,"rssi":-63}}}
+2026-11-24T18:27:58.631Z | [PIR] Movimiento detectado (#49)
+2026-11-24T18:27:58.657Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":49,"ultima_deteccion":1795544878,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":823,"rssi":-55}}}
+2026-11-24T18:27:59.846Z | [PIR] Sin movimiento
+2026-11-24T18:27:59.873Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":49,"ultima_deteccion":1795544878,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":824,"rssi":-57}}}
+2026-11-24T18:28:04.010Z | [PIR] Movimiento detectado (#50)
+2026-11-24T18:28:04.036Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":50,"ultima_deteccion":1795544883,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":828,"rssi":-55}}}
+2026-11-24T18:28:05.225Z | [PIR] Sin movimiento
+2026-11-24T18:28:05.253Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":50,"ultima_deteccion":1795544883,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":829,"rssi":-57}}}
+2026-11-24T18:28:06.169Z | [Alarma] Apagada
+2026-11-24T18:28:06.200Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":50,"ultima_deteccion":1795544883,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":830,"rssi":-60},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:28:09.565Z | [PIR] Movimiento detectado (#51)
+2026-11-24T18:28:09.566Z | [Alarma] Encendida
+2026-11-24T18:28:09.595Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":51,"ultima_deteccion":1795544888,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":834,"rssi":-55},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:28:10.778Z | [PIR] Sin movimiento
+2026-11-24T18:28:10.805Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":51,"ultima_deteccion":1795544888,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":835,"rssi":-54}}}
+2026-11-24T18:28:14.533Z | [PIR] Movimiento detectado (#52)
+2026-11-24T18:28:14.559Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":52,"ultima_deteccion":1795544893,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":839,"rssi":-66}}}
+2026-11-24T18:28:15.748Z | [PIR] Sin movimiento
+2026-11-24T18:28:15.774Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":52,"ultima_deteccion":1795544893,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":840,"rssi":-76}}}
+2026-11-24T18:28:20.093Z | [PIR] Movimiento detectado (#53)
+2026-11-24T18:28:20.119Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":53,"ultima_deteccion":1795544899,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":844,"rssi":-62}}}
+2026-11-24T18:28:21.307Z | [PIR] Sin movimiento
+2026-11-24T18:28:21.334Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":53,"ultima_deteccion":1795544899,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":845,"rssi":-68}}}
+2026-11-24T18:28:25.248Z | [PIR] Movimiento detectado (#54)
+2026-11-24T18:28:25.276Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":54,"ultima_deteccion":1795544904,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":849,"rssi":-71}}}
+2026-11-24T18:28:26.463Z | [PIR] Sin movimiento
+2026-11-24T18:28:26.490Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":54,"ultima_deteccion":1795544904,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":851,"rssi":-74}}}
+2026-11-24T18:28:30.547Z | [PIR] Movimiento detectado (#55)
+2026-11-24T18:28:30.572Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":55,"ultima_deteccion":1795544909,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":855,"rssi":-75}}}
+2026-11-24T18:28:31.762Z | [PIR] Sin movimiento
+2026-11-24T18:28:31.789Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":55,"ultima_deteccion":1795544909,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":856,"rssi":-75}}}
+2026-11-24T18:28:36.535Z | [PIR] Movimiento detectado (#56)
+2026-11-24T18:28:36.561Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":861,"rssi":-79}}}
+2026-11-24T18:28:37.750Z | [PIR] Sin movimiento
+2026-11-24T18:28:37.778Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":862,"rssi":-84}}}
+2026-11-24T18:28:39.563Z | [Alarma] Apagada
+2026-11-24T18:28:39.593Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":864,"rssi":-88},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:28:39.602Z | [Shadow] delta recibido epoch_ms=1795544918979 ($aws/things/vigilante-123456/shadow/update/delta)
+2026-11-24T18:28:39.603Z | [Origen] voz
+2026-11-24T18:28:39.630Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":864,"rssi":-88}}}
+2026-11-24T18:29:39.630Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":924,"rssi":-78}}}
+2026-11-24T18:30:39.631Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":984,"rssi":-74}}}
+2026-11-24T18:31:39.631Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1044,"rssi":-76}}}
+2026-11-24T18:32:39.629Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1104,"rssi":-68}}}
+2026-11-24T18:33:39.630Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1164,"rssi":-63}}}
+2026-11-24T18:34:39.629Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1224,"rssi":-70}}}
+2026-11-24T18:35:39.629Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1284,"rssi":-68}}}
+2026-11-24T18:36:39.629Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1344,"rssi":-65}}}
+2026-11-24T18:37:39.628Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1404,"rssi":-70}}}
+2026-11-24T18:38:39.627Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1464,"rssi":-72}}}
+2026-11-24T18:39:39.626Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1524,"rssi":-71}}}
+2026-11-24T18:40:39.627Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1584,"rssi":-78}}}
+2026-11-24T18:41:39.626Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1644,"rssi":-65}}}
+2026-11-24T18:42:39.624Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1704,"rssi":-77}}}
+2026-11-24T18:43:39.625Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1764,"rssi":-75}}}
+2026-11-24T18:44:39.624Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":56,"ultima_deteccion":1795544915,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"voz","uptime_s":1824,"rssi":-69}}}
+2026-11-24T18:44:53.748Z | [PIR] Movimiento detectado (#57)
+2026-11-24T18:44:53.750Z | [Alarma] Encendida
+2026-11-24T18:44:53.778Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":57,"ultima_deteccion":1795545893,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1838,"rssi":-53},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:44:54.963Z | [PIR] Sin movimiento
+2026-11-24T18:44:54.991Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":57,"ultima_deteccion":1795545893,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1839,"rssi":-55}}}
+2026-11-24T18:45:23.746Z | [Alarma] Apagada
+2026-11-24T18:45:23.778Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":57,"ultima_deteccion":1795545893,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1868,"rssi":-76},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:45:31.909Z | [PIR] Movimiento detectado (#58)
+2026-11-24T18:45:31.910Z | [Alarma] Encendida
+2026-11-24T18:45:31.939Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":58,"ultima_deteccion":1795545931,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1876,"rssi":-55},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:45:33.125Z | [PIR] Sin movimiento
+2026-11-24T18:45:33.152Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":58,"ultima_deteccion":1795545931,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1877,"rssi":-54}}}
+2026-11-24T18:46:01.908Z | [Alarma] Apagada
+2026-11-24T18:46:01.940Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":58,"ultima_deteccion":1795545931,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1906,"rssi":-61},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:47:01.935Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":58,"ultima_deteccion":1795545931,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1966,"rssi":-58}}}
+2026-11-24T18:47:04.053Z | [PIR] Movimiento detectado (#59)
+2026-11-24T18:47:04.055Z | [Alarma] Encendida
+2026-11-24T18:47:04.084Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":59,"ultima_deteccion":1795546023,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1968,"rssi":-56},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:47:05.270Z | [PIR] Sin movimiento
+2026-11-24T18:47:05.297Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":59,"ultima_deteccion":1795546023,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1969,"rssi":-55}}}
+2026-11-24T18:47:34.052Z | [Alarma] Apagada
+2026-11-24T18:47:34.084Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":59,"ultima_deteccion":1795546023,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":1998,"rssi":-72},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:48:34.079Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":59,"ultima_deteccion":1795546023,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":2058,"rssi":-64}}}
+2026-11-24T18:49:06.289Z | [PIR] Movimiento detectado (#60)
+2026-11-24T18:49:06.291Z | [Alarma] Encendida
+2026-11-24T18:49:06.319Z | [Shadow] reported -> {"state":{"reported":{"movimiento":true,"detecciones":60,"ultima_deteccion":1795546145,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":2090,"rssi":-65},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:49:07.505Z | [PIR] Sin movimiento
+2026-11-24T18:49:07.532Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":60,"ultima_deteccion":1795546145,"sensor_listo":true,"puerta":"cerrada","alarma":"encendida","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":2092,"rssi":-57}}}
+2026-11-24T18:49:36.288Z | [Alarma] Apagada
+2026-11-24T18:49:36.319Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":60,"ultima_deteccion":1795546145,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":2120,"rssi":-77},"desired":{"alarma":null,"origen":null}}}
+2026-11-24T18:50:36.315Z | [Shadow] reported -> {"state":{"reported":{"movimiento":false,"detecciones":60,"ultima_deteccion":1795546145,"sensor_listo":true,"puerta":"cerrada","alarma":"apagada","modo":"bloqueo","max_detecciones":2,"ventana_min":10,"origen":"edge","uptime_s":2180,"rssi":-77}}}
