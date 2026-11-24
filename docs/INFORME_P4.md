@@ -1658,14 +1658,14 @@ Ningún componente usa *access keys*: el ESP32 se autentica con su certificado y
 
 | Archivo (en `anexos/p4/`) | Muestra |
 |---|---|
-| `reglas-iot.png` | Las tres reglas **Activas** en Enrutamiento de mensajes |
+| [reglas-iot.png](anexos/p4/reglas-iot.png) | **M:** vigilante_lecturas, vigilante_eventos y vigilante_deteccion en estado Activo |
 | `regla-eventos-sql.png` | SQL de `vigilante_eventos` con la condición de `alarma` y su acción Lambda |
 | `historico-tabla.png` | Tabla `vigilante_historico`: claves `thingName` / `tipo_ts`, bajo demanda |
-| `historico-ttl.png` | TTL activado en el atributo `expira` |
+| [historico-ttl.png](anexos/p4/historico-ttl.png) | **M:** tabla vigilante_historico con TTL Activada y atributo expira |
 | [`lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | **M:** lecturas y eventos de alarma del Thing real. Falta una captura conjunta o exportación de `deteccion#`, `puerta#` y `modo#`; no se infiere su ausencia a partir de esta consulta |
 | `sombra-alarma.png` | Sombra clásica del Thing real con `alarma`, `modo` y `origen` en `reported` |
 
-Las capturas anteriores acreditan ítems reales; la presencia de `expira` en una lectura no demuestra que TTL esté habilitado. Los SQL y JSON del repositorio son la configuración prevista: reglas activas, TTL habilitado, Shadow actual y correspondencia del código desplegado todavía requieren las comprobaciones del [anexo de verificación](anexos/p4/lu-estimaciones-y-verificacion.md#verificacion-del-despliegue).
+Las capturas recibidas acreditan las tres reglas activas y TTL habilitado en expira para vigilante_historico. La activación de TTL se verifica en su configuración, además de la columna de los ítems. Siguen por comprobar SQL/acciones completos, correspondencia exacta del código desplegado y confirmación del bloqueo en reported. Alcance de cada imagen: [índice de capturas reales](anexos/p4/ru-indice-capturas.md).
 
 ### 3.2.2 Funciones Lambda
 
@@ -1792,12 +1792,14 @@ El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que 
 | ![Endpoint](anexos/alexa-03-endpoint.png) | Endpoint AWS Lambda ARN en *Default Region* (cuenta oculta) |
 | ![Build](anexos/alexa-04-build-exitoso.png) | *Last successful build*, 0 errores y 0 advertencias |
 | ![Test](anexos/alexa-05-test-development.png) | Pestaña *Test*: simulador en Spanish (US) con *Skill I/O* |
-| `ru-alexa-intents-p4.png` — por capturar | Modelo versionado con 20 intents; lista de la consola aún no verificada |
-| `ru-alexa-build-p4.png` — por capturar | Compilación vigente sin errores: requiere evidencia real; no se deduce de las pruebas del JSON |
+| [Intents P4, parte 1](anexos/p4/ru-alexa-intents-p4.png), [parte 2](anexos/p4/ru-alexa-intents-p4-02.png), [parte 3](anexos/p4/ru-alexa-intents-p4-03.png) | **M:** lista de 20 intents, incluidos los integrados, modos, parámetros y alarma |
+| [Build P4](anexos/p4/ru-alexa-build-p4.png) | **M:** Build History, Latest (10), compilación exitosa 24/11/2026 a las 16:59. Idioma visible Spanish (MX) + 1; no se identifica la segunda lengua |
 
 ---
 
 # 4. Pruebas y validaciones
+
+Las capturas P4 están documentadas en el [índice de evidencias recibidas](anexos/p4/ru-indice-capturas.md). El nombre de archivo versionado es es-US; la captura de compilación muestra Spanish (MX) + 1. Falta comprobar qué segunda lengua incluye el build y comparar cada modelo con su archivo, sin deducir esa identidad del total de intents.
 
 ## 4.1 Plan de pruebas
 
@@ -1825,8 +1827,8 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 | S-08 a S-10 | RF5, RF6 | Encender, consultar y apagar la alarma (§4.6) | Buzzer suena y se apaga | Rubén | ⏳ (automatizado ✅) |
 | S-11 a S-13 | RF13, RF14 | Bloqueo por voz, alarma de la Nube y vuelta a manual (§4.6) | Puerta cerrada; origen `nube`; alarma apagada | Rubén | ⏳ (automatizado ✅) |
 | V-01 | RNF3 | 10 órdenes de puerta y 10 de alarma (§4.6) | ≤ 3 s por orden | Rubén y grupo | ⏳ |
-| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, monitor serie con marca de tiempo (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | ⏳ |
-| N-02 | RF13 | 2 detecciones en la ventana (§4.7) | `sin_accion`, sin bloqueo | Rubén | ⏳ |
+| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, monitor serie con marca de tiempo (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | **M parcial:** log real de bloqueo con alarma; faltan confirmación en reported y tiempos completos |
+| N-02 | RF13 | 2 detecciones en la ventana (§4.7) | `sin_accion`, sin bloqueo | Rubén | **M parcial:** log sin_accion con 2/3 detecciones; estado físico del objeto no acreditado |
 | P-A4 | RNF11 | Estimación mensual frente a la capa gratuita (§4.8) | < USD 1 al mes por objeto | Alejandro | ✅ ≈ USD 0,19 |
 
 ### Cómo se registran las mediciones
@@ -2122,11 +2124,25 @@ Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) 
 | 3 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
 | 4 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
 | 5 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| **Promedio / máximo** | **0 ensayos reales** | No calculados | No calculados; E no sustituye promedio/máximo | RNF9 sin validar |
+| **Promedio / máximo** | **0 ensayos cronometrados** | No calculados | Hay log funcional real, sin tiempo completo | RNF9 sin validar |
 
-**Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. Resultado **esperado por código y prueba automatizada:** `sin_accion`; el ensayo N-02 en AWS no está capturado. **E:** 0,3–2 s para decidir, sin medición integrada · Evidencia por adjuntar: `ru-cw-sin-accion.png`. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
+**Prueba negativa, decisión observada:** [ru-cw-sin-accion.png](anexos/p4/ru-cw-sin-accion.png) muestra el evento sin_accion del 24/11/2026 a las 20:29:40.030 UTC, Thing vigilante-123456, detecciones_en_ventana 2, max_detecciones 3 y ventana_min 10. Esa invocación no ordena bloqueo. La ausencia de sonido o de cambios físicos no se deduce del log y sigue por verificar. No se dispone de tiempo completo para N-02.
 
-**Evidencias por capturar:** monitor serie del bloqueo, `ru-cw-bloqueo.png` (CloudWatch de `vigilante-logica`) y `ru-shadow-bloqueo.png` (Shadow con `origen: nube`). Los logs reales de almacenamiento de LU-05 pertenecen a otra Lambda y no prueban N-01/N-02. El escenario E de 0,4–5,5 s reserva tiempo para red, ejecución/consulta y delta, pero no garantiza RNF9; véase el [anexo de estimaciones](anexos/p4/lu-estimaciones-y-verificacion.md).
+**Decisión positiva observada:** [ru-cw-bloqueo.png](anexos/p4/ru-cw-bloqueo.png) muestra bloqueo_activado del 24/11/2026 a las 20:30:00.300 UTC para vigilante-123456, con 3 detecciones, umbral 3 y ventana 10 min. La orden desired incluye modo bloqueo, puerta cerrada, alarma encendida y origen nube. Es evidencia funcional adicional; no constituye una de las cinco mediciones de latencia del guion de ventana 1 min.
+
+![Decisión positiva de vigilante-logica](anexos/p4/ru-cw-bloqueo.png)
+
+*Figura 4.7.1 — Log real de bloqueo con alarma y origen nube. No confirma por sí solo la aplicación por el ESP32.*
+
+![Decisión negativa de vigilante-logica](anexos/p4/ru-cw-sin-accion.png)
+
+*Figura 4.7.2 — Log real sin_accion con 2 detecciones de las 3 necesarias.*
+
+![Orden solicitada de bloqueo en el Shadow](anexos/p4/ru-shadow-bloqueo-desired.png)
+
+*Figura 4.7.3 — Captura posterior de desired con alarma encendida y origen nube, umbral 3 y ventana 1 min. reported está recortado; no acredita aplicación ni se atribuye al mismo ensayo de ventana 10 min de los logs anteriores.*
+
+**Por completar:** captura ru-shadow-bloqueo.png con los campos requeridos en reported y cinco tiempos completos de detección a efecto. El escenario E de 0,4–5,5 s sigue siendo una estimación, no un máximo medido. La diferencia de hora entre los eventos sin_accion y bloqueo_activado tampoco es latencia de la regla: son dos detecciones distintas. Véase el [índice con alcance de todas las capturas](anexos/p4/ru-indice-capturas.md).
 
 ## 4.8 Costo mensual frente a la capa gratuita (P-A4)
 
@@ -2313,6 +2329,7 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`p4/lu-revision-referencias.md`](anexos/p4/lu-revision-referencias.md) | Luciana | Revisión de la integración y límites de la evidencia | §4 |
 | [`p4/lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`p4/lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | Luciana | Capturas reales de ítems del 24/11/2026 | §3.2.1, §5.3 |
 | [`p4/lu-estimaciones-y-verificacion.md`](anexos/p4/lu-estimaciones-y-verificacion.md) | Luciana | Supuestos E, límites y pasos para verificar despliegue/capturas | §4, §5 |
+| [Índice de capturas P4](anexos/p4/ru-indice-capturas.md), [huellas de los archivos](anexos/p4/ru-capturas-fuentes.json) | Grupo; capturas aportadas por Luciana | Intents, compilación, reglas activas, TTL, decisiones Nube y desired del Shadow; incluye antecedentes identificados | §3.2.1, §3.3, §4.7 |
 | Capturas de la P3 (`aws-*`, `alexa-*`) en [`anexos/`](anexos/) | Grupo | Configuración de IoT Core, DynamoDB, IAM, Lambda y Alexa que se mantiene | §3.2, §3.3 |
 
 ## 8.2 Configuraciones exportadas
