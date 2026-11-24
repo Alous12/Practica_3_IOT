@@ -1,0 +1,4 @@
+OK: PIR, servo y reportes: calentamiento, flancos, desborde, validacion, PWM, eventos, latido, reintento y reconexion simulada.
+OK: filtro del PIR (calentamiento, 50 ms, ruido alto/bajo) y calibracion del servo.
+OK Edge: manual/automatico/bloqueo, calentamiento, filtro, flanco, cierre sin red, PWM idempotente, delta antiguo, reintento y limpieza atomica.
+OK AlarmRule: bloqueo, flancos, 30s, voz/nube, desborde, offline, reglas combinadas y limpieza ante delta antiguo. Buzzer simulado.
