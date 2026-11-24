@@ -1,0 +1,53 @@
+{
+  "procedencia": "Capturas aportadas por la usuaria en el chat el 24/11/2026; copias sin alteracion visual.",
+  "archivos": [
+    {
+      "archivo": "docs/anexos/p4/antecedentes/historico-ttl-detalle.png",
+      "sha256": "e750e344cd1bd46b726c841f191ff3b76787b090d76acfa20235d992c0ab0351"
+    },
+    {
+      "archivo": "docs/anexos/p4/historico-ttl.png",
+      "sha256": "aa14e204f206379cb3bbfbfe878009d3828f11bb2e286204dabd13bbb3121624"
+    },
+    {
+      "archivo": "docs/anexos/p4/reglas-iot.png",
+      "sha256": "8687a678b315fac0ea9833c6d8064d41e5fea9a05c87f1ca466f4d9ffba752b9"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-alexa-build-p4.png",
+      "sha256": "be6c8982d07a37bf0d920bed72a19443f0f10f7929ae210a76382a0047056d9c"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-alexa-intents-p4-02.png",
+      "sha256": "ed62a4b8a9acd338cf50cb5a329ca5ffb3a38fa728ff7b68d7b4c1a0b71dea8d"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-alexa-intents-p4-03.png",
+      "sha256": "f45c53dbb2438a001efeeb224a9b90e8f764e90778a6bad3b56304320a6d64f6"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-alexa-intents-p4.png",
+      "sha256": "306f78eb07ffe236f07844ff2df17d3fe91a6af9f6d2cb67fdb2869de837383a"
+    },
+    {
+      "archivo": "docs/anexos/p4/antecedentes/ru-cw-bloqueo-anterior-sin-alarma.png",
+      "sha256": "326991b2a020ae6a08299382587c280d78b86f23b8db59287a0176f14741a9e2"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-cw-bloqueo.png",
+      "sha256": "ec1d5f22d34478cabb8d18e8c1ee59256fb67731d25650c0d359ed2a73201b71"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-cw-sin-accion.png",
+      "sha256": "df0822affe7a639ece8de4271c2d9adc41539f832450284f8dd281dc3b5928ac"
+    },
+    {
+      "archivo": "docs/anexos/p4/ru-shadow-bloqueo-desired.png",
+      "sha256": "165a6796bf20da33f4867ea23f5bf68bec5366ef0dd10fc2d5ffb28186663561"
+    },
+    {
+      "archivo": "docs/anexos/p4/antecedentes/ru-shadow-manual-previo.png",
+      "sha256": "13b63419bdde9cd7c8fcfe0c62ca18b77349b04686f7426cb66850b29ceacd6f"
+    }
+  ]
+}

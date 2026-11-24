@@ -12,7 +12,7 @@ import statistics
 from datetime import datetime
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[1] / 'docs/anexos/p4/lu-sesion-20261124'
+BASE = Path(__file__).resolve().parents[1] / 'docs/anexos/p4'
 FIELDS = ('movimiento', 'detecciones', 'ultima_deteccion', 'sensor_listo',
           'puerta', 'alarma', 'modo', 'max_detecciones', 'ventana_min',
           'origen', 'uptime_s', 'rssi')

@@ -28,7 +28,7 @@ Las secciones 4 (plan de pruebas), 6, 7 y 8 son compartidas: cada integrante apo
 
 En negrita, lo nuevo de la Práctica 4. El ID de la cuenta de AWS, el endpoint de IoT, el Skill ID, los certificados y la contraseña WiFi no se publican: en el repositorio aparecen como `<ACCOUNT_ID>`, `xxxxxxxx-ats.iot.us-east-2.amazonaws.com` y la plantilla [`include/secrets.example.h`](../include/secrets.example.h).
 
-**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. Las mediciones físicas de la sesión final del 24/11/2026 (N-01, LU-06, LU-07 y LU-08) salen del monitor serie con marca de tiempo en milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), y el guion del simulador S-01 a S-13 tiene sus capturas en [`anexos/p4/`](anexos/p4/). Los supuestos de las estimaciones restantes están en [`lu-estimaciones-y-verificacion.md`](anexos/p4/lu-estimaciones-y-verificacion.md).
+**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. Las mediciones físicas de la sesión final del 24/11/2026 (N-01, LU-06, LU-07 y LU-08) salen del monitor serie con marca de tiempo en milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), y el guion del simulador S-01 a S-13 tiene sus capturas en [`anexos/p4/`](anexos/p4/). El alcance de cada captura de AWS y Alexa está en [`ru-indice-capturas.md`](anexos/p4/ru-indice-capturas.md).
 
 ## Contenido
 
@@ -1658,14 +1658,14 @@ Ningún componente usa *access keys*: el ESP32 se autentica con su certificado y
 
 | Archivo (en `anexos/p4/`) | Muestra |
 |---|---|
-| `reglas-iot.png` | Las tres reglas **Activas** en Enrutamiento de mensajes |
+| [reglas-iot.png](anexos/p4/reglas-iot.png) | **M:** vigilante_lecturas, vigilante_eventos y vigilante_deteccion en estado Activo |
 | `regla-eventos-sql.png` | SQL de `vigilante_eventos` con la condición de `alarma` y su acción Lambda |
 | `historico-tabla.png` | Tabla `vigilante_historico`: claves `thingName` / `tipo_ts`, bajo demanda |
-| `historico-ttl.png` | TTL activado en el atributo `expira` |
+| [historico-ttl.png](anexos/p4/historico-ttl.png) | **M:** tabla vigilante_historico con TTL Activada y atributo expira |
 | [`lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | **M:** lecturas y eventos de alarma del Thing real. Falta una captura conjunta o exportación de `deteccion#`, `puerta#` y `modo#`; no se infiere su ausencia a partir de esta consulta |
 | `sombra-alarma.png` | Sombra clásica del Thing real con `alarma`, `modo` y `origen` en `reported` |
 
-Las capturas anteriores acreditan ítems reales; la presencia de `expira` en una lectura no demuestra que TTL esté habilitado. Los SQL y JSON del repositorio son la configuración prevista: reglas activas, TTL habilitado, Shadow actual y correspondencia del código desplegado todavía requieren las comprobaciones del [anexo de verificación](anexos/p4/lu-estimaciones-y-verificacion.md#verificacion-del-despliegue).
+Las capturas recibidas acreditan las tres reglas activas y TTL habilitado en expira para vigilante_historico. La activación de TTL se verifica en su configuración, además de la columna de los ítems. Siguen por comprobar SQL/acciones completos, correspondencia exacta del código desplegado y confirmación del bloqueo en reported. Alcance de cada imagen: [índice de capturas reales](anexos/p4/ru-indice-capturas.md).
 
 ### 3.2.2 Funciones Lambda
 
@@ -1792,12 +1792,14 @@ El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que 
 | ![Endpoint](anexos/alexa-03-endpoint.png) | Endpoint AWS Lambda ARN en *Default Region* (cuenta oculta) |
 | ![Build](anexos/alexa-04-build-exitoso.png) | *Last successful build*, 0 errores y 0 advertencias |
 | ![Test](anexos/alexa-05-test-development.png) | Pestaña *Test*: simulador en Spanish (US) con *Skill I/O* |
-| [`ru-alexa-intents-p4.png`](anexos/p4/ru-alexa-intents-p4.png) | Lista de intents en la consola: los 15 propios (vinculación, movimiento, puerta, modo, parámetros y alarma) más los 5 integrados de Amazon, con sus slots `codigo`, `modo`, `numero` y `minutos` |
-| [`ru-alexa-build-p4.png`](anexos/p4/ru-alexa-build-p4.png) | Compilación correcta del modelo corregido (sin la frase `modo {modo}`): *Last successful build: 11/24/2026 @ 4:59 PM* |
+| [Intents P4, parte 1](anexos/p4/ru-alexa-intents-p4.png), [parte 2](anexos/p4/ru-alexa-intents-p4-02.png), [parte 3](anexos/p4/ru-alexa-intents-p4-03.png) | **M:** lista de 20 intents, incluidos los integrados, modos, parámetros y alarma |
+| [Build P4](anexos/p4/ru-alexa-build-p4.png) | **M:** Build History, Latest (10), compilación exitosa 24/11/2026 a las 16:59. Idioma visible Spanish (MX) + 1; no se identifica la segunda lengua |
 
 ---
 
 # 4. Pruebas y validaciones
+
+Las capturas P4 están documentadas en el [índice de evidencias recibidas](anexos/p4/ru-indice-capturas.md). El nombre de archivo versionado es es-US; la captura de compilación muestra Spanish (MX) + 1. Falta comprobar qué segunda lengua incluye el build y comparar cada modelo con su archivo, sin deducir esa identidad del total de intents.
 
 ## 4.1 Plan de pruebas
 
@@ -1914,13 +1916,13 @@ Estas pruebas usan el firmware de la demo (`esp32dev-aws`) con el circuito de la
 
 | Medida | Resultado M | Evidencia |
 |---|---|---|
-| Ventana completa | 18:20:41.968–18:50:41.968 UTC; 14:20:41.968–14:50:41.968 Bolivia | [Resumen de captura](anexos/p4/lu-sesion-20261124/lu-resumen-serial.json) |
+| Ventana completa | 18:20:41.968–18:50:41.968 UTC; 14:20:41.968–14:50:41.968 Bolivia | [Resumen de captura](anexos/p4/lu-resumen-serial.json) |
 | Tiempo observado | **1800 s (30 min)** | Registro continuo del puerto COM4 a 115200 |
-| Reinicios / retrocesos de `uptime_s` | **0 indicios / 0 retrocesos** | [Monitor serie](anexos/p4/lu-sesion-20261124/lu-monitor-serie.txt) |
-| Publicaciones con retorno exitoso de `publish()` | **132**, sin fallo de publicación registrado | [Publicaciones](anexos/p4/lu-sesion-20261124/lu-publicaciones.csv) |
-| `uptime_s` del primer / último reporte | **386 / 2180 s** | [Cruce con DynamoDB](anexos/p4/lu-sesion-20261124/lu-cruce-publicaciones-historico.csv) |
+| Reinicios / retrocesos de `uptime_s` | **0 indicios / 0 retrocesos** | [Monitor serie](anexos/p4/lu-monitor-serie.txt) |
+| Publicaciones con retorno exitoso de `publish()` | **132**, sin fallo de publicación registrado | [Publicaciones](anexos/p4/lu-publicaciones.csv) |
+| `uptime_s` del primer / último reporte | **386 / 2180 s** | [Cruce con DynamoDB](anexos/p4/lu-cruce-publicaciones-historico.csv) |
 | Detecciones acumuladas, inicio / final | **15 / 60**, incremento de 45 | Reportes del estado, sin pasadas controladas |
-| Ciclos completos de alarma en el log | **19**: 7 con apagado Edge y 12 con origen de apagado `voz` | [Ciclos de alarma](anexos/p4/lu-sesion-20261124/lu-alarmas-serie.csv) |
+| Ciclos completos de alarma en el log | **19**: 7 con apagado Edge y 12 con origen de apagado `voz` | [Ciclos de alarma](anexos/p4/lu-alarmas-serie.csv) |
 | Apagados lógicos Edge | **7**, entre **29,996 y 29,998 s** | LU-07 |
 
 La diferencia de los `uptime_s` extremos es 1794 s porque el último reporte llega unos 6 s antes del cierre de la ventana. No reduce la captura de 1800 s. Este registro apoya estabilidad durante la sesión; no verifica ausencia de bloqueos breves, falsos positivos, intensidad del sonido ni respuesta mecánica. Los orígenes `voz` de los reportes no sustituyen capturas del simulador.
@@ -1948,7 +1950,7 @@ La lógica está verificada en [`test_edge.cpp`](../test/luciana/test_edge.cpp) 
 | Nube | **M:** 2 ciclos: 29,995 s (16:41:15 → 16:41:45) y 29,993 s (16:50:19 → 16:50:49), [monitor serie](anexos/p4/ru-monitor-serie-20261124.txt) | 30 ± 1 s | ✅ El plazo no se renovó con la pasada de 16:50:23 durante la alarma |
 | Edge | **M:** 7 ciclos; media 29,997 s; mínimo 29,996 s; máximo 29,998 s | 30 ± 1 s | El log aporta duración lógica; renovación y sonido requieren ensayo controlado |
 
-Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 apagados con origen `voz` ocurrieron antes de 30 s y se informan aparte: no son fallos del temporizador. Para identificar apagado Edge se exige `reported.origen: edge`, alarma apagada y limpieza `desired.alarma: null`. No se incluyeron encendidos incompletos. [CSV completo](anexos/p4/lu-sesion-20261124/lu-alarmas-serie.csv).
+Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 apagados con origen `voz` ocurrieron antes de 30 s y se informan aparte: no son fallos del temporizador. Para identificar apagado Edge se exige `reported.origen: edge`, alarma apagada y limpieza `desired.alarma: null`. No se incluyeron encendidos incompletos. [CSV completo](anexos/p4/lu-alarmas-serie.csv).
 
 ### LU-08 — Operación sin conexión (RNF10, RNF5)
 
@@ -1972,7 +1974,7 @@ Registro completo del ensayo: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-mon
 | G-02 (RNF5) | 3 cortes de WiFi de 60 s; durante el corte, "cierra la puerta" por voz | Reconexión ≤ 30 s y la orden pendiente aplicada | **M:** 1 corte real de 85,3 s (LU-08): MQTT conectado 3,2 s después del WiFi y Shadow sincronizado al instante; ≤ 8,2 s desde que vuelve la red ✅. No se dio una orden por voz durante el corte, así que la aplicación de un `desired` pendiente queda verificada solo por la sincronización con `get` y las pruebas automáticas |
 | G-03 (RNF2) | 20 pasadas a 1, 2 y 3 m con cinta métrica y 10 min con la sala vacía | ≥ 95 % y 0 falsos positivos | Se mantiene la medición de la P3 (98,3 % hasta 3 m y 0 falsos positivos en 10 min): la P4 no cambió el sensor, su jumper ni su ubicación, así que no se repitió el ensayo de 20 pasadas |
 
-Los latidos se seleccionaron por estado sin cambios, `uptime_s` creciente y ausencia de eventos serie intermedios, sin filtrar por el tiempo obtenido. [19 intervalos completos](anexos/p4/lu-sesion-20261124/lu-latidos-serie.csv). No se usa el valor configurado en `config.h` como si fuera una medición.
+Los latidos se seleccionaron por estado sin cambios, `uptime_s` creciente y ausencia de eventos serie intermedios, sin filtrar por el tiempo obtenido. [19 intervalos completos](anexos/p4/lu-latidos-serie.csv). No se usa el valor configurado en `config.h` como si fuera una medición.
 
 ## 4.4 Almacenamiento en DynamoDB (LU-01 a LU-05)
 
@@ -2012,7 +2014,7 @@ El evento de la guía (alarma `apagada → encendida` y detecciones `4 → 5`, `
 
 El CSV exportado tiene **186 lecturas únicas**, de las cuales **54** quedan fuera de la cohorte. La primera página de 50 ítems ya está contenida en esa exportación y no se suma de nuevo. Dos publicaciones consecutivas tienen el mismo estado y se corresponden con dos claves diferentes: ambas se cuentan una vez. El retorno de `publish()` por sí solo no acredita entrega; la correspondencia posterior con DynamoDB aporta esa evidencia en esta sesión.
 
-Evidencia: [exportación original, 186 filas](anexos/p4/lu-sesion-20261124/lu-historico-lecturas-exportado.csv), [132 lecturas de la sesión](anexos/p4/lu-sesion-20261124/lu-historico-lecturas-sesion.csv), [cruce uno a uno](anexos/p4/lu-sesion-20261124/lu-cruce-publicaciones-historico.csv), [resultado calculado](anexos/p4/lu-sesion-20261124/lu-resultado-integridad.json).
+Evidencia: [exportación original, 186 filas](anexos/p4/lu-historico-lecturas-exportado.csv), [132 lecturas de la sesión](anexos/p4/lu-historico-lecturas-sesion.csv), [cruce uno a uno](anexos/p4/lu-cruce-publicaciones-historico.csv), [resultado calculado](anexos/p4/lu-resultado-integridad.json).
 
 ### LU-05 — Latencia de almacenamiento (RNF7)
 
@@ -2023,7 +2025,7 @@ Evidencia: [exportación original, 186 filas](anexos/p4/lu-sesion-20261124/lu-hi
 | Regla IoT → log posterior a escritura | **17** | **160,824 ms** | **144 ms** | **111 ms** | **378 ms** | Tramo AWS medido |
 | ESP32 → almacenamiento completo | Cota con datos medidos | Tramo ESP32 → IoT Core < 0,58 s (en N-01 el viaje completo ESP32 → regla → Lambda → Shadow → ESP32 tardó 0,52–0,58 s) + tramo AWS máx. 0,378 s | < 0,96 s | — | — | ✅ RNF7 (≤ 5 s), como cota superior; no es una medición directa |
 
-Ejemplo real: `lectura#2026-11-24T18:32:39.295Z` → log `2026-11-24T18:32:39.439Z`: **144 ms**. El tramo incluye la espera y procesamiento entre los dos puntos; no equivale a la duración aislada de DynamoDB. [17 muestras con Request ID](anexos/p4/lu-sesion-20261124/lu-cloudwatch-tramo-almacenamiento.csv), [texto original](anexos/p4/lu-sesion-20261124/lu-cloudwatch-texto-original.txt), [resumen](anexos/p4/lu-sesion-20261124/lu-cloudwatch-resultado.json).
+Ejemplo real: `lectura#2026-11-24T18:32:39.295Z` → log `2026-11-24T18:32:39.439Z`: **144 ms**. El tramo incluye la espera y procesamiento entre los dos puntos; no equivale a la duración aislada de DynamoDB. [17 muestras con Request ID](anexos/p4/lu-cloudwatch-tramo-almacenamiento.csv), [texto original](anexos/p4/lu-cloudwatch-texto-original.txt), [resumen](anexos/p4/lu-cloudwatch-resultado.json).
 
 El firmware imprime `reported ->` después de intentar la publicación, y el registro añade la hora de recepción del PC, no un sello UTC de emisión del MCU. Los tiempos de la regla AWS resultan anteriores a varias recepciones serie del PC. Por ello **no se restan esos dos relojes como latencia** ni se sustituyen diferencias negativas por cero. Para cerrar RNF7 hay que registrar 10 emisiones UTC con sincronización comprobada y su log posterior a escritura. La estimación E añade al tramo medido un presupuesto supuesto de red de 0,1–1,5 s; no es una cota ni un resultado del prototipo.
 
@@ -2118,9 +2120,23 @@ Mismas condiciones, con el Thing vinculado y en modo `manual`. Cada paso se capt
 
 Fuente: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt) (marca de tiempo del PC en ms). Casi todo el Δt es el tramo de la Nube: el ESP32 publica el `reported` unos 25 ms después de la detección, la regla `vigilante_deteccion` invoca a `vigilante-logica`, que consulta el histórico y escribe `desired`, y el `delta` llega ~0,52–0,58 s después; el ESP32 enciende el buzzer 2–3 ms tras recibirlo. Se hicieron 3 ensayos en lugar de los 5 previstos por falta de tiempo; el máximo queda 8 veces por debajo de la meta. El Shadow con el `desired` escrito por la Nube (`modo: bloqueo`, `alarma: encendida`, `origen: nube`) está en [`ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png) (la consola no refresca sola: el `reported` de la captura es el previo, y el monitor serie muestra el `reported` con `bloqueo` 32 ms después), y la skill lo confirma en S-12 ([`ru-sim-12-alarma-nube.png`](anexos/p4/ru-sim-12-alarma-nube.png)).
 
-**Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. En el ensayo 1 las detecciones #35 y #36 (2 en la ventana) **no** produjeron bloqueo: el monitor serie no muestra ningún `delta` ni `[Alarma] Encendida` hasta la #37 ✅. CloudWatch de `vigilante-logica` registra estas decisiones: [`ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png) muestra un `sin_accion` con `detecciones_en_ventana: 1` y [`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png) un `bloqueo_activado` con `detecciones_en_ventana: 3`, `max_detecciones: 3` y el `desired` escrito (`modo: bloqueo`, `puerta: cerrada`, `alarma: encendida`, `origen: nube`). Ambos son del primer bloqueo de la sesión (16:29–16:30, ventana de 10 min, previo a S-12); los ensayos de la tabla producen las mismas líneas. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
+**Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. En el ensayo 1 las detecciones #35 y #36 (2 en la ventana) **no** produjeron bloqueo: el monitor serie no muestra ningún `delta` ni `[Alarma] Encendida` hasta la #37 ✅. CloudWatch de `vigilante-logica` registra estas decisiones: [`ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png) muestra un `sin_accion` con `detecciones_en_ventana: 2` (20:29:40 UTC) y [`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png) un `bloqueo_activado` con `detecciones_en_ventana: 3`, `max_detecciones: 3` y el `desired` escrito (`modo: bloqueo`, `puerta: cerrada`, `alarma: encendida`, `origen: nube`). Ambos son del primer bloqueo de la sesión (16:29–16:30 hora local, ventana de 10 min, previo a S-12); los ensayos de la tabla producen las mismas líneas. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
 
 **Evidencias:** monitor serie del bloqueo ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), Shadow con `origen: nube` ([`ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png)) y registros `bloqueo_activado` / `sin_accion` de CloudWatch ([`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png), [`ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png)).
+
+![Decisión positiva de vigilante-logica](anexos/p4/ru-cw-bloqueo.png)
+
+*Figura 4.7.1 — Log real de bloqueo con alarma y origen nube. No confirma por sí solo la aplicación por el ESP32.*
+
+![Decisión negativa de vigilante-logica](anexos/p4/ru-cw-sin-accion.png)
+
+*Figura 4.7.2 — Log real sin_accion con 2 detecciones de las 3 necesarias.*
+
+![Orden solicitada de bloqueo en el Shadow](anexos/p4/ru-shadow-bloqueo-desired.png)
+
+*Figura 4.7.3 — `desired` escrito por la Nube (bloqueo, alarma encendida, origen nube, umbral 3 y ventana 1 min). La aplicación por el ESP32 se confirma en el monitor serie: `reported` con `bloqueo` y `origen: nube` 32 ms después del `delta` (ensayo 1).*
+
+La diferencia de hora entre los eventos `sin_accion` y `bloqueo_activado` no es latencia de la regla: son dos detecciones distintas; la latencia se mide en la tabla anterior con el monitor serie. El alcance de cada captura está en el [índice de capturas](anexos/p4/ru-indice-capturas.md).
 
 ## 4.8 Costo mensual frente a la capa gratuita (P-A4)
 
@@ -2216,7 +2232,7 @@ Los resultados físicos del informe de la P3 se citan como antecedente, pero no 
 | 2026-11-24T18:26:55.245Z | 42 | true | encendida | edge | 760 |
 | 2026-11-24T18:50:35.951Z | 60 | false | apagada | edge | 2180 |
 
-[Cuatro muestras con todos sus campos](anexos/p4/lu-sesion-20261124/lu-muestras-dynamodb.csv) · [exportación original](anexos/p4/lu-sesion-20261124/lu-historico-lecturas-exportado.csv).
+[Cuatro muestras con todos sus campos](anexos/p4/lu-muestras-dynamodb.csv) · [exportación original](anexos/p4/lu-historico-lecturas-exportado.csv).
 
 ![Lecturas reales de vigilante_historico](anexos/p4/lu-historico-lecturas-real.png)
 
@@ -2306,11 +2322,10 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`p4/ru-alexa-intents-p4.png`](anexos/p4/ru-alexa-intents-p4.png), [`p4/ru-alexa-build-p4.png`](anexos/p4/ru-alexa-build-p4.png) | Grupo | Intents de la skill y compilación del modelo corregido | §3.3 |
 | [`p4/lu-almacenamiento-guardado.png`](anexos/p4/lu-almacenamiento-guardado.png), [`p4/lu-tabla-lectura-prueba.png`](anexos/p4/lu-tabla-lectura-prueba.png), [`p4/lu-almacenamiento-descartado.png`](anexos/p4/lu-almacenamiento-descartado.png) | Luciana | Guardado y descarte en la Lambda real | §4.4 |
 | [`p4/lu-regresion-skill.txt`](anexos/p4/lu-regresion-skill.txt), [`p4/lu-regresion-logica.txt`](anexos/p4/lu-regresion-logica.txt), [`p4/lu-pruebas-almacenamiento.txt`](anexos/p4/lu-pruebas-almacenamiento.txt), [`p4/lu-pruebas-firmware.txt`](anexos/p4/lu-pruebas-firmware.txt) | Luciana | Salidas de las pruebas automáticas del 24/11/2026 | §4.2 |
-| [`p4/lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv), [`p4/lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv), [`p4/lu-mediciones-almacenamiento.csv`](anexos/p4/lu-mediciones-almacenamiento.csv) | Luciana | Plantillas para lo aún no medido; los resultados reales están en `lu-sesion-20261124/` | §4.3, §4.4 |
-| [`p4/lu-pendientes-y-mediciones.md`](anexos/p4/lu-pendientes-y-mediciones.md), [`p4/lu-revision-referencias.md`](anexos/p4/lu-revision-referencias.md) | Luciana | Procedimiento de reproducción y revisión de la integración | §4 |
-| [`p4/lu-sesion-20261124/README.md`](anexos/p4/lu-sesion-20261124/README.md) | Luciana | Monitor serie de 30 min, exportación DynamoDB, cruce 132/132, CloudWatch y cálculos reproducibles | P-A1, LU-04/LU-05/LU-07, G-01, §5.3 |
+| [`p4/lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv), [`p4/lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv), [`p4/lu-mediciones-almacenamiento.csv`](anexos/p4/lu-mediciones-almacenamiento.csv) | Luciana | Plantillas para las pruebas aún no medidas | §4.3, §4.4 |
+| [`p4/lu-monitor-serie.txt`](anexos/p4/lu-monitor-serie.txt), [`p4/lu-publicaciones.csv`](anexos/p4/lu-publicaciones.csv), [`p4/lu-cruce-publicaciones-historico.csv`](anexos/p4/lu-cruce-publicaciones-historico.csv), [`p4/lu-cloudwatch-tramo-almacenamiento.csv`](anexos/p4/lu-cloudwatch-tramo-almacenamiento.csv), [`p4/lu-alarmas-serie.csv`](anexos/p4/lu-alarmas-serie.csv), [`p4/lu-latidos-serie.csv`](anexos/p4/lu-latidos-serie.csv) | Luciana | Registros fuente conservados de P-A1, LU-04/LU-05, LU-07 y G-01 | P-A1, LU-04/LU-05/LU-07, G-01, §5.3 |
 | [`p4/lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`p4/lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | Luciana | Capturas reales de ítems del 24/11/2026 | §3.2.1, §5.3 |
-| [`p4/lu-estimaciones-y-verificacion.md`](anexos/p4/lu-estimaciones-y-verificacion.md) | Luciana | Supuestos E, límites y pasos para verificar despliegue/capturas | §4, §5 |
+| [Índice de capturas P4](anexos/p4/ru-indice-capturas.md), [huellas de los archivos](anexos/p4/ru-capturas-fuentes.json) | Grupo; capturas aportadas por Luciana | Intents, compilación, reglas activas, TTL, decisiones Nube y desired del Shadow; incluye antecedentes identificados | §3.2.1, §3.3, §4.7 |
 | Capturas de la P3 (`aws-*`, `alexa-*`) en [`anexos/`](anexos/) | Grupo | Configuración de IoT Core, DynamoDB, IAM, Lambda y Alexa que se mantiene | §3.2, §3.3 |
 
 ## 8.2 Configuraciones exportadas
