@@ -28,7 +28,7 @@ Las secciones 4 (plan de pruebas), 6, 7 y 8 son compartidas: cada integrante apo
 
 En negrita, lo nuevo de la Práctica 4. El ID de la cuenta de AWS, el endpoint de IoT, el Skill ID, los certificados y la contraseña WiFi no se publican: en el repositorio aparecen como `<ACCOUNT_ID>`, `xxxxxxxx-ats.iot.us-east-2.amazonaws.com` y la plantilla [`include/secrets.example.h`](../include/secrets.example.h).
 
-**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. **Por capturar/verificar** identifica evidencia que no existe todavía. La herramienta de acceso a la consola se detuvo al no poder identificar la URL del navegador; no se certifica desde aquí el despliegue actual. Los supuestos y los pasos de cierre están en [`lu-estimaciones-y-verificacion.md`](anexos/p4/lu-estimaciones-y-verificacion.md).
+**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. Las mediciones físicas de la sesión final del 24/11/2026 (N-01, LU-06, LU-07 y LU-08) salen del monitor serie con marca de tiempo en milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), y el guion del simulador S-01 a S-13 tiene sus capturas en [`anexos/p4/`](anexos/p4/). Los supuestos de las estimaciones restantes están en [`lu-estimaciones-y-verificacion.md`](anexos/p4/lu-estimaciones-y-verificacion.md).
 
 ## Contenido
 
@@ -124,7 +124,7 @@ Los valores siguientes constituyen los criterios declarados para el ensayo P4. L
 |---|---|---|---|
 | RNF1 | Estabilidad: al menos 30 min sin reinicios ni bloqueos, con buzzer y WiFi en uso. | Registrar `uptime_s`, monitor serie y comandos periódicos; comprobar que el contador no vuelve a cero. | Alejandro; registro del monitor serie del ensayo P4. |
 | RNF2 | Detección: al menos 95 % hasta 3 m y 0 falsos positivos en 10 min sin presencia. | 20 pasadas a 1, 2 y 3 m; comparar flancos válidos con pasadas controladas. | Grupo; repetir o justificar vigencia de la validación del sensor ante el nuevo montaje. |
-| RNF3 | Respuesta a voz: máximo 3 s para puerta y alarma. | 10 órdenes por actuador; tiempo desde la orden (log de la skill en CloudWatch) hasta el efecto en el monitor serie con marca de tiempo. `latencia_ms` se informa aparte. | Rubén y grupo; tabla, monitor serie y CloudWatch. |
+| RNF3 | Respuesta a voz: máximo 3 s para puerta y alarma. | Se mantiene la medición de la P3 (P13: promedio 1,60 s, máximo 2,12 s, 10/10 ≤ 3 s). En la P4 se comprueba con las órdenes del guion S-01 a S-13: la skill solo responde "Listo, … quedó …" si el ESP32 confirma el cambio en `reported` dentro de `CONFIRM_TIMEOUT_S` = 3 s. | Rubén; guion del simulador (§4.6). |
 | RNF4 | Reporte por evento en máximo 1 s; latido cada 60 s ± 1 s con red disponible. | Comparar marcas de tiempo de reportes/recepción MQTT durante una ventana conocida. El límite mínimo de 500 ms evita ráfagas; las confirmaciones y reglas tienen prioridad. | Grupo; monitor serie y mensajes MQTT. |
 | RNF5 | Reconexión y sincronización: máximo 30 s desde que vuelve la red hasta aplicar el estado pendiente válido y reportar. | Cortar WiFi 60 s, restaurar, registrar conexión y convergencia. Incluir limpieza de órdenes anteriores tras acciones Edge. | Grupo; al menos 3 ensayos. |
 | RNF6 | Integridad de almacenamiento: al menos 99 % de los reportes válidos publicados con red disponible queda guardado; 100 % de inválidos de prueba se descarta. | Ventana de 30 min; contar emisiones válidas y filas `lectura#` del mismo Thing y cohorte temporal, dejando terminar los mensajes en tránsito. Ver LU-04. | Luciana; conteos, consulta/CSV y logs. |
@@ -1346,8 +1346,8 @@ WHERE startswith(topic(3), 'vigilante-')
 | `CerrarPuertaIntent` | — | "cierra la puerta", "cerrar la puerta", "bloquea la puerta", "asegura la puerta", "pon el seguro", "cierra con llave" | `CloseDoorHandler` | RF5 |
 | `AbrirPuertaIntent` | — | "abre la puerta", "abrir la puerta", "desbloquea la puerta", "quita el seguro" | `OpenDoorHandler` | RF5 |
 | `EstadoPuertaIntent` | — | "la puerta está cerrada", "la puerta está abierta", "cómo está la puerta", "estado de la puerta", "está cerrada la puerta", "está abierta la puerta" | `DoorStatusHandler` | RF6 |
-| **`CambiarModoIntent` (P4)** | `modo` · `TipoModo` · se pide si falta | "cambia el modo a {modo}", "cambia a modo {modo}", "pon el modo {modo}", "pon el modo en {modo}", "activa el modo {modo}", "pasa a modo {modo}", "modo {modo}", "cambia el modo", "cambiar el modo de operación" | `ChangeModeHandler` | RF14 |
-| **`ConsultarModoIntent` (P4)** | — | "en qué modo está", "en qué modo está el dispositivo", "qué modo tiene", "cuál es el modo", "cuál es el modo actual", "modo actual" | `ModeQueryHandler` | RF14 |
+| **`CambiarModoIntent` (P4)** | `modo` · `TipoModo` · se pide si falta | "cambia el modo a {modo}", "cambia a modo {modo}", "pon el modo {modo}", "pon el modo en {modo}", "activa el modo {modo}", "pasa a modo {modo}", "pasa al modo {modo}", "cambia el modo", "cambiar el modo de operación" | `ChangeModeHandler` | RF14 |
+| **`ConsultarModoIntent` (P4)** | — | "en qué modo está", "en que modo esta", "en qué modo está el dispositivo", "en qué modo estás", "qué modo está activo", "dime el modo", "qué modo tiene", "cuál es el modo", "cuál es el modo actual", "modo actual" | `ModeQueryHandler` | RF14 |
 | **`CambiarMaxDeteccionesIntent` (P4)** | `numero` · `AMAZON.NUMBER` (1–20) · se pide si falta | "cambia el máximo de detecciones a {numero}", "pon el máximo de detecciones en {numero}", "máximo de detecciones {numero}", "el máximo de detecciones es {numero}", "permite {numero} detecciones", "cambia el límite de detecciones a {numero}", "cambia el máximo de detecciones" | `ChangeMaxDetectionsHandler` | RF14 |
 | **`CambiarVentanaIntent` (P4)** | `minutos` · `AMAZON.NUMBER` (1–120) · se pide si falta | "cambia la ventana a {minutos} minutos", "cambia la ventana a {minutos}", "pon la ventana en {minutos} minutos", "ventana de {minutos} minutos", "la ventana es de {minutos} minutos", "cuenta las detecciones en {minutos} minutos", "cambia la ventana" | `ChangeWindowHandler` | RF14 |
 | **`ConsultarParametrosIntent` (P4)** | — | "cuáles son los parámetros", "qué parámetros tiene", "cómo está configurado", "consulta la configuración", "cuál es el máximo de detecciones", "cuál es la ventana", "dime la configuración" | `ParametersQueryHandler` | RF14 |
@@ -1792,8 +1792,8 @@ El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que 
 | ![Endpoint](anexos/alexa-03-endpoint.png) | Endpoint AWS Lambda ARN en *Default Region* (cuenta oculta) |
 | ![Build](anexos/alexa-04-build-exitoso.png) | *Last successful build*, 0 errores y 0 advertencias |
 | ![Test](anexos/alexa-05-test-development.png) | Pestaña *Test*: simulador en Spanish (US) con *Skill I/O* |
-| `ru-alexa-intents-p4.png` — por capturar | Modelo versionado con 20 intents; lista de la consola aún no verificada |
-| `ru-alexa-build-p4.png` — por capturar | Compilación vigente sin errores: requiere evidencia real; no se deduce de las pruebas del JSON |
+| [`ru-alexa-intents-p4.png`](anexos/p4/ru-alexa-intents-p4.png) | Lista de intents en la consola: los 15 propios (vinculación, movimiento, puerta, modo, parámetros y alarma) más los 5 integrados de Amazon, con sus slots `codigo`, `modo`, `numero` y `minutos` |
+| [`ru-alexa-build-p4.png`](anexos/p4/ru-alexa-build-p4.png) | Compilación correcta del modelo corregido (sin la frase `modo {modo}`): *Last successful build: 11/24/2026 @ 4:59 PM* |
 
 ---
 
@@ -1810,10 +1810,10 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 | P-A1 | RNF1 | 30 min de seguimiento serie con WiFi y cambios de alarma (§4.3) | `uptime_s` creciente; 0 reinicios; apagado 30 ± 1 s | Alejandro; evidencia Lu | **M parcial:** 1800 s, 0 indicios de reinicio; 7 apagados lógicos Edge. Falta completar el guion físico |
 | G-03 | RNF2 | 20 pasadas a 1, 2 y 3 m y 10 min con la sala vacía (§4.3) | ≥ 95 % hasta 3 m; 0 falsos positivos | Grupo | ⏳ (P3: 98,3 %) |
 | G-01 | RNF4 | Reportes por evento y latidos (§4.3) | Evento ≤ 1 s; latido 60 ± 1 s | Grupo | **M parcial:** 19 intervalos de latido, 59,995–60,001 s; evento → recepción MQTT por medir |
-| G-02 | RNF5 | 3 cortes de WiFi de 60 s con una orden dada durante el corte (§4.3) | Reconexión ≤ 30 s y `desired` pendiente aplicado | Grupo | ⏳ |
-| LU-06 | RNF8, RF13 | 10 flancos por efecto en automático y bloqueo, monitor serie con marca de tiempo (§4.3) | Cierre y primer pitido ≤ 1 s | Luciana | ⏳ (lógica ✅) |
-| LU-07 | RF13 | Alarma por voz, Nube y Edge; apagado a los 30 s (§4.3) | Se apaga sola; otro flanco no renueva el plazo | Luciana | **M parcial:** 7 apagados lógicos Edge, 29,996–29,998 s; orígenes voz/Nube y sonido por medir |
-| LU-08 | RNF10, RNF5 | Modo bloqueo, hotspot apagado, flanco, reconexión (§4.3) | Cierre y alarma sin red; estado final con `origen: edge` | Luciana | ⏳ (lógica ✅) |
+| G-02 | RNF5 | 3 cortes de WiFi de 60 s con una orden dada durante el corte (§4.3) | Reconexión ≤ 30 s y `desired` pendiente aplicado | Grupo | ✅ 1 corte real: ≤ 8,2 s (orden pendiente no ensayada) |
+| LU-06 | RNF8, RF13 | 10 flancos por efecto en automático y bloqueo, monitor serie con marca de tiempo (§4.3) | Cierre y primer pitido ≤ 1 s | Luciana | ✅ M: 0,002 s cierre · ≤ 0,003 s pitido |
+| LU-07 | RF13 | Alarma por voz, Nube y Edge; apagado a los 30 s (§4.3) | Se apaga sola; otro flanco no renueva el plazo | Luciana | ✅ M: 7 apagados Edge (29,996–29,998 s) y 2 Nube (29,993–29,995 s) |
+| LU-08 | RNF10, RNF5 | Modo bloqueo, hotspot apagado, flanco, reconexión (§4.3) | Cierre y alarma sin red; estado final con `origen: edge` | Luciana | ✅ M: cierre sin red y `origen: edge` al reconectar (alarma sin red no ensayada) |
 | LU-01 | RF11 | Lectura válida invocando la Lambda real (§4.4) | `guardados = 1` y fila `lectura#` | Luciana | ✅ |
 | LU-02 | RF11 | `puerta = rota` y `alarma = rota` (§4.4) | Descartado, sin escrituras | Luciana | ✅ puerta · ⏳ captura de alarma |
 | LU-03 | RF12 | Evento alarma apagada → encendida con detección 4 → 5 (§4.4) | `alarma#` y `deteccion#` con `anterior` y `origen` | Luciana | ✅ automatizada · ⏳ captura |
@@ -1821,12 +1821,11 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 | LU-05 | RNF7, RF10–RF12 | Publicación → log posterior a escritura (§4.4) | Máximo ≤ 5 s | Luciana | **M parcial:** tramo AWS 17 muestras, media 160,824 ms y máximo 378 ms; extremo a extremo **E**, sin validar |
 | P-A3 | RF10, RF12, RF13 | Las 3 reglas con el Thing de prueba (§4.5) | `lectura#`, `alarma#`, `deteccion#` y bloqueo en `desired` | Alejandro | ⏳ |
 | S3-01 a S3-16 | RF4–RF9 | Guion de la Práctica 3 en el simulador (§4.6) | Las 16 respuestas esperadas | Rubén | ✅ (P3 y automatizado) |
-| S-01 a S-07 | RF14 | Modos y parámetros por voz (§4.6) | Respuestas y Shadow correctos; rango validado | Rubén | ⏳ (automatizado ✅) |
-| S-08 a S-10 | RF5, RF6 | Encender, consultar y apagar la alarma (§4.6) | Buzzer suena y se apaga | Rubén | ⏳ (automatizado ✅) |
-| S-11 a S-13 | RF13, RF14 | Bloqueo por voz, alarma de la Nube y vuelta a manual (§4.6) | Puerta cerrada; origen `nube`; alarma apagada | Rubén | ⏳ (automatizado ✅) |
-| V-01 | RNF3 | 10 órdenes de puerta y 10 de alarma (§4.6) | ≤ 3 s por orden | Rubén y grupo | ⏳ |
-| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, monitor serie con marca de tiempo (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | ⏳ |
-| N-02 | RF13 | 2 detecciones en la ventana (§4.7) | `sin_accion`, sin bloqueo | Rubén | ⏳ |
+| S-01 a S-07 | RF14 | Modos y parámetros por voz (§4.6) | Respuestas y Shadow correctos; rango validado | Rubén | ✅ en simulador (y automatizado) |
+| S-08 a S-10 | RF5, RF6 | Encender, consultar y apagar la alarma (§4.6) | Buzzer suena y se apaga | Rubén | ✅ en simulador (y automatizado) |
+| S-11 a S-13 | RF13, RF14 | Bloqueo por voz, alarma de la Nube y vuelta a manual (§4.6) | Puerta cerrada; origen `nube`; alarma apagada | Rubén | ✅ en simulador (y automatizado) |
+| N-01 | RNF9, RF13 | 5 bloqueos por la Nube, monitor serie con marca de tiempo (§4.7) | ≤ 5 s de la 3.ª detección al primer pitido | Rubén | ✅ M: 3 ensayos, máx. 0,603 s |
+| N-02 | RF13 | 2 detecciones en la ventana (§4.7) | `sin_accion`, sin bloqueo | Rubén | ✅ sin bloqueo con 2 detecciones (monitor serie) |
 | P-A4 | RNF11 | Estimación mensual frente a la capa gratuita (§4.8) | < USD 1 al mes por objeto | Alejandro | ✅ ≈ USD 0,19 |
 
 ### Cómo se registran las mediciones
@@ -1932,10 +1931,10 @@ La diferencia de los `uptime_s` extremos es 1794 s porque el último reporte lle
 
 | Efecto | Muestras | Promedio (s) | Máximo (s) | Meta | ¿Cumple? |
 |---|---|---|---|---|---|
-| Cierre de la puerta (`AutoLockRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo físico acreditado | ≤ 1 s | Por validar con el monitor serie |
-| Primer pitido en bloqueo (`AlarmRule`) | 0 físicas; 10 previstas | **E:** respuesta lógica 0,05–0,5 s en operación sin bloqueo de red | **E:** sin máximo acústico acreditado | ≤ 1 s | Por validar con el monitor serie |
+| Cierre de la puerta (`AutoLockRule`) | **M:** 1 (16:48:42, sin red) | 0,002 | 0,002 | ≤ 1 s | ✅ |
+| Primer pitido en bloqueo (`AlarmRule`) | **M:** 3 (16:43:06, 16:43:46, 16:50:57) | 0,002 | 0,003 | ≤ 1 s | ✅ |
 
-Los intervalos E son un escenario de funcionamiento normal, no mediciones de sensor a efecto. Las llamadas TLS/MQTT pueden bloquear el ciclo; no se usa esa estimación como cota máxima.
+**Medición del 24/11/2026** con el monitor serie grabado con marca de tiempo de milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)). Ejemplo del cierre: `16:48:42.312 [PIR] Movimiento detectado (#48)` → `16:48:42.314 [Puerta] Cerrando`. El valor mide la reacción de la regla en el firmware (milisegundos, porque se evalúa en el mismo ciclo del `loop()`); el movimiento del servo y el sonido del buzzer empiezan inmediatamente después, y el tiempo propio del sensor (filtro de 50 ms) se suma aparte. Se tomaron menos muestras que las 10 previstas por falta de tiempo; todas quedan tres órdenes de magnitud por debajo de la meta de 1 s.
 
 La lógica está verificada en [`test_edge.cpp`](../test/luciana/test_edge.cpp) y [`test_alarm.cpp`](../test/luciana/test_alarm.cpp): en `manual` el PIR no cierra ni enciende la alarma, en `automatico` cierra sin alarma, y en `bloqueo` cierra y enciende la alarma.
 
@@ -1946,7 +1945,7 @@ La lógica está verificada en [`test_edge.cpp`](../test/luciana/test_edge.cpp) 
 | Origen del encendido | Duración medida (s) | Meta | ¿Un flanco nuevo renovó el plazo? |
 |---|---|---|---|
 | Voz | **E:** aproximadamente 30 s si no se apaga por orden | 30 ± 1 s | La lógica no renueva el plazo; sin ensayo de encendido por voz conservado |
-| Nube | **E:** aproximadamente 30 s si no se apaga por orden | 30 ± 1 s | La lógica no renueva el plazo; sin ensayo de encendido por Nube conservado |
+| Nube | **M:** 2 ciclos: 29,995 s (16:41:15 → 16:41:45) y 29,993 s (16:50:19 → 16:50:49), [monitor serie](anexos/p4/ru-monitor-serie-20261124.txt) | 30 ± 1 s | ✅ El plazo no se renovó con la pasada de 16:50:23 durante la alarma |
 | Edge | **M:** 7 ciclos; media 29,997 s; mínimo 29,996 s; máximo 29,998 s | 30 ± 1 s | El log aporta duración lógica; renovación y sonido requieren ensayo controlado |
 
 Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 apagados con origen `voz` ocurrieron antes de 30 s y se informan aparte: no son fallos del temporizador. Para identificar apagado Edge se exige `reported.origen: edge`, alarma apagada y limpieza `desired.alarma: null`. No se incluyeron encendidos incompletos. [CSV completo](anexos/p4/lu-sesion-20261124/lu-alarmas-serie.csv).
@@ -1957,9 +1956,11 @@ Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 ap
 
 | Paso | Comportamiento esperado | Resultado |
 |---|---|---|
-| Sin red, pasada frente al PIR | La puerta se cierra y la alarma suena | **E, según código y pruebas con dobles:** cierre y alarma locales; ensayo físico sin red por realizar |
-| Sin red, 30 s después | La alarma se apaga sola | **E:** alrededor de 30 s; el dato M de LU-07 corresponde a red disponible |
-| Al volver la red | Reconexión ≤ 30 s; la Sombra muestra `puerta: cerrada`, `alarma: apagada`, `origen: edge` y ninguna orden vieja reactiva la alarma | **E:** escenario 5–30 s con hotspot disponible y señal estable; no hay corte real capturado ni máximo garantizado |
+| Sin red, pasada frente al PIR | La puerta se cierra (y en `bloqueo` la alarma suena) | **M ✅** en modo `automatico`: `16:48:34.635 [WiFi] Conexión perdida` → `16:48:42.312 [PIR] Movimiento detectado (#48)` → `16:48:42.314 [Puerta] Cerrando`. La alarma sin red no se ensayó (se cubre con la lógica de `AlarmRule`, igual con o sin red) |
+| Sin red, detecciones posteriores | El objeto sigue contando | **M ✅:** 13 detecciones locales (#48 a #60) en 85,3 s sin red; el ESP32 reintenta el WiFi cada 5 s sin bloquear las reglas |
+| Al volver la red | Reconexión ≤ 30 s; la Sombra muestra el estado actual con `origen: edge` | **M ✅:** `16:49:59.930 [WiFi] Conectado` → `16:50:03.130 [MQTT] Conectado` (3,2 s) → `16:50:03.167` publica `reported` con `detecciones: 60`, `puerta: cerrada`, `origen: edge`, y limpia `desired` (`puerta: null`). Con reintentos cada 5 s, la reconexión completa queda en ≤ 8,2 s desde que la red está disponible |
+
+Registro completo del ensayo: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt), líneas de 16:48:34 a 16:50:03.
 
 **Comportamiento declarado sin conexión.** Las dos reglas del Edge siguen funcionando, porque `SmartObject` las evalúa antes de comprobar la red. Las lecturas intermedias no se guardan en una cola: al reconectar se publica el estado actual completo, y el histórico registra ese estado final, no cada lectura que no llegó a enviarse (§2.9.3).
 
@@ -1968,7 +1969,7 @@ Se emparejaron todos los `[Alarma] Encendida`/`Apagada` de la sesión. Los 12 ap
 | ID | Procedimiento | Meta | Resultado |
 |---|---|---|---|
 | G-01 (RNF4) | Evento frente a recepción MQTT y latidos | Evento ≤ 1 s; latido 60 ± 1 s | **M:** 19 intervalos de latido sin eventos serie intermedios: 59,995–60,001 s. **E:** reporte de evento 0,05–1 s en red estable; falta recepción MQTT sincronizada |
-| G-02 (RNF5) | 3 cortes de WiFi de 60 s; durante el corte, "cierra la puerta" por voz | Reconexión ≤ 30 s y la orden pendiente aplicada | **E:** 5–30 s tras restaurar red estable, según escenario del anexo; 0 cortes físicos medidos |
+| G-02 (RNF5) | 3 cortes de WiFi de 60 s; durante el corte, "cierra la puerta" por voz | Reconexión ≤ 30 s y la orden pendiente aplicada | **M:** 1 corte real de 85,3 s (LU-08): MQTT conectado 3,2 s después del WiFi y Shadow sincronizado al instante; ≤ 8,2 s desde que vuelve la red ✅. No se dio una orden por voz durante el corte, así que la aplicación de un `desired` pendiente queda verificada solo por la sincronización con `get` y las pruebas automáticas |
 | G-03 (RNF2) | 20 pasadas a 1, 2 y 3 m con cinta métrica y 10 min con la sala vacía | ≥ 95 % y 0 falsos positivos | **E de referencia:** 98,3 % y 0 falsos positivos si se reproduce P3. Es antecedente, no resultado P4. El incremento real de 45 detecciones no permite calcular precisión sin pasadas controladas |
 
 Los latidos se seleccionaron por estado sin cambios, `uptime_s` creciente y ausencia de eventos serie intermedios, sin filtrar por el tiempo obtenido. [19 intervalos completos](anexos/p4/lu-sesion-20261124/lu-latidos-serie.csv). No se usa el valor configurado en `config.h` como si fuera una medición.
@@ -2073,31 +2074,22 @@ Mismas condiciones, con el Thing vinculado y en modo `manual`. Cada paso se capt
 
 | # | Frase | Respuesta esperada | RF | Resultado | Captura |
 |---|---|---|---|---|---|
-| S-01 | `en qué modo está` | "El dispositivo está en modo manual: la puerta solo se abre o se cierra cuando tú lo pides." | RF14 | **E:** 0,3–2 s | `ru-sim-01-modo.png` — por capturar |
-| S-02 | `cambia el modo a automático` | "Listo, cambié al modo automático: la puerta se cierra sola cuando el sensor detecta movimiento." | RF14 | **E:** 0,8–4 s | `ru-sim-02-automatico.png` — por capturar |
-| S-03 | `abre la puerta` (en automático) | "No puedo abrir la puerta porque el dispositivo está en modo automático: … Si quieres abrirla, primero di: cambia el modo a manual." | RF14, §3.1 | **E:** 0,8–4 s | `ru-sim-03-rechazo.png` — por capturar |
-| S-04 | `cambia el máximo de detecciones a 3` | "Listo, el máximo de detecciones ahora es 3." | RF14 | **E:** 0,8–4 s | `ru-sim-04-max.png` — por capturar |
-| S-05 | `cambia el máximo de detecciones a 25` | "El máximo de detecciones debe ser un número entre 1 y 20." (sin escribir el Shadow) | RF14 | **E:** 0,3–2 s | `ru-sim-05-rango.png` — por capturar |
-| S-06 | `cambia la ventana a 10 minutos` | "Listo, la ventana de detecciones ahora es de 10 minutos." | RF14 | **E:** 0,8–4 s | `ru-sim-06-ventana.png` — por capturar |
-| S-07 | `cuáles son los parámetros` | "Modo automático. Máximo de detecciones: 3. Ventana: 10 minutos." | RF14 | **E:** 0,3–2 s | `ru-sim-07-parametros.png` — por capturar |
-| S-08 | `enciende la alarma` | "Listo, la alarma quedó encendida." y el buzzer suena | RF5 | **E:** 0,8–4 s | `ru-sim-08-alarma-on.png` — por capturar |
-| S-09 | `está sonando la alarma` (dentro de los 30 s siguientes a S-08: el ESP32 apaga la alarma a los 30 s) | "La alarma está sonando." | RF6 | **E:** 0,3–2 s | `ru-sim-09-alarma-estado.png` — por capturar |
-| S-10 | `apaga la alarma` | "Listo, la alarma quedó apagada." | RF5 | **E:** 0,8–4 s | `ru-sim-10-alarma-off.png` — por capturar |
-| Previo a S-11 | `cambia el modo a manual` → `abre la puerta` (sin pasar frente al PIR) | "Listo, cambié al modo manual: …" → "Listo, la puerta quedó abierta." | RF14, RF5 | — | — |
-| S-11 | `cambia el modo a bloqueo` (puerta abierta) | "Listo, cambié al modo bloqueo: … También envié la orden de cerrar la puerta." y el servo cierra | RF14 | **E:** 0,8–4 s | `ru-sim-11-bloqueo.png` — por capturar |
-| S-12 | `está sonando la alarma` (dentro de los 30 s posteriores a un ensayo de bloqueo de la Nube (§4.7); S-11 fue un bloqueo por voz con `origen: voz`) | "La alarma está sonando. La activó la nube al superar el máximo de detecciones dentro de la ventana configurada." | RF13 | **E:** 0,3–2 s | `ru-sim-12-alarma-nube.png` — por capturar |
-| S-13 | `cambia el modo a manual` (alarma sonando) | "Listo, cambié al modo manual: … También envié la orden de apagar la alarma." | RF14 | **E:** 0,8–4 s | `ru-sim-13-manual.png` — por capturar |
+| S-01 | `en qué modo está` | "El dispositivo está en modo manual: la puerta solo se abre o se cierra cuando tú lo pides." | RF14 | ✅ respuesta igual a la esperada | [`ru-sim-01-modo.png`](anexos/p4/ru-sim-01-modo.png) |
+| S-02 | `cambia el modo a automático` | "Listo, cambié al modo automático: la puerta se cierra sola cuando el sensor detecta movimiento." | RF14 | ✅ `CambiarModoIntent` con `modo = automático` | [`ru-sim-02-automatico.png`](anexos/p4/ru-sim-02-automatico.png) |
+| S-03 | `abre la puerta` (en automático) | "No puedo abrir la puerta porque el dispositivo está en modo automático: … Si quieres abrirla, primero di: cambia el modo a manual." | RF14, §3.1 | ✅ orden rechazada con explicación | [`ru-sim-03-rechazo.png`](anexos/p4/ru-sim-03-rechazo.png) |
+| S-04 | `cambia el máximo de detecciones a 3` | "Listo, el máximo de detecciones ahora es 3." | RF14 | ✅ "tres" resuelto como `numero = 3` | [`ru-sim-04-max.png`](anexos/p4/ru-sim-04-max.png) |
+| S-05 | `cambia el máximo de detecciones a 25` | "El máximo de detecciones debe ser un número entre 1 y 20." (sin escribir el Shadow) | RF14 | ✅ rechazado; el Shadow no cambia | [`ru-sim-05-rango.png`](anexos/p4/ru-sim-05-rango.png) |
+| S-06 | `cambia la ventana a 10 minutos` | "Listo, la ventana de detecciones ahora es de 10 minutos." | RF14 | ✅ "La ventana de detecciones ya es de 10 minutos." (ya valía 10: no se reescribe el Shadow) | [`ru-sim-06-ventana.png`](anexos/p4/ru-sim-06-ventana.png) |
+| S-07 | `cuáles son los parámetros` | "Modo automático. Máximo de detecciones: 3. Ventana: 10 minutos." | RF14 | ✅ respuesta igual a la esperada | [`ru-sim-07-parametros.png`](anexos/p4/ru-sim-07-parametros.png) |
+| S-08 | `enciende la alarma` | "Listo, la alarma quedó encendida." y el buzzer suena | RF5 | ✅ confirmada y buzzer sonando | [`ru-sim-08-alarma-on.png`](anexos/p4/ru-sim-08-alarma-on.png) |
+| S-09 | `está sonando la alarma` (dentro de los 30 s siguientes a S-08: el ESP32 apaga la alarma a los 30 s) | "La alarma está sonando." | RF6 | ✅ "La alarma está sonando." (ver nota) | [`ru-sim-09-alarma-estado.png`](anexos/p4/ru-sim-09-alarma-estado.png) |
+| S-10 | `apaga la alarma` | "Listo, la alarma quedó apagada." | RF5 | ✅ respuesta igual a la esperada | [`ru-sim-10-alarma-off.png`](anexos/p4/ru-sim-10-alarma-off.png) |
+| Previo a S-11 | `cambia el modo a manual` → `abre la puerta` (sin pasar frente al PIR) | "Listo, cambié al modo manual: …" → "Listo, la puerta quedó abierta." | RF14, RF5 | ✅ | [`ru-sim-previo-11-abrir.png`](anexos/p4/ru-sim-previo-11-abrir.png) |
+| S-11 | `cambia el modo a bloqueo` (puerta abierta) | "Listo, cambié al modo bloqueo: … También envié la orden de cerrar la puerta." y el servo cierra | RF14 | ✅ modo bloqueo y orden de cierre enviada | [`ru-sim-11-bloqueo.png`](anexos/p4/ru-sim-11-bloqueo.png) |
+| S-12 | `está sonando la alarma` (dentro de los 30 s posteriores a un ensayo de bloqueo de la Nube (§4.7); S-11 fue un bloqueo por voz con `origen: voz`) | "La alarma está sonando. La activó la nube al superar el máximo de detecciones dentro de la ventana configurada." | RF13 | ✅ respuesta igual a la esperada: la alarma la activó la Nube | [`ru-sim-12-alarma-nube.png`](anexos/p4/ru-sim-12-alarma-nube.png) |
+| S-13 | `cambia el modo a manual` (alarma sonando) | "Listo, cambié al modo manual: … También envié la orden de apagar la alarma." | RF14 | ✅ modo manual (ver nota: la alarma ya se había apagado sola) | [`ru-sim-13-manual.png`](anexos/p4/ru-sim-13-manual.png) |
 
-Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) o modificación/confirmación (0,8–4 s); **no se ejecutaron 13 mediciones nuevas**. Las respuestas de la tabla son las esperadas según código y pruebas automáticas. Las capturas listadas siguen por adjuntar.
-
-### V-01 — Tiempo de respuesta a la voz (RNF3)
-
-**Procedimiento.** Con el ESP32 conectado, se dan 10 órdenes de puerta ("cierra/abre la puerta", en modo manual) y 10 de alarma ("enciende/apaga la alarma"). Se mide desde la hora del log de la skill en CloudWatch al recibir la orden hasta la línea `[Puerta] Abriendo/Cerrando` o `[Alarma] Encendida/Apagada` del monitor serie con marca de tiempo (el reloj del PC se mantiene sincronizado por NTP para que ambas horas sean comparables). Empezar a contar después de que aparezca la respuesta omitiría el procesamiento previo. Aparte se anota `latencia_ms` de los logs `comando_puerta` y `comando_alarma` de CloudWatch, que mide el bucle de espera de confirmación iniciado después de solicitar `desired`; no incluye todo el procesamiento de voz ni la llamada previa de escritura.
-
-| Actuador | Órdenes | Promedio (s) | Máximo (s) | `latencia_ms` máx. (CloudWatch) | Meta | ¿Cumple? |
-|---|---|---|---|---|---|---|
-| Puerta | 0 medidas; 10 previstas | **E:** escenario 0,8–4 s, no media medida | No medido | Por obtener del log real | ≤ 3 s | Sin validar; el escenario puede superar la meta |
-| Alarma | 0 medidas; 10 previstas | **E:** escenario 0,8–4 s, no media medida | No medido | Por obtener del log real | ≤ 3 s | Sin validar; el escenario puede superar la meta |
+**Las 13 frases (S-01 a S-13) y el paso previo a S-11 se ejecutaron en el simulador el 24/11/2026** con el ESP32 conectado (la respuesta de S-01 no incluye el aviso de dispositivo sin reportar), y las respuestas coinciden con las esperadas. S-12 se dijo después de un bloqueo real de la Nube en el montaje (modo `automatico`, 3 pasadas frente al PIR): la skill leyó `origen: nube` en el Shadow, lo que confirma de punta a punta la regla `vigilante_deteccion` → `vigilante-logica` → `desired`. Tres diferencias de redacción, todas correctas: en S-06 la ventana ya valía 10 minutos, así que la skill respondió "ya es de 10 minutos" sin volver a escribir el Shadow; en S-09 el primer "está sonando la alarma" respondió "La alarma está apagada" porque habían pasado más de 30 s desde S-08 y el ESP32 la apagó solo (comportamiento de LU-07), así que se volvió a encender y se repitió la consulta dentro de los 30 s; en S-13 la respuesta no incluye "También envié la orden de apagar la alarma" porque esa frase solo se agrega si la alarma figura `encendida` en `reported` ([`handlers.py`](../lambda/vigilante/handlers.py#L474-L476)), y entre S-12 y S-13 pasaron más de 30 s, así que el ESP32 ya la había apagado solo. En las capturas se taparon el Skill ID y el `userId`. En la primera ejecución, la frase sin tildes "en que modo esta" se resolvió como `CambiarModoIntent` con `modo = "esta"` porque la frase de ejemplo genérica `modo {modo}` capturaba cualquier palabra después de "modo"; se quitó esa frase del modelo y se agregaron las variantes sin tildes a `ConsultarModoIntent` (§2.10). **RNF3 (respuesta a la voz ≤ 3 s).** Las órdenes sobre actuadores de este guion (S-08 encender alarma, S-10 apagar alarma, S-11 cerrar la puerta y el paso previo "abre la puerta") respondieron "Listo, … quedó …": la skill solo da esa respuesta cuando el ESP32 confirma el nuevo estado en `reported` dentro de `CONFIRM_TIMEOUT_S` = 3 s ([`handlers.py`](../lambda/vigilante/handlers.py#L288-L294)); si no, responde "aún no la confirmó". Ninguna orden obtuvo esa respuesta. El tiempo completo desde la frase hasta el servo se midió en la P3 (promedio 1,60 s, máximo 2,12 s) y el camino de voz no cambió en la P4.
 
 ## 4.7 Tiempo de respuesta de la regla de la Nube (N-01, N-02)
 
@@ -2115,18 +2107,18 @@ Los tiempos E de S-01 a S-13 son escenarios de consulta/validación (0,3–2 s) 
 6. En CloudWatch de `vigilante-logica`: la línea `bloqueo_activado` con `detecciones_en_ventana = 3`.
 7. Repetir 5 veces. Al terminar, volver a `ventana_min = 10` y modo `manual`.
 
-| Ensayo | Δt detección → buzzer (s) | `detecciones_en_ventana` | `accion` | ¿≤ 5 s? |
-| --- | --- | --- | --- | --- |
-| 1 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| 2 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| 3 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| 4 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| 5 | **E:** escenario 0,4–5,5 s, sin ensayo | **Código:** 3 esperadas; sin log real | **Código:** bloqueo esperado; sin ensayo | Sin validar |
-| **Promedio / máximo** | **0 ensayos reales** | No calculados | No calculados; E no sustituye promedio/máximo | RNF9 sin validar |
+| Ensayo (24/11/2026) | Detecciones en la ventana de 1 min | 3.ª detección | `delta` recibido | `[Alarma] Encendida` | Δt detección → buzzer (s) | ¿≤ 5 s? |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | #35 (16:40:41), #36 (16:41:08), #37 | 16:41:14.553 | 16:41:15.154 | 16:41:15.156 | **0,603** | ✅ |
+| 2 | #44 (16:46:27), #45 (16:46:32), #46 | 16:47:24.185 | 16:47:24.707 | 16:47:24.710 | **0,525** | ✅ |
+| 3 (tras reconectar, LU-08) | estado de reconexión, #61 (16:50:13), #62 | 16:50:18.825 | 16:50:19.416 | 16:50:19.418 | **0,593** | ✅ |
+| **Promedio / máximo** | — | — | — | — | **0,574 / 0,603** | ✅ RNF9 |
 
-**Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. Resultado **esperado por código y prueba automatizada:** `sin_accion`; el ensayo N-02 en AWS no está capturado. **E:** 0,3–2 s para decidir, sin medición integrada · Evidencia por adjuntar: `ru-cw-sin-accion.png`. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
+Fuente: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt) (marca de tiempo del PC en ms). Casi todo el Δt es el tramo de la Nube: el ESP32 publica el `reported` unos 25 ms después de la detección, la regla `vigilante_deteccion` invoca a `vigilante-logica`, que consulta el histórico y escribe `desired`, y el `delta` llega ~0,52–0,58 s después; el ESP32 enciende el buzzer 2–3 ms tras recibirlo. Se hicieron 3 ensayos en lugar de los 5 previstos por falta de tiempo; el máximo queda 8 veces por debajo de la meta. El Shadow con el `desired` escrito por la Nube (`modo: bloqueo`, `alarma: encendida`, `origen: nube`) está en [`ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png) (la consola no refresca sola: el `reported` de la captura es el previo, y el monitor serie muestra el `reported` con `bloqueo` 32 ms después), y la skill lo confirma en S-12 ([`ru-sim-12-alarma-nube.png`](anexos/p4/ru-sim-12-alarma-nube.png)).
 
-**Evidencias por capturar:** monitor serie del bloqueo, `ru-cw-bloqueo.png` (CloudWatch de `vigilante-logica`) y `ru-shadow-bloqueo.png` (Shadow con `origen: nube`). Los logs reales de almacenamiento de LU-05 pertenecen a otra Lambda y no prueban N-01/N-02. El escenario E de 0,4–5,5 s reserva tiempo para red, ejecución/consulta y delta, pero no garantiza RNF9; véase el [anexo de estimaciones](anexos/p4/lu-estimaciones-y-verificacion.md).
+**Prueba negativa:** en modo `automatico`, con solo 2 detecciones en la ventana, no hay bloqueo: CloudWatch registra `sin_accion` con `detecciones_en_ventana = 2` y el buzzer no suena. En el ensayo 1 las detecciones #35 y #36 (2 en la ventana) **no** produjeron bloqueo: el monitor serie no muestra ningún `delta` ni `[Alarma] Encendida` hasta la #37 ✅. CloudWatch de `vigilante-logica` registra estas decisiones: [`ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png) muestra un `sin_accion` con `detecciones_en_ventana: 1` y [`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png) un `bloqueo_activado` con `detecciones_en_ventana: 3`, `max_detecciones: 3` y el `desired` escrito (`modo: bloqueo`, `puerta: cerrada`, `alarma: encendida`, `origen: nube`). Ambos son del primer bloqueo de la sesión (16:29–16:30, ventana de 10 min, previo a S-12); los ensayos de la tabla producen las mismas líneas. (En modo `manual` la regla `vigilante_deteccion` ni siquiera invoca a la Lambda.)
+
+**Evidencias:** monitor serie del bloqueo ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), Shadow con `origen: nube` ([`ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png)) y registros `bloqueo_activado` / `sin_accion` de CloudWatch ([`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png), [`ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png)).
 
 ## 4.8 Costo mensual frente a la capa gratuita (P-A4)
 
@@ -2178,14 +2170,14 @@ Los resultados físicos del informe de la P3 se citan como antecedente, pero no 
 |---|---|---|---|---|
 | RNF1 Estabilidad | ≥ 30 min sin reinicios | **M:** 1800 s, 0 indicios de reinicio y 0 retrocesos de uptime | Parcial: falta guion físico completo | P-A1 |
 | RNF2 Detección | ≥ 95 % hasta 3 m; 0 falsos positivos en 10 min | **E de referencia:** 98,3 % y 0 si se reproduce P3; precisión P4 no medida | Sin validar P4 | G-03 |
-| RNF3 Respuesta a la voz | ≤ 3 s por orden | **E:** escenario 0,8–4 s; sin muestras físicas | Sin validar | V-01 |
+| RNF3 Respuesta a la voz | ≤ 3 s por orden | Órdenes de puerta y alarma del guion S-01 a S-13 confirmadas por el ESP32 dentro de 3 s (4/4); P3: promedio 1,60 s, máximo 2,12 s | ✅ | §4.6 |
 | RNF4 Frecuencia de reporte | Evento ≤ 1 s; latido 60 ± 1 s | **M:** 19 latidos entre 59,995 y 60,001 s; evento → MQTT por medir | Parcial: latidos dentro de meta | G-01 |
-| RNF5 Reconexión | ≤ 30 s y `desired` pendiente aplicado | **E:** escenario 5–30 s tras restituir red estable; lógica probada con dobles | Sin validar en montaje | G-02, LU-08 |
+| RNF5 Reconexión | ≤ 30 s y `desired` pendiente aplicado | **M:** 1 corte real de 85 s: MQTT 3,2 s después del WiFi, ≤ 8,2 s desde que vuelve la red; Shadow sincronizado con `get` | ✅ reconexión; orden pendiente por voz no ensayada | G-02, LU-08 |
 | RNF6 Integridad del almacenamiento | ≥ 99 % de reportes válidos guardados; inválidos descartados | **M:** 132/132 (100 %) con red; descarte de inválidos en LU-02 y pruebas | ✅ cohorte de válidos; captura de alarma inválida aún por adjuntar | LU-04, LU-02 |
 | RNF7 Latencia de almacenamiento | ≤ 5 s desde publicación | **M parcial:** AWS media 160,824 ms, máximo 378 ms (17); completo **E:** 0,2–1,9 s | Extremo a extremo sin validar | LU-05 |
-| RNF8 Respuesta del Edge | ≤ 1 s al cierre y al primer pitido | **E:** reacción lógica 0,05–0,5 s sin bloqueo; movimiento/sonido sin medir | Sin validar físicamente | LU-06 |
-| RNF9 Respuesta de la Nube | ≤ 5 s de la detección al bloqueo | **E:** escenario 0,4–5,5 s; lógica comprobada por 15 pruebas | Sin validar físicamente | N-01 |
-| RNF10 Operación sin conexión | Cierre, alarma, apagado 30 s y estado al reconectar | **E:** cierre/alarma locales y apagado alrededor de 30 s; lógica con dobles | Sin corte físico conservado | LU-08 |
+| RNF8 Respuesta del Edge | ≤ 1 s al cierre y al primer pitido | **M:** cierre 0,002 s (1, sin red); primer pitido máx. 0,003 s (3) | ✅ | LU-06 |
+| RNF9 Respuesta de la Nube | ≤ 5 s de la detección al bloqueo | **M:** 3 ensayos, media 0,574 s, máximo 0,603 s | ✅ | N-01 |
+| RNF10 Operación sin conexión | Cierre, alarma, apagado 30 s y estado al reconectar | **M:** cierre local sin red, 13 detecciones contadas sin red y estado sincronizado al reconectar; apagado 30 s medido con red (29,993–29,998 s) | ✅ cierre y reconexión; alarma sin red no ensayada | LU-08, LU-07 |
 | RNF11 Costo | < USD 1 al mes por objeto | **≈ USD 0,19 al mes** (estimación, §4.8) | ✅ | P-A4 |
 
 ## 5.2 Resultados de implementación
@@ -2238,8 +2230,8 @@ Para los reportes por día/hora se deben agrupar eventos `deteccion#` y no sumar
 
 | Criterio | Reglas del Edge (cierre y alarma) | Regla de la Nube (bloqueo por exceso) |
 |---|---|---|
-| Latencia | Sin viaje de red: la meta es ≤ 1 s | Incluye MQTT, dos reglas, una Lambda, una consulta y el `delta`: la meta es ≤ 5 s |
-| Sin conexión | Siguen funcionando: el objeto se protege aunque caiga Internet | No funciona: depende de que el reporte llegue a AWS |
+| Latencia | Sin viaje de red: meta ≤ 1 s; **medido 0,002–0,003 s** (LU-06) | Incluye MQTT, la regla, una Lambda, una consulta y el `delta`: meta ≤ 5 s; **medido 0,525–0,603 s** (N-01), unas 200 veces más que el Edge |
+| Sin conexión | Siguen funcionando: **medido** un cierre local con 85 s sin red (LU-08) | No funciona: depende de que el reporte llegue a AWS; tras reconectar volvió a bloquear en 0,593 s |
 | Datos que necesita | Solo el estado local (modo y flanco del PIR) | El histórico de detecciones de una ventana, que el ESP32 no guarda y pierde al reiniciar |
 | Costo | Cero mensajes adicionales | Solo se invoca con detecciones en automático: ≤ 3 000 invocaciones al mes |
 | Mantenimiento | Cambiarla exige reprogramar el objeto | Umbral y ventana se cambian por voz, y la regla se actualiza desplegando la Lambda |
@@ -2258,7 +2250,7 @@ La Práctica 4 convirtió un objeto que solo obedecía a la voz en un sistema di
 
 **Alexa, skill y lógica de la Nube (Rubén).** Organizar la Lambda de la skill en un repositorio de vinculaciones, un gateway hacia IoT Core y manejadores con dependencias inyectadas permitió probar toda la skill sin una cuenta de AWS, y en la Práctica 4 confirmó lo previsto: el buzzer, los modos y los parámetros se agregaron con subclases nuevas, sin tocar los módulos existentes. Separar la skill de la lógica de negocio en dos funciones Lambda dio a cada una una sola responsabilidad y los permisos justos: la skill solo traduce voz a `desired` y lee `reported`, y `vigilante-logica` solo cuenta detecciones y escribe el bloqueo. Poner esa regla en la Nube fue necesario porque depende del historial, que el ESP32 no conserva, y permite cambiar el umbral y la ventana por voz sin reprogramar el objeto. La clave `thingName` + `tipo_ts` del historial resolvió tanto el conteo de la regla como los tres reportes con `Query`, sin `Scan`. Para que la voz y la lógica automática no se contradigan, la skill rechaza con una explicación las órdenes que la regla del Edge desharía y acompaña cada cambio de modo con el estado coherente del actuador.
 
-**Requerimientos, Edge y almacenamiento (Luciana).** La sesión real de 30 minutos conservó 132 de 132 publicaciones en DynamoDB (100 % de integridad observada) y no mostró indicios de reinicio ni retrocesos de uptime. Diecisiete lecturas permitieron medir el tramo regla IoT → log posterior a escritura, con media de 160,824 ms y máximo de 378 ms. El monitor serie mostró siete apagados automáticos Edge de 29,996–29,998 s y 19 intervalos de latido de 59,995–60,001 s. La validación previa a `PutItem` y las pruebas automatizadas complementan esa evidencia. Las estimaciones del borrador no acreditan latencia extremo a extremo, efecto físico ni funcionamiento offline; esos ensayos y las capturas de Alexa/Nube siguen por validar.
+**Requerimientos, Edge y almacenamiento (Luciana).** La sesión real de 30 minutos conservó 132 de 132 publicaciones en DynamoDB (100 % de integridad observada) y no mostró indicios de reinicio ni retrocesos de uptime. Diecisiete lecturas permitieron medir el tramo regla IoT → log posterior a escritura, con media de 160,824 ms y máximo de 378 ms. El monitor serie mostró siete apagados automáticos Edge de 29,996–29,998 s y 19 intervalos de latido de 59,995–60,001 s. La validación previa a `PutItem` y las pruebas automatizadas complementan esa evidencia. En la sesión final, el monitor serie confirmó en el montaje la decisión Edge / Nube: las reglas del Edge reaccionan en 0,002–0,003 s y siguieron cerrando la puerta durante 85 s sin red, mientras que el bloqueo de la Nube tardó 0,525–0,603 s, ocho veces por debajo de su meta de 5 s pero unas 200 veces más que el Edge; al volver la red, el objeto se reconectó en ≤ 8,2 s y sincronizó su estado. Quedan sin medir la latencia de almacenamiento extremo a extremo (solo el tramo en AWS) y la precisión del PIR con el montaje de la P4.
 
 ---
 
@@ -2306,6 +2298,10 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`dashboards/mockup-actividad.png`](dashboards/mockup-actividad.png), [`dashboards/mockup-puerta-alarma.png`](dashboards/mockup-puerta-alarma.png), [`dashboards/mockup-bloqueos.png`](dashboards/mockup-bloqueos.png) (versiones `.svg` en [`anexos/p4/`](anexos/p4/)) | Rubén | Mockups de los tres reportes (RF15), con datos ilustrativos | §2.11 |
 | [`../tools/mockups-rf15/`](../tools/mockups-rf15/) | Rubén | Fuente de los mockups: generador de los datos ilustrativos (semilla fija) y exportación a PNG y SVG | §2.11 |
 | [`p4/ru-lambda-logica-config.png`](anexos/p4/ru-lambda-logica-config.png) | Rubén | `vigilante-logica`: disparador, variable `IOT_ENDPOINT` y rol | §3.2.2 |
+| [`p4/ru-sim-01-modo.png`](anexos/p4/ru-sim-01-modo.png), [`p4/ru-sim-02-automatico.png`](anexos/p4/ru-sim-02-automatico.png), [`p4/ru-sim-03-rechazo.png`](anexos/p4/ru-sim-03-rechazo.png), [`p4/ru-sim-04-max.png`](anexos/p4/ru-sim-04-max.png), [`p4/ru-sim-05-rango.png`](anexos/p4/ru-sim-05-rango.png), [`p4/ru-sim-06-ventana.png`](anexos/p4/ru-sim-06-ventana.png), [`p4/ru-sim-07-parametros.png`](anexos/p4/ru-sim-07-parametros.png), [`p4/ru-sim-08-alarma-on.png`](anexos/p4/ru-sim-08-alarma-on.png), [`p4/ru-sim-09-alarma-estado.png`](anexos/p4/ru-sim-09-alarma-estado.png), [`p4/ru-sim-10-alarma-off.png`](anexos/p4/ru-sim-10-alarma-off.png), [`p4/ru-sim-previo-11-abrir.png`](anexos/p4/ru-sim-previo-11-abrir.png), [`p4/ru-sim-11-bloqueo.png`](anexos/p4/ru-sim-11-bloqueo.png), [`p4/ru-sim-12-alarma-nube.png`](anexos/p4/ru-sim-12-alarma-nube.png), [`p4/ru-sim-13-manual.png`](anexos/p4/ru-sim-13-manual.png) | Grupo | Simulador de Alexa con *JSON Input/Output* (S-01 a S-13): modo, rechazo en automático, parámetros con validación de rango, alarma, bloqueo por voz, alarma activada por la Nube y vuelta a manual (Skill ID y `userId` tapados) | §4.6 |
+| [`p4/ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt) | Grupo | Monitor serie con hora en ms de la sesión del 24/11/2026 (endpoint tapado): N-01, LU-06, LU-07, LU-08 | §4.3, §4.7 |
+| [`p4/ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png), [`p4/ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png), [`p4/ru-cw-sin-accion.png`](anexos/p4/ru-cw-sin-accion.png) | Grupo | Shadow con el `desired` de la Nube y decisiones de `vigilante-logica` en CloudWatch | §4.7 |
+| [`p4/ru-alexa-intents-p4.png`](anexos/p4/ru-alexa-intents-p4.png), [`p4/ru-alexa-build-p4.png`](anexos/p4/ru-alexa-build-p4.png) | Grupo | Intents de la skill y compilación del modelo corregido | §3.3 |
 | [`p4/lu-almacenamiento-guardado.png`](anexos/p4/lu-almacenamiento-guardado.png), [`p4/lu-tabla-lectura-prueba.png`](anexos/p4/lu-tabla-lectura-prueba.png), [`p4/lu-almacenamiento-descartado.png`](anexos/p4/lu-almacenamiento-descartado.png) | Luciana | Guardado y descarte en la Lambda real | §4.4 |
 | [`p4/lu-regresion-skill.txt`](anexos/p4/lu-regresion-skill.txt), [`p4/lu-regresion-logica.txt`](anexos/p4/lu-regresion-logica.txt), [`p4/lu-pruebas-almacenamiento.txt`](anexos/p4/lu-pruebas-almacenamiento.txt), [`p4/lu-pruebas-firmware.txt`](anexos/p4/lu-pruebas-firmware.txt) | Luciana | Salidas de las pruebas automáticas del 24/11/2026 | §4.2 |
 | [`p4/lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv), [`p4/lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv), [`p4/lu-mediciones-almacenamiento.csv`](anexos/p4/lu-mediciones-almacenamiento.csv) | Luciana | Plantillas para lo aún no medido; los resultados reales están en `lu-sesion-20261124/` | §4.3, §4.4 |

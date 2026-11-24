@@ -142,7 +142,7 @@
             "pon el modo en {modo}",
             "activa el modo {modo}",
             "pasa a modo {modo}",
-            "modo {modo}",
+            "pasa al modo {modo}",
             "cambia el modo",
             "cambiar el modo de operación"
           ]
@@ -152,7 +152,12 @@
           "slots": [],
           "samples": [
             "en qué modo está",
+            "en que modo esta",
             "en qué modo está el dispositivo",
+            "en que modo esta el dispositivo",
+            "en qué modo estás",
+            "qué modo está activo",
+            "dime el modo",
             "qué modo tiene",
             "cuál es el modo",
             "cuál es el modo actual",
