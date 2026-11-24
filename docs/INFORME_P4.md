@@ -1527,7 +1527,7 @@ Para decidir: ¿hay más movimiento del normal?, ¿a qué hora?, ¿el modo autom
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-![Figura 2.11.1. Reporte 1, Actividad del día](anexos/p4/mockup-actividad.png)
+![Figura 2.11.1. Reporte 1, Actividad del día](dashboards/mockup-actividad.png)
 
 *Figura 2.11.1. Reporte 1, Actividad del día: conclusión frente a un día típico, detecciones del día, última detección, cierres automáticos y hora pico; detecciones por hora por modo, reparto por modo y mapa de actividad de la semana. Datos ilustrativos. Versión vectorial: [`mockup-actividad.svg`](anexos/p4/mockup-actividad.svg).*
 
@@ -1561,7 +1561,7 @@ Para decidir: ¿quién abrió o cerró?, ¿la alarma se activó sola o por voz?,
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-![Figura 2.11.2. Reporte 2, Puerta y alarma](anexos/p4/mockup-puerta-alarma.png)
+![Figura 2.11.2. Reporte 2, Puerta y alarma](dashboards/mockup-puerta-alarma.png)
 
 *Figura 2.11.2. Reporte 2, Puerta y alarma: quién movió la puerta y por qué sonó la alarma, aviso de aperturas fuera de horario (22:00–06:00), línea de tiempo de la semana coloreada por origen y últimos eventos con su motivo. Datos ilustrativos. Versión vectorial: [`mockup-puerta-alarma.svg`](anexos/p4/mockup-puerta-alarma.svg).*
 
@@ -1593,7 +1593,7 @@ Para decidir: ¿el umbral está bien elegido?, ¿cuántas veces se bloqueó?, ¿
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-![Figura 2.11.3. Reporte 3, Bloqueos y configuración](anexos/p4/mockup-bloqueos.png)
+![Figura 2.11.3. Reporte 3, Bloqueos y configuración](dashboards/mockup-bloqueos.png)
 
 *Figura 2.11.3. Reporte 3, Bloqueos y configuración: recomendación sobre max_detecciones, bloqueos de la Nube, falsas alarmas probables, tiempo medio en bloqueo, bloqueos por día, bloqueos estimados con otros umbrales y detalle de cada bloqueo. Datos ilustrativos. Versión vectorial: [`mockup-bloqueos.svg`](anexos/p4/mockup-bloqueos.svg).*
 
@@ -2326,7 +2326,7 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`p4/circuito.png`](anexos/p4/circuito.png), [`p4/circuito.svg`](anexos/p4/circuito.svg) | Alejandro | Diagrama de conexiones con el buzzer en el GPIO 26 | §2.3 |
 | [`p4/circuito-3d.svg`](anexos/p4/circuito-3d.svg), [`p4/circuito-3d.png`](anexos/p4/circuito-3d.png), [`p4/circuito-3d-oscuro.png`](anexos/p4/circuito-3d-oscuro.png) | Alejandro | Montaje isométrico con el buzzer (tema claro y oscuro) | §2.3 |
 | [`p4/montaje-buzzer.jpg`](anexos/p4/montaje-buzzer.jpg) | Alejandro | Foto del prototipo de la P4 | §2.3 |
-| [`p4/mockup-actividad.png`](anexos/p4/mockup-actividad.png), [`p4/mockup-puerta-alarma.png`](anexos/p4/mockup-puerta-alarma.png), [`p4/mockup-bloqueos.png`](anexos/p4/mockup-bloqueos.png) y sus `.svg` | Rubén | Mockups de los tres reportes (RF15), con datos ilustrativos | §2.11 |
+| [`dashboards/mockup-actividad.png`](dashboards/mockup-actividad.png), [`dashboards/mockup-puerta-alarma.png`](dashboards/mockup-puerta-alarma.png), [`dashboards/mockup-bloqueos.png`](dashboards/mockup-bloqueos.png) (versiones `.svg` en [`anexos/p4/`](anexos/p4/)) | Rubén | Mockups de los tres reportes (RF15), con datos ilustrativos | §2.11 |
 | [`../tools/mockups-rf15/`](../tools/mockups-rf15/) | Rubén | Fuente de los mockups: generador de los datos ilustrativos (semilla fija) y exportación a PNG y SVG | §2.11 |
 | [`p4/ru-lambda-logica-config.png`](anexos/p4/ru-lambda-logica-config.png) | Rubén | `vigilante-logica`: disparador, variable `IOT_ENDPOINT` y rol | §3.2.2 |
 | [`p4/lu-almacenamiento-guardado.png`](anexos/p4/lu-almacenamiento-guardado.png), [`p4/lu-tabla-lectura-prueba.png`](anexos/p4/lu-tabla-lectura-prueba.png), [`p4/lu-almacenamiento-descartado.png`](anexos/p4/lu-almacenamiento-descartado.png) | Luciana | Guardado y descarte en la Lambda real | §4.4 |

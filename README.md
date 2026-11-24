@@ -9,7 +9,7 @@ Objeto inteligente que vigila un objeto valioso con un **sensor PIR HC-SR501**, 
 
 Evidencias: [`docs/anexos/`](docs/anexos/) (Práctica 3) y [`docs/anexos/p4/`](docs/anexos/p4/) (Práctica 4).
 
-Reportes (RF15): mockups de las tres pantallas en [`docs/anexos/p4/`](docs/anexos/p4/) (`mockup-*.png`), descritos en el informe (§2.11); su fuente está en [`tools/mockups-rf15/`](tools/mockups-rf15/).
+Reportes (RF15): dashboards de las tres pantallas en [`docs/dashboards/`](docs/dashboards/) (`mockup-*.png`), descritos en el informe (§2.11); su fuente está en [`tools/mockups-rf15/`](tools/mockups-rf15/).
 
 ## Qué agregó la Práctica 4
 
