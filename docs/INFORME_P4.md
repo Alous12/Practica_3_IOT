@@ -14,7 +14,7 @@ PENDIENTE ANTES DE ENTREGAR (borrar este comentario cuando todo esté medido):
 **Actividad:** Integración de un objeto inteligente con AWS (IoT Core, IoT Rules, Lambda y DynamoDB) y Alexa, con procesamiento, almacenamiento de datos y lógica de control en el Edge y en la Nube
 **Repositorio:** <https://github.com/Alous12/Practica_3_IOT>
 
-La Práctica 4 amplía el objeto inteligente, el Shadow, la skill y la vinculación de la Práctica 3, cuyo informe está en [`INFORME.md`](INFORME.md). Este documento es el informe de la Práctica 4 y reúne los aportes de los tres integrantes.
+La Práctica 4 amplía el objeto inteligente, el Shadow, la skill y la vinculación de la Práctica 3, cuyo informe está en [`INFORME_P3.md`](INFORME_P3.md). Este documento es el informe de la Práctica 4 y reúne los aportes de los tres integrantes.
 
 | Integrante | GitHub | Capa a cargo en la Práctica 4 | Secciones |
 |---|---|---|---|
@@ -263,13 +263,13 @@ Se distinguen dos tablas: `vigilante_vinculaciones`, que conserva el destino de 
 
 El PIR y el servo no cambian respecto de la P3. Lo nuevo son las dos conexiones del buzzer. Los pines están en [`include/config.h`](../include/config.h): `PIR_PIN 27`, `SERVO_PIN 25` y `BUZZER_PIN 26`, con `BUZZER_ACTIVE 1`.
 
-![Diagrama de conexiones con el buzzer](anexos/circuito.png)
+![Diagrama de conexiones con el buzzer](anexos/p4/circuito.png)
 
 *Figura 2.3.1 — Diagrama de conexiones de la P4. Es un esquema por terminal: no representa la posición física de los pines. Lo nuevo respecto de la P3 es el buzzer en el GPIO 26.*
 
-![Montaje en la protoboard en vista isométrica, con el buzzer](anexos/circuito-3d.png)
+![Montaje en la protoboard en vista isométrica, con el buzzer](anexos/p4/circuito-3d.png)
 
-*Figura 2.3.2 — El circuito montado en la protoboard, en vista isométrica ([versión vectorial](anexos/circuito-3d.svg)). El buzzer está en la mitad derecha de la protoboard. El cable amarillo lleva su señal desde el GPIO 26 y el negro une su pata − al riel −. El resto del montaje es el de la P3: verde = PIR OUT → GPIO 27, naranja = señal del servo → GPIO 25, rojo = +6 V, negro y marrón = GND.*
+*Figura 2.3.2 — El circuito montado en la protoboard, en vista isométrica ([versión vectorial](anexos/p4/circuito-3d.svg)). El buzzer está en la mitad derecha de la protoboard. El cable amarillo lleva su señal desde el GPIO 26 y el negro une su pata − al riel −. El resto del montaje es el de la P3: verde = PIR OUT → GPIO 27, naranja = señal del servo → GPIO 25, rojo = +6 V, negro y marrón = GND.*
 
 ![Foto del montaje real con el buzzer](anexos/p4/montaje-buzzer.jpg)
 
@@ -1632,6 +1632,9 @@ El código está en el repositorio: firmware en [`src/`](../src/) e [`include/`]
 | **(P4)** [`lambda-logica/lambda_function.py`](../lambda-logica/lambda_function.py) | `vigilante-logica`; solo biblioteca estándar y `boto3`, se despliega pegando el archivo en la consola |
 | **(P4)** [`lambda-logica/events/`](../lambda-logica/events/) | Mensajes de ejemplo de la regla (modo automático y manual) |
 | **(P4)** [`lambda-logica/tests/test_logica.py`](../lambda-logica/tests/test_logica.py) | 15 pruebas con DynamoDB e IoT Data simulados |
+| **(P4)** [`lambda-almacenamiento/lambda_function.py`](../lambda-almacenamiento/lambda_function.py) | `vigilante-almacenamiento` (§2.4.3 y §2.9.3); solo biblioteca estándar y `boto3`, se despliega pegando el archivo en la consola |
+| **(P4)** [`lambda-almacenamiento/events/`](../lambda-almacenamiento/events/) | Mensajes de ejemplo de las reglas: lectura válida, cambio de la alarma y lectura inválida |
+| **(P4)** [`lambda-almacenamiento/tests/test_storage.py`](../lambda-almacenamiento/tests/test_storage.py) | 12 pruebas (y 18 subcasos) con DynamoDB simulado |
 
 **Fragmentos clave (de la Práctica 3, con las líneas actuales):**
 
@@ -1734,7 +1737,7 @@ Son los permisos mínimos que pide el enunciado. Ninguna acción usa comodín y 
 
 | Parámetro | Valor | Justificación |
 |---|---|---|
-| Runtime | Python 3.13, arquitectura arm64 | Versión con la que se prueba el paquete |
+| Runtime | Python 3.13 | Versión con la que se prueba el paquete. Las dependencias empaquetadas son Python puro, así que el `.zip` funciona en x86_64 y en arm64 |
 | Handler | `lambda_function.lambda_handler` | Punto de entrada del paquete |
 | Código | `lambda/build/lambda_deployment.zip` (≈ 2,4 MB), generado con [`build.ps1`](../lambda/build.ps1) / [`build.sh`](../lambda/build.sh) | Contiene `lambda_function.py` en la raíz, el paquete `vigilante/`, `ask-sdk-core==1.19.0` y `python-dateutil < 3` (**P4:** se fijó esa versión porque `botocore`, incluido en Lambda, no admite la 4). `boto3` **no** se empaqueta. El `.zip` está en `.gitignore` y se regenera desde el código |
 | Rol de ejecución | `vigilante-lambda-role` | Ver arriba |
@@ -1764,6 +1767,18 @@ Son los permisos mínimos que pide el enunciado. Ninguna acción usa comodín y 
 | `iot:UpdateThingShadow` | `thing/vigilante-*` | Escribir el bloqueo en `desired` |
 
 **Permisos reales en la cuenta del curso:** esa cuenta no permite crear roles IAM, por eso `vigilante-logica` usa el rol existente `PowerUserRole` (política administrada `PowerUserAccess`). Es más amplio de lo necesario; en producción se reemplazaría por un rol con solo la política de [`lambda-logica/politica-rol.json`](../lambda-logica/politica-rol.json) (dos acciones sobre dos recursos). El permiso para que AWS IoT invoque la Lambda (`lambda:InvokeFunction` para `iot.amazonaws.com`) lo agrega la consola como política basada en recursos al crear la acción de la regla.
+
+#### (P4) Función Lambda `vigilante-almacenamiento`
+
+| Parámetro | Valor |
+|---|---|
+| Runtime / handler | Python 3.13 · `lambda_function.lambda_handler` |
+| Tiempo de espera | 10 s |
+| Código | [`lambda-almacenamiento/lambda_function.py`](../lambda-almacenamiento/lambda_function.py) pegado en el editor de la consola y *Deploy* (no tiene dependencias fuera de `boto3`) |
+| Disparadores | Reglas de AWS IoT `vigilante_lecturas` y `vigilante_eventos` |
+| Variables de entorno | Todas opcionales: `HISTORY_TABLE` (`vigilante_historico`), `THING_PREFIX` (`vigilante-`) y `TTL_DAYS` (30) |
+| Logs | CloudWatch `/aws/lambda/vigilante-almacenamiento`: una línea JSON `guardado` por registro o `descartado` con el motivo |
+| Permiso mínimo | `dynamodb:PutItem` sobre `table/vigilante_historico` ([`aws/almacenamiento-role-policy.json`](../aws/almacenamiento-role-policy.json)) más los logs de `AWSLambdaBasicExecutionRole`. No lee la tabla ni toca el Shadow |
 
 #### Evidencias de la configuración
 
@@ -1870,7 +1885,7 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 
 ## 4.2 Pruebas automáticas (LU-09)
 
-Las pruebas no necesitan cuenta de AWS ni hardware, así que se repiten en cada cambio. La integración continua de GitHub ([`.github/workflows/pruebas.yml`](../.github/workflows/pruebas.yml)) ejecuta en cada *push* las pruebas de la skill, compila los dos entornos del firmware y corre las pruebas C++.
+Las pruebas no necesitan cuenta de AWS ni hardware, así que se repiten en cada cambio. La integración continua de GitHub ([`.github/workflows/pruebas.yml`](../.github/workflows/pruebas.yml)) ejecuta en cada *push* las pruebas de las tres Lambdas, compila los dos entornos del firmware y el banco de pruebas del hardware, y corre los cuatro programas de prueba C++. El último *push* (`750a375`) terminó en verde.
 
 | Suite | Pruebas | Qué cubre | Resultado (24/11/2026) | Evidencia |
 |---|---|---|---|---|
@@ -2292,8 +2307,8 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 
 | Archivo | Responsable | Contenido | Sección |
 |---|---|---|---|
-| [`circuito.png`](anexos/circuito.png), [`circuito.svg`](anexos/circuito.svg) | Alejandro | Diagrama de conexiones con el buzzer en el GPIO 26 | §2.3 |
-| [`circuito-3d.svg`](anexos/circuito-3d.svg), [`circuito-3d.png`](anexos/circuito-3d.png), [`circuito-3d-oscuro.png`](anexos/circuito-3d-oscuro.png) | Alejandro | Montaje isométrico con el buzzer (tema claro y oscuro) | §2.3 |
+| [`p4/circuito.png`](anexos/p4/circuito.png), [`p4/circuito.svg`](anexos/p4/circuito.svg) | Alejandro | Diagrama de conexiones con el buzzer en el GPIO 26 | §2.3 |
+| [`p4/circuito-3d.svg`](anexos/p4/circuito-3d.svg), [`p4/circuito-3d.png`](anexos/p4/circuito-3d.png), [`p4/circuito-3d-oscuro.png`](anexos/p4/circuito-3d-oscuro.png) | Alejandro | Montaje isométrico con el buzzer (tema claro y oscuro) | §2.3 |
 | [`p4/montaje-buzzer.jpg`](anexos/p4/montaje-buzzer.jpg) | Alejandro | Foto del prototipo de la P4 | §2.3 |
 | [`p4/ru-lambda-logica-config.png`](anexos/p4/ru-lambda-logica-config.png) | Rubén | `vigilante-logica`: disparador, variable `IOT_ENDPOINT` y rol | §3.2.2 |
 | [`p4/lu-almacenamiento-guardado.png`](anexos/p4/lu-almacenamiento-guardado.png), [`p4/lu-tabla-lectura-prueba.png`](anexos/p4/lu-tabla-lectura-prueba.png), [`p4/lu-almacenamiento-descartado.png`](anexos/p4/lu-almacenamiento-descartado.png) | Luciana | Guardado y descarte en la Lambda real | §4.4 |

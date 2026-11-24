@@ -30,7 +30,7 @@ El script C++ utiliza `.pio/libdeps/esp32dev/ArduinoJson/src` de forma predeterm
 ## Lo que todavía hay que medir o adjuntar
 
 - [x] Revisar los aportes independientes `informeRuben` (`f36d67a`) y `Rama_Ale` (`8162bc3`) sin fusionar sus ramas.
-- [ ] La persona designada integra los tres aportes en `docs/INFORME_P4.md` después de los commits de cada integrante.
+- [x] La persona designada integra los tres aportes en `docs/INFORME_P4.md` después de los commits de cada integrante. Hecho el 24/11/2026; los archivos parciales se retiraron y quedan en el historial de git.
 - [ ] Exportación CSV real de `vigilante_historico`, con Thing y ventana UTC de prueba.
 - [ ] Conteos de integridad de una ventana de 30 min.
 - [ ] Diez muestras de latencia de almacenamiento con relojes comparables.

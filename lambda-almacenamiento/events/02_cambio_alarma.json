@@ -1,0 +1,7 @@
+{
+  "tipo": "cambio",
+  "thingName": "vigilante-123456",
+  "ts": 1795169742,
+  "anterior": {"movimiento": false, "detecciones": 4, "puerta": "cerrada", "modo": "bloqueo", "alarma": "apagada"},
+  "actual": {"movimiento": true, "detecciones": 5, "puerta": "cerrada", "modo": "bloqueo", "alarma": "encendida", "origen": "edge"}
+}

@@ -1,6 +1,6 @@
 # Pruebas de comunicación — RNF3, RNF4 y RNF5
 
-Responsable: Luciana (comunicación). Resultados obtenidos para §4.6 y §5 del [informe](../INFORME.md) durante las pruebas del montaje real. RNF1 y RNF2 corresponden a Ruben.
+Responsable: Luciana (comunicación). Resultados obtenidos para §4.6 y §5 del [informe](../INFORME_P3.md) durante las pruebas del montaje real. RNF1 y RNF2 corresponden a Ruben.
 
 ## RNF3 — Tiempo de respuesta
 

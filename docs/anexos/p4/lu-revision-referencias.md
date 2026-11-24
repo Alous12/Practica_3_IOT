@@ -2,6 +2,8 @@
 
 Revisión del 24 de noviembre de 2026 para completar únicamente el aporte de Luciana.
 
+> **Estado:** la integración ya se hizo en [`docs/INFORME_P4.md`](../../INFORME_P4.md). Los archivos parciales que se citan abajo se retiraron del repositorio y se conservan en el historial de git (commits indicados en la tabla).
+
 | Autor | Rama consultada | Commit | Archivo |
 |---|---|---|---|
 | Rubén | informeRuben | f36d67a7012f06875c7ddca8b8f98c1fc6c0382a | docs/informeRuben.md |

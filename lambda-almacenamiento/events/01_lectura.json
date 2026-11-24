@@ -1,0 +1,11 @@
+{
+  "tipo": "lectura",
+  "thingName": "vigilante-123456",
+  "ts": 1795169742318,
+  "reported": {
+    "movimiento": false, "detecciones": 4, "ultima_deteccion": 1795169700, "sensor_listo": true,
+    "puerta": "cerrada", "alarma": "apagada",
+    "modo": "automatico", "max_detecciones": 3, "ventana_min": 10,
+    "origen": "edge", "uptime_s": 812, "rssi": -58
+  }
+}
