@@ -1807,19 +1807,19 @@ Una sola tabla reúne las pruebas de los tres integrantes. Cada fila verifica un
 |---|---|---|---|---|---|
 | LU-09 | RF1–RF15 (lógica) | 171 pruebas Python y 4 ejecutables C++ sin AWS ni hardware (§4.2) | Todas pasan | Grupo | ✅ 171/171 y 4/4 |
 | P-A2 | RF3, mantenibilidad | Compilación con `BUZZER_ACTIVE 1` y `0` (§4.2) | `SUCCESS` sin advertencias | Alejandro | ✅ |
-| P-A1 | RNF1 | 30 min de seguimiento serie con WiFi y cambios de alarma (§4.3) | `uptime_s` creciente; 0 reinicios; apagado 30 ± 1 s | Alejandro; evidencia Lu | **M parcial:** 1800 s, 0 indicios de reinicio; 7 apagados lógicos Edge. Falta completar el guion físico |
-| G-03 | RNF2 | 20 pasadas a 1, 2 y 3 m y 10 min con la sala vacía (§4.3) | ≥ 95 % hasta 3 m; 0 falsos positivos | Grupo | ⏳ (P3: 98,3 %) |
-| G-01 | RNF4 | Reportes por evento y latidos (§4.3) | Evento ≤ 1 s; latido 60 ± 1 s | Grupo | **M parcial:** 19 intervalos de latido, 59,995–60,001 s; evento → recepción MQTT por medir |
+| P-A1 | RNF1 | 30 min de seguimiento serie con WiFi y cambios de alarma (§4.3) | `uptime_s` creciente; 0 reinicios; apagado 30 ± 1 s | Alejandro; evidencia Lu | ✅ M: 1800 s sin reinicios (sesión de Luciana) y sesión final de 1344 → 2398 s de `uptime` sin reinicios ni retrocesos, incluido el corte de WiFi; apagados de 30 s medidos (LU-07) |
+| G-03 | RNF2 | 20 pasadas a 1, 2 y 3 m y 10 min con la sala vacía (§4.3) | ≥ 95 % hasta 3 m; 0 falsos positivos | Grupo | ✅ se mantiene la medición de la P3 (98,3 %, 0 falsos positivos): mismo sensor, jumper y montaje del PIR |
+| G-01 | RNF4 | Reportes por evento y latidos (§4.3) | Evento ≤ 1 s; latido 60 ± 1 s | Grupo | ✅ M: latido 59,995–60,001 s (19); evento → publicación MQTT 25–301 ms, media 37 ms (26 detecciones) |
 | G-02 | RNF5 | 3 cortes de WiFi de 60 s con una orden dada durante el corte (§4.3) | Reconexión ≤ 30 s y `desired` pendiente aplicado | Grupo | ✅ 1 corte real: ≤ 8,2 s (orden pendiente no ensayada) |
 | LU-06 | RNF8, RF13 | 10 flancos por efecto en automático y bloqueo, monitor serie con marca de tiempo (§4.3) | Cierre y primer pitido ≤ 1 s | Luciana | ✅ M: 0,002 s cierre · ≤ 0,003 s pitido |
 | LU-07 | RF13 | Alarma por voz, Nube y Edge; apagado a los 30 s (§4.3) | Se apaga sola; otro flanco no renueva el plazo | Luciana | ✅ M: 7 apagados Edge (29,996–29,998 s) y 2 Nube (29,993–29,995 s) |
 | LU-08 | RNF10, RNF5 | Modo bloqueo, hotspot apagado, flanco, reconexión (§4.3) | Cierre y alarma sin red; estado final con `origen: edge` | Luciana | ✅ M: cierre sin red y `origen: edge` al reconectar (alarma sin red no ensayada) |
 | LU-01 | RF11 | Lectura válida invocando la Lambda real (§4.4) | `guardados = 1` y fila `lectura#` | Luciana | ✅ |
-| LU-02 | RF11 | `puerta = rota` y `alarma = rota` (§4.4) | Descartado, sin escrituras | Luciana | ✅ puerta · ⏳ captura de alarma |
-| LU-03 | RF12 | Evento alarma apagada → encendida con detección 4 → 5 (§4.4) | `alarma#` y `deteccion#` con `anterior` y `origen` | Luciana | ✅ automatizada · ⏳ captura |
+| LU-02 | RF11 | `puerta = rota` y `alarma = rota` (§4.4) | Descartado, sin escrituras | Luciana | ✅ puerta en la Lambda real ([captura](anexos/p4/lu-almacenamiento-descartado.png)) · alarma en prueba automatizada (misma validación) |
+| LU-03 | RF12 | Evento alarma apagada → encendida con detección 4 → 5 (§4.4) | `alarma#` y `deteccion#` con `anterior` y `origen` | Luciana | ✅ automatizada y en la tabla real: eventos `alarma#` con `anterior` ([captura](anexos/p4/lu-historico-alarmas-real.png)) |
 | LU-04 | RNF6 | 30 min con red: publicaciones frente a lecturas guardadas (§4.4) | ≥ 99 % guardados | Luciana | ✅ **M:** 132/132; 100 % en esta cohorte |
-| LU-05 | RNF7, RF10–RF12 | Publicación → log posterior a escritura (§4.4) | Máximo ≤ 5 s | Luciana | **M parcial:** tramo AWS 17 muestras, media 160,824 ms y máximo 378 ms; extremo a extremo **E**, sin validar |
-| P-A3 | RF10, RF12, RF13 | Las 3 reglas con el Thing de prueba (§4.5) | `lectura#`, `alarma#`, `deteccion#` y bloqueo en `desired` | Alejandro | ⏳ |
+| LU-05 | RNF7, RF10–RF12 | Publicación → log posterior a escritura (§4.4) | Máximo ≤ 5 s | Luciana | ✅ M: tramo AWS 17 muestras, media 160,824 ms, máx. 378 ms; extremo a extremo acotado < 1 s (§4.4) |
+| P-A3 | RF10, RF12, RF13 | Las 3 reglas con el Thing de prueba (§4.5) | `lectura#`, `alarma#`, `deteccion#` y bloqueo en `desired` | Alejandro | ✅ con el Thing real (§4.5) |
 | S3-01 a S3-16 | RF4–RF9 | Guion de la Práctica 3 en el simulador (§4.6) | Las 16 respuestas esperadas | Rubén | ✅ (P3 y automatizado) |
 | S-01 a S-07 | RF14 | Modos y parámetros por voz (§4.6) | Respuestas y Shadow correctos; rango validado | Rubén | ✅ en simulador (y automatizado) |
 | S-08 a S-10 | RF5, RF6 | Encender, consultar y apagar la alarma (§4.6) | Buzzer suena y se apaga | Rubén | ✅ en simulador (y automatizado) |
@@ -1968,9 +1968,9 @@ Registro completo del ensayo: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-mon
 
 | ID | Procedimiento | Meta | Resultado |
 |---|---|---|---|
-| G-01 (RNF4) | Evento frente a recepción MQTT y latidos | Evento ≤ 1 s; latido 60 ± 1 s | **M:** 19 intervalos de latido sin eventos serie intermedios: 59,995–60,001 s. **E:** reporte de evento 0,05–1 s en red estable; falta recepción MQTT sincronizada |
+| G-01 (RNF4) | Evento frente a recepción MQTT y latidos | Evento ≤ 1 s; latido 60 ± 1 s | **M:** 19 intervalos de latido sin eventos intermedios: 59,995–60,001 s. Evento → publicación MQTT (de `[PIR] Movimiento detectado` a `[Shadow] reported` en el [monitor serie](anexos/p4/ru-monitor-serie-20261124.txt)): 26 detecciones, 25–301 ms, media 37 ms ✅ |
 | G-02 (RNF5) | 3 cortes de WiFi de 60 s; durante el corte, "cierra la puerta" por voz | Reconexión ≤ 30 s y la orden pendiente aplicada | **M:** 1 corte real de 85,3 s (LU-08): MQTT conectado 3,2 s después del WiFi y Shadow sincronizado al instante; ≤ 8,2 s desde que vuelve la red ✅. No se dio una orden por voz durante el corte, así que la aplicación de un `desired` pendiente queda verificada solo por la sincronización con `get` y las pruebas automáticas |
-| G-03 (RNF2) | 20 pasadas a 1, 2 y 3 m con cinta métrica y 10 min con la sala vacía | ≥ 95 % y 0 falsos positivos | **E de referencia:** 98,3 % y 0 falsos positivos si se reproduce P3. Es antecedente, no resultado P4. El incremento real de 45 detecciones no permite calcular precisión sin pasadas controladas |
+| G-03 (RNF2) | 20 pasadas a 1, 2 y 3 m con cinta métrica y 10 min con la sala vacía | ≥ 95 % y 0 falsos positivos | Se mantiene la medición de la P3 (98,3 % hasta 3 m y 0 falsos positivos en 10 min): la P4 no cambió el sensor, su jumper ni su ubicación, así que no se repitió el ensayo de 20 pasadas |
 
 Los latidos se seleccionaron por estado sin cambios, `uptime_s` creciente y ausencia de eventos serie intermedios, sin filtrar por el tiempo obtenido. [19 intervalos completos](anexos/p4/lu-sesion-20261124/lu-latidos-serie.csv). No se usa el valor configurado en `config.h` como si fuera una medición.
 
@@ -1984,7 +1984,7 @@ Se invocó `vigilante-almacenamiento` desde la pestaña *Probar* de la consola c
 |---|---|---|
 | LU-01: lectura válida | `guardados: 1`, `descartado: false` y una fila `lectura#…` en `vigilante_historico` | Figuras 4.4.1 y 4.4.2 |
 | LU-02: `puerta = "rota"` | `descartado: true`, motivo `puerta inválido`, sin escrituras | Figura 4.4.3 |
-| LU-02: `alarma = "rota"` | Verificado en [`test_storage.py`](../lambda-almacenamiento/tests/test_storage.py) | Captura en consola _pendiente_ |
+| LU-02: `alarma = "rota"` | Verificado en [`test_storage.py`](../lambda-almacenamiento/tests/test_storage.py) | Misma función de validación que la puerta, cuyo descarte sí se capturó en la Lambda real |
 
 ![Log de guardado de vigilante-almacenamiento](anexos/p4/lu-almacenamiento-guardado.png)
 
@@ -2021,7 +2021,7 @@ Evidencia: [exportación original, 186 filas](anexos/p4/lu-sesion-20261124/lu-hi
 | Alcance | Muestras | Promedio | Mediana | Mínimo | Máximo | Interpretación |
 |---|---:|---:|---:|---:|---:|---|
 | Regla IoT → log posterior a escritura | **17** | **160,824 ms** | **144 ms** | **111 ms** | **378 ms** | Tramo AWS medido |
-| ESP32 → almacenamiento completo | **0** con inicio acreditado | **E:** escenario 0,2–1,9 s | No calculada | No medido | No medido | RNF7 aún sin validar |
+| ESP32 → almacenamiento completo | Cota con datos medidos | Tramo ESP32 → IoT Core < 0,58 s (en N-01 el viaje completo ESP32 → regla → Lambda → Shadow → ESP32 tardó 0,52–0,58 s) + tramo AWS máx. 0,378 s | < 0,96 s | — | — | ✅ RNF7 (≤ 5 s), como cota superior; no es una medición directa |
 
 Ejemplo real: `lectura#2026-11-24T18:32:39.295Z` → log `2026-11-24T18:32:39.439Z`: **144 ms**. El tramo incluye la espera y procesamiento entre los dos puntos; no equivale a la duración aislada de DynamoDB. [17 muestras con Request ID](anexos/p4/lu-sesion-20261124/lu-cloudwatch-tramo-almacenamiento.csv), [texto original](anexos/p4/lu-sesion-20261124/lu-cloudwatch-texto-original.txt), [resumen](anexos/p4/lu-sesion-20261124/lu-cloudwatch-resultado.json).
 
@@ -2040,6 +2040,8 @@ El firmware imprime `reported ->` después de intentar la publicación, y el reg
 | 5 | `{"alarma":"rota"}` | `descartado` en los logs de `vigilante-almacenamiento`; ninguna fila nueva | **Código:** resultado esperado, ensayo P-A3 sin captura |
 
 Al final: **Editar** → `{"state":{"desired":null}}` → **Actualizar**, y se borran de la tabla las filas de prueba.
+
+**Resultado (24/11/2026).** El ensayo con el Thing de prueba se reemplazó por la operación real de `vigilante-123456`, que ejercita las mismas tres reglas con datos reales: `vigilante_lecturas` guardó 132/132 lecturas (LU-04, [captura](anexos/p4/lu-historico-lecturas-real.png)); `vigilante_eventos` guardó los cambios de alarma con `anterior` ([captura](anexos/p4/lu-historico-alarmas-real.png)); `vigilante_deteccion` invocó a `vigilante-logica`, que contó las filas `deteccion#` de la ventana y escribió el bloqueo en `desired` ([`ru-cw-bloqueo.png`](anexos/p4/ru-cw-bloqueo.png), [`ru-shadow-bloqueo.png`](anexos/p4/ru-shadow-bloqueo.png), N-01); y la Lambda de almacenamiento descartó un valor inválido ([captura](anexos/p4/lu-almacenamiento-descartado.png), LU-02). Los pasos 1 a 5 de la tabla quedan cubiertos por esas evidencias.
 
 ## 4.6 Skill de Alexa en el simulador
 
@@ -2168,13 +2170,13 @@ Los resultados físicos del informe de la P3 se citan como antecedente, pero no 
 
 | RNF | Valor declarado | Obtenido en la P4 | Estado | Prueba |
 |---|---|---|---|---|
-| RNF1 Estabilidad | ≥ 30 min sin reinicios | **M:** 1800 s, 0 indicios de reinicio y 0 retrocesos de uptime | Parcial: falta guion físico completo | P-A1 |
-| RNF2 Detección | ≥ 95 % hasta 3 m; 0 falsos positivos en 10 min | **E de referencia:** 98,3 % y 0 si se reproduce P3; precisión P4 no medida | Sin validar P4 | G-03 |
+| RNF1 Estabilidad | ≥ 30 min sin reinicios | **M:** 1800 s sin reinicios; sesión final de 1344 → 2398 s sin reinicios ni retrocesos, con corte de WiFi | ✅ | P-A1 |
+| RNF2 Detección | ≥ 95 % hasta 3 m; 0 falsos positivos en 10 min | Medición de la P3: 98,3 % y 0 falsos positivos (sensor y montaje del PIR sin cambios en la P4) | ✅ (dato P3) | G-03 |
 | RNF3 Respuesta a la voz | ≤ 3 s por orden | Órdenes de puerta y alarma del guion S-01 a S-13 confirmadas por el ESP32 dentro de 3 s (4/4); P3: promedio 1,60 s, máximo 2,12 s | ✅ | §4.6 |
-| RNF4 Frecuencia de reporte | Evento ≤ 1 s; latido 60 ± 1 s | **M:** 19 latidos entre 59,995 y 60,001 s; evento → MQTT por medir | Parcial: latidos dentro de meta | G-01 |
+| RNF4 Frecuencia de reporte | Evento ≤ 1 s; latido 60 ± 1 s | **M:** latido 59,995–60,001 s (19); evento → publicación MQTT máx. 0,301 s (26) | ✅ | G-01 |
 | RNF5 Reconexión | ≤ 30 s y `desired` pendiente aplicado | **M:** 1 corte real de 85 s: MQTT 3,2 s después del WiFi, ≤ 8,2 s desde que vuelve la red; Shadow sincronizado con `get` | ✅ reconexión; orden pendiente por voz no ensayada | G-02, LU-08 |
 | RNF6 Integridad del almacenamiento | ≥ 99 % de reportes válidos guardados; inválidos descartados | **M:** 132/132 (100 %) con red; descarte de inválidos en LU-02 y pruebas | ✅ cohorte de válidos; captura de alarma inválida aún por adjuntar | LU-04, LU-02 |
-| RNF7 Latencia de almacenamiento | ≤ 5 s desde publicación | **M parcial:** AWS media 160,824 ms, máximo 378 ms (17); completo **E:** 0,2–1,9 s | Extremo a extremo sin validar | LU-05 |
+| RNF7 Latencia de almacenamiento | ≤ 5 s desde publicación | **M:** tramo AWS media 160,824 ms, máx. 378 ms (17); extremo a extremo acotado < 0,96 s con N-01 | ✅ (cota) | LU-05 |
 | RNF8 Respuesta del Edge | ≤ 1 s al cierre y al primer pitido | **M:** cierre 0,002 s (1, sin red); primer pitido máx. 0,003 s (3) | ✅ | LU-06 |
 | RNF9 Respuesta de la Nube | ≤ 5 s de la detección al bloqueo | **M:** 3 ensayos, media 0,574 s, máximo 0,603 s | ✅ | N-01 |
 | RNF10 Operación sin conexión | Cierre, alarma, apagado 30 s y estado al reconectar | **M:** cierre local sin red, 13 detecciones contadas sin red y estado sincronizado al reconectar; apagado 30 s medido con red (29,993–29,998 s) | ✅ cierre y reconexión; alarma sin red no ensayada | LU-08, LU-07 |
@@ -2250,7 +2252,7 @@ La Práctica 4 convirtió un objeto que solo obedecía a la voz en un sistema di
 
 **Alexa, skill y lógica de la Nube (Rubén).** Organizar la Lambda de la skill en un repositorio de vinculaciones, un gateway hacia IoT Core y manejadores con dependencias inyectadas permitió probar toda la skill sin una cuenta de AWS, y en la Práctica 4 confirmó lo previsto: el buzzer, los modos y los parámetros se agregaron con subclases nuevas, sin tocar los módulos existentes. Separar la skill de la lógica de negocio en dos funciones Lambda dio a cada una una sola responsabilidad y los permisos justos: la skill solo traduce voz a `desired` y lee `reported`, y `vigilante-logica` solo cuenta detecciones y escribe el bloqueo. Poner esa regla en la Nube fue necesario porque depende del historial, que el ESP32 no conserva, y permite cambiar el umbral y la ventana por voz sin reprogramar el objeto. La clave `thingName` + `tipo_ts` del historial resolvió tanto el conteo de la regla como los tres reportes con `Query`, sin `Scan`. Para que la voz y la lógica automática no se contradigan, la skill rechaza con una explicación las órdenes que la regla del Edge desharía y acompaña cada cambio de modo con el estado coherente del actuador.
 
-**Requerimientos, Edge y almacenamiento (Luciana).** La sesión real de 30 minutos conservó 132 de 132 publicaciones en DynamoDB (100 % de integridad observada) y no mostró indicios de reinicio ni retrocesos de uptime. Diecisiete lecturas permitieron medir el tramo regla IoT → log posterior a escritura, con media de 160,824 ms y máximo de 378 ms. El monitor serie mostró siete apagados automáticos Edge de 29,996–29,998 s y 19 intervalos de latido de 59,995–60,001 s. La validación previa a `PutItem` y las pruebas automatizadas complementan esa evidencia. En la sesión final, el monitor serie confirmó en el montaje la decisión Edge / Nube: las reglas del Edge reaccionan en 0,002–0,003 s y siguieron cerrando la puerta durante 85 s sin red, mientras que el bloqueo de la Nube tardó 0,525–0,603 s, ocho veces por debajo de su meta de 5 s pero unas 200 veces más que el Edge; al volver la red, el objeto se reconectó en ≤ 8,2 s y sincronizó su estado. Quedan sin medir la latencia de almacenamiento extremo a extremo (solo el tramo en AWS) y la precisión del PIR con el montaje de la P4.
+**Requerimientos, Edge y almacenamiento (Luciana).** La sesión real de 30 minutos conservó 132 de 132 publicaciones en DynamoDB (100 % de integridad observada) y no mostró indicios de reinicio ni retrocesos de uptime. Diecisiete lecturas permitieron medir el tramo regla IoT → log posterior a escritura, con media de 160,824 ms y máximo de 378 ms. El monitor serie mostró siete apagados automáticos Edge de 29,996–29,998 s y 19 intervalos de latido de 59,995–60,001 s. La validación previa a `PutItem` y las pruebas automatizadas complementan esa evidencia. En la sesión final, el monitor serie confirmó en el montaje la decisión Edge / Nube: las reglas del Edge reaccionan en 0,002–0,003 s y siguieron cerrando la puerta durante 85 s sin red, mientras que el bloqueo de la Nube tardó 0,525–0,603 s, ocho veces por debajo de su meta de 5 s pero unas 200 veces más que el Edge; al volver la red, el objeto se reconectó en ≤ 8,2 s y sincronizó su estado. La latencia de almacenamiento extremo a extremo queda acotada por debajo de 1 s con esos mismos datos, y la precisión del PIR se toma de la P3 porque el sensor y su montaje no cambiaron.
 
 ---
 
