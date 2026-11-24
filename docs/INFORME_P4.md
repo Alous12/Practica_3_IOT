@@ -1501,7 +1501,7 @@ flowchart TD
 
 Los tres reportes se construyen **solo con consultas `Query` por clave** sobre `vigilante_historico` (clave de partición `thingName`, clave de ordenamiento `tipo_ts` = `<tipo>#<fecha ISO>`, §2.8). Cada fila de evento guarda el valor nuevo, el `anterior` y el `origen`; cada detección guarda el `modo` y la `puerta` de ese momento.
 
-Cada reporte tiene su boceto en texto, la pantalla diseñada y la tabla de consultas. Las tres pantallas comparten la misma estructura: arriba el **estado actual** del objeto (conexión, modo, puerta, alarma, señal WiFi, tiempo encendido y último reporte, tomados de la última `lectura#`; desconectado si no reporta en 150 s), luego **una conclusión en una frase** que responde la pregunta del reporte, los indicadores clave y, debajo, el detalle. Los colores tienen el mismo significado en todas: uno por origen (voz azul, edge naranja, nube verde), otro por modo (manual violeta, automático verde, bloqueo rosa), y el rojo solo para la alarma sonando y la desconexión.
+Cada reporte tiene su pantalla diseñada y la tabla de consultas. Las tres pantallas comparten la misma estructura: arriba el **estado actual** del objeto (conexión, modo, puerta, alarma, señal WiFi, tiempo encendido y último reporte, tomados de la última `lectura#`; desconectado si no reporta en 150 s), luego **una conclusión en una frase** que responde la pregunta del reporte, los indicadores clave y, debajo, el detalle. Los colores tienen el mismo significado en todas: uno por origen (voz azul, edge naranja, nube verde), otro por modo (manual violeta, automático verde, bloqueo rosa), y el rojo solo para la alarma sonando y la desconexión.
 
 > Las pantallas usan **datos ilustrativos** generados con [`tools/mockups-rf15/generar-datos.js`](../tools/mockups-rf15/generar-datos.js) (semilla fija, 18 al 24 nov 2026), coherentes con las reglas de §2.6. No son mediciones y no se usan en §4 ni en §5. Cómo regenerarlas: [`tools/mockups-rf15/README.md`](../tools/mockups-rf15/README.md).
 
@@ -1509,28 +1509,9 @@ Cada reporte tiene su boceto en texto, la pantalla diseñada y la tabla de consu
 
 Para decidir: ¿hay más movimiento del normal?, ¿a qué hora?, ¿el modo automático está cerrando la puerta?
 
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│  Vigilante Inteligente · vigilante-123456          Hoy, 24 nov 2026   │
-├──────────────────────────────────────────────────────────────────────┤
-│  Detecciones hoy        Última detección        Modo actual           │
-│      [ 14 ]             hace 12 min (15:31)     AUTOMÁTICO            │
-├──────────────────────────────────────────────────────────────────────┤
-│  Detecciones por hora                                                 │
-│  08h ▇▇                                                               │
-│  09h ▇▇▇▇▇                                                            │
-│  10h ▇                                                                │
-│  …                                                                    │
-│  15h ▇▇▇▇▇▇                                                           │
-├──────────────────────────────────────────────────────────────────────┤
-│  En modo automático: 11   ·   En manual: 3   ·   Cierres del Edge: 4  │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
 ![Figura 2.11.1. Reporte 1, Actividad del día](dashboards/mockup-actividad.png)
 
 *Figura 2.11.1. Reporte 1, Actividad del día: conclusión frente a un día típico, detecciones del día, última detección, cierres automáticos y hora pico; detecciones por hora por modo, reparto por modo y mapa de actividad de la semana. Datos ilustrativos. Versión vectorial: [`mockup-actividad.svg`](anexos/p4/mockup-actividad.svg).*
-
 
 | Elemento | Consulta en DynamoDB |
 |---|---|
@@ -1544,27 +1525,9 @@ Para decidir: ¿hay más movimiento del normal?, ¿a qué hora?, ¿el modo autom
 
 Para decidir: ¿quién abrió o cerró?, ¿la alarma se activó sola o por voz?, ¿hay aperturas en horarios raros?
 
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│  Eventos de actuadores · vigilante-123456     Del 18 al 24 nov 2026   │
-│  Filtro: [Puerta ▾] [Alarma ▾]   Origen: [Todos ▾]                    │
-├──────────────────┬──────────┬───────────────────────┬────────────────┤
-│ Fecha y hora     │ Actuador │ Cambio                │ Origen         │
-├──────────────────┼──────────┼───────────────────────┼────────────────┤
-│ 24 nov 15:31:07  │ Puerta   │ abierta → cerrada     │ edge (auto)    │
-│ 24 nov 15:20:44  │ Alarma   │ apagada → encendida   │ nube (bloqueo) │
-│ 24 nov 15:20:44  │ Puerta   │ abierta → cerrada     │ nube (bloqueo) │
-│ 24 nov 09:02:13  │ Puerta   │ cerrada → abierta     │ voz            │
-│ …                │          │                       │                │
-├──────────────────┴──────────┴───────────────────────┴────────────────┤
-│  Totales: puerta 18 (voz 9 · edge 6 · nube 3) · alarma 5              │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
 ![Figura 2.11.2. Reporte 2, Puerta y alarma](dashboards/mockup-puerta-alarma.png)
 
 *Figura 2.11.2. Reporte 2, Puerta y alarma: quién movió la puerta y por qué sonó la alarma, aviso de aperturas fuera de horario (22:00–06:00), línea de tiempo de la semana coloreada por origen y últimos eventos con su motivo. Datos ilustrativos. Versión vectorial: [`mockup-puerta-alarma.svg`](anexos/p4/mockup-puerta-alarma.svg).*
-
 
 | Elemento | Consulta en DynamoDB |
 |---|---|
@@ -1576,27 +1539,9 @@ Para decidir: ¿quién abrió o cerró?, ¿la alarma se activó sola o por voz?,
 
 Para decidir: ¿el umbral está bien elegido?, ¿cuántas veces se bloqueó?, ¿hace falta subir `max_detecciones` o acortar la ventana?
 
-```text
-┌──────────────────────────────────────────────────────────────────────┐
-│  Bloqueos · vigilante-123456                  Últimos 7 días         │
-├──────────────────────────────────────────────────────────────────────┤
-│  Bloqueos por la nube: [ 3 ]    Configuración actual: 3 en 10 min     │
-├──────────────────┬───────────────────────┬───────────────────────────┤
-│ Fecha y hora     │ Cambio de modo        │ Origen                    │
-├──────────────────┼───────────────────────┼───────────────────────────┤
-│ 24 nov 15:20:44  │ automatico → bloqueo  │ nube (exceso)             │
-│ 24 nov 15:45:10  │ bloqueo → manual      │ voz                       │
-│ 22 nov 21:07:31  │ automatico → bloqueo  │ nube (exceso)             │
-│ …                │                       │                           │
-├──────────────────┴───────────────────────┴───────────────────────────┤
-│  Tiempo medio en bloqueo antes de volver a manual: 24 min             │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
 ![Figura 2.11.3. Reporte 3, Bloqueos y configuración](dashboards/mockup-bloqueos.png)
 
 *Figura 2.11.3. Reporte 3, Bloqueos y configuración: recomendación sobre max_detecciones, bloqueos de la Nube, falsas alarmas probables, tiempo medio en bloqueo, bloqueos por día, bloqueos estimados con otros umbrales y detalle de cada bloqueo. Datos ilustrativos. Versión vectorial: [`mockup-bloqueos.svg`](anexos/p4/mockup-bloqueos.svg).*
-
 
 | Elemento | Consulta en DynamoDB |
 |---|---|
