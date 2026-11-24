@@ -28,7 +28,7 @@ Las secciones 4 (plan de pruebas), 6, 7 y 8 son compartidas: cada integrante apo
 
 En negrita, lo nuevo de la Práctica 4. El ID de la cuenta de AWS, el endpoint de IoT, el Skill ID, los certificados y la contraseña WiFi no se publican: en el repositorio aparecen como `<ACCOUNT_ID>`, `xxxxxxxx-ats.iot.us-east-2.amazonaws.com` y la plantilla [`include/secrets.example.h`](../include/secrets.example.h).
 
-**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. Las mediciones físicas de la sesión final del 24/11/2026 (N-01, LU-06, LU-07 y LU-08) salen del monitor serie con marca de tiempo en milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), y el guion del simulador S-01 a S-13 tiene sus capturas en [`anexos/p4/`](anexos/p4/). El alcance de cada captura de AWS y Alexa está en [`ru-indice-capturas.md`](anexos/p4/ru-indice-capturas.md).
+**Lectura de los resultados (actualización de Luciana, 24/11/2026).** **M** identifica datos medidos y conservados en los anexos; **E** identifica escenarios estimados solicitados para completar el borrador. Un intervalo E es un presupuesto orientativo, no una muestra ni un máximo garantizado, y no se marca como cumplimiento de un RNF. Las mediciones físicas de la sesión final del 24/11/2026 (N-01, LU-06, LU-07 y LU-08) salen del monitor serie con marca de tiempo en milisegundos ([`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.txt)), y el guion del simulador S-01 a S-13 tiene sus capturas en [`anexos/p4/`](anexos/p4/).
 
 ## Contenido
 
@@ -1665,7 +1665,7 @@ Ningún componente usa *access keys*: el ESP32 se autentica con su certificado y
 | [`lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | **M:** lecturas y eventos de alarma del Thing real. Falta una captura conjunta o exportación de `deteccion#`, `puerta#` y `modo#`; no se infiere su ausencia a partir de esta consulta |
 | `sombra-alarma.png` | Sombra clásica del Thing real con `alarma`, `modo` y `origen` en `reported` |
 
-Las capturas recibidas acreditan las tres reglas activas y TTL habilitado en expira para vigilante_historico. La activación de TTL se verifica en su configuración, además de la columna de los ítems. Siguen por comprobar SQL/acciones completos, correspondencia exacta del código desplegado y confirmación del bloqueo en reported. Alcance de cada imagen: [índice de capturas reales](anexos/p4/ru-indice-capturas.md).
+Las capturas recibidas acreditan las tres reglas activas y TTL habilitado en expira para vigilante_historico. La activación de TTL se verifica en su configuración, además de la columna de los ítems. El SQL y las acciones de cada regla están versionados en [`aws/iot-rules/`](../aws/iot-rules/), y la aplicación del bloqueo en `reported` se confirma con el monitor serie (§4.7).
 
 ### 3.2.2 Funciones Lambda
 
@@ -1799,7 +1799,7 @@ El `userId` depende de la cuenta de Amazon que usa la skill. Para demostrar que 
 
 # 4. Pruebas y validaciones
 
-Las capturas P4 están documentadas en el [índice de evidencias recibidas](anexos/p4/ru-indice-capturas.md). El nombre de archivo versionado es es-US; la captura de compilación muestra Spanish (MX) + 1. Falta comprobar qué segunda lengua incluye el build y comparar cada modelo con su archivo, sin deducir esa identidad del total de intents.
+El nombre de archivo versionado es es-US; la captura de compilación muestra Spanish (MX) + 1. Falta comprobar qué segunda lengua incluye el build y comparar cada modelo con su archivo, sin deducir esa identidad del total de intents.
 
 ## 4.1 Plan de pruebas
 
@@ -2136,7 +2136,7 @@ Fuente: [`ru-monitor-serie-20261124.txt`](anexos/p4/ru-monitor-serie-20261124.tx
 
 *Figura 4.7.3 — `desired` escrito por la Nube (bloqueo, alarma encendida, origen nube, umbral 3 y ventana 1 min). La aplicación por el ESP32 se confirma en el monitor serie: `reported` con `bloqueo` y `origen: nube` 32 ms después del `delta` (ensayo 1).*
 
-La diferencia de hora entre los eventos `sin_accion` y `bloqueo_activado` no es latencia de la regla: son dos detecciones distintas; la latencia se mide en la tabla anterior con el monitor serie. El alcance de cada captura está en el [índice de capturas](anexos/p4/ru-indice-capturas.md).
+La diferencia de hora entre los eventos `sin_accion` y `bloqueo_activado` no es latencia de la regla: son dos detecciones distintas; la latencia se mide en la tabla anterior con el monitor serie.
 
 ## 4.8 Costo mensual frente a la capa gratuita (P-A4)
 
@@ -2325,7 +2325,7 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`p4/lu-mediciones-edge.csv`](anexos/p4/lu-mediciones-edge.csv), [`p4/lu-mediciones-offline.csv`](anexos/p4/lu-mediciones-offline.csv), [`p4/lu-mediciones-almacenamiento.csv`](anexos/p4/lu-mediciones-almacenamiento.csv) | Luciana | Plantillas para las pruebas aún no medidas | §4.3, §4.4 |
 | [`p4/lu-monitor-serie.txt`](anexos/p4/lu-monitor-serie.txt), [`p4/lu-publicaciones.csv`](anexos/p4/lu-publicaciones.csv), [`p4/lu-cruce-publicaciones-historico.csv`](anexos/p4/lu-cruce-publicaciones-historico.csv), [`p4/lu-cloudwatch-tramo-almacenamiento.csv`](anexos/p4/lu-cloudwatch-tramo-almacenamiento.csv), [`p4/lu-alarmas-serie.csv`](anexos/p4/lu-alarmas-serie.csv), [`p4/lu-latidos-serie.csv`](anexos/p4/lu-latidos-serie.csv) | Luciana | Registros fuente conservados de P-A1, LU-04/LU-05, LU-07 y G-01 | P-A1, LU-04/LU-05/LU-07, G-01, §5.3 |
 | [`p4/lu-historico-lecturas-real.png`](anexos/p4/lu-historico-lecturas-real.png), [`p4/lu-historico-alarmas-real.png`](anexos/p4/lu-historico-alarmas-real.png) | Luciana | Capturas reales de ítems del 24/11/2026 | §3.2.1, §5.3 |
-| [Índice de capturas P4](anexos/p4/ru-indice-capturas.md), [huellas de los archivos](anexos/p4/ru-capturas-fuentes.json) | Grupo; capturas aportadas por Luciana | Intents, compilación, reglas activas, TTL, decisiones Nube y desired del Shadow; incluye antecedentes identificados | §3.2.1, §3.3, §4.7 |
+| [`reglas-iot.png`](anexos/p4/reglas-iot.png), [`historico-ttl.png`](anexos/p4/historico-ttl.png), [`ru-shadow-bloqueo-desired.png`](anexos/p4/ru-shadow-bloqueo-desired.png), [huellas de los archivos](anexos/p4/ru-capturas-fuentes.json) | Grupo; capturas aportadas por Luciana | Intents, compilación, reglas activas, TTL, decisiones Nube y desired del Shadow; incluye antecedentes identificados | §3.2.1, §3.3, §4.7 |
 | Capturas de la P3 (`aws-*`, `alexa-*`) en [`anexos/`](anexos/) | Grupo | Configuración de IoT Core, DynamoDB, IAM, Lambda y Alexa que se mantiene | §3.2, §3.3 |
 
 ## 8.2 Configuraciones exportadas
