@@ -1501,6 +1501,10 @@ flowchart TD
 
 Los tres reportes se construyen **solo con consultas `Query` por clave** sobre `vigilante_historico` (clave de partición `thingName`, clave de ordenamiento `tipo_ts` = `<tipo>#<fecha ISO>`, §2.8). Cada fila de evento guarda el valor nuevo, el `anterior` y el `origen`; cada detección guarda el `modo` y la `puerta` de ese momento.
 
+Cada reporte tiene su boceto en texto, la pantalla diseñada y la tabla de consultas. Las tres pantallas comparten la misma estructura: arriba el **estado actual** del objeto (conexión, modo, puerta, alarma, señal WiFi, tiempo encendido y último reporte, tomados de la última `lectura#`; desconectado si no reporta en 150 s), luego **una conclusión en una frase** que responde la pregunta del reporte, los indicadores clave y, debajo, el detalle. Los colores tienen el mismo significado en todas: uno por origen (voz azul, edge naranja, nube verde), otro por modo (manual violeta, automático verde, bloqueo rosa), y el rojo solo para la alarma sonando y la desconexión.
+
+> Las pantallas usan **datos ilustrativos** generados con [`tools/mockups-rf15/generar-datos.js`](../tools/mockups-rf15/generar-datos.js) (semilla fija, 18 al 24 nov 2026), coherentes con las reglas de §2.6. No son mediciones y no se usan en §4 ni en §5. Cómo regenerarlas: [`tools/mockups-rf15/README.md`](../tools/mockups-rf15/README.md).
+
 ### Reporte 1 — Actividad del día
 
 Para decidir: ¿hay más movimiento del normal?, ¿a qué hora?, ¿el modo automático está cerrando la puerta?
@@ -1522,6 +1526,10 @@ Para decidir: ¿hay más movimiento del normal?, ¿a qué hora?, ¿el modo autom
 │  En modo automático: 11   ·   En manual: 3   ·   Cierres del Edge: 4  │
 └──────────────────────────────────────────────────────────────────────┘
 ```
+
+![Figura 2.11.1. Reporte 1, Actividad del día](anexos/p4/mockup-actividad.png)
+
+*Figura 2.11.1. Reporte 1, Actividad del día: conclusión frente a un día típico, detecciones del día, última detección, cierres automáticos y hora pico; detecciones por hora por modo, reparto por modo y mapa de actividad de la semana. Datos ilustrativos. Versión vectorial: [`mockup-actividad.svg`](anexos/p4/mockup-actividad.svg).*
 
 
 | Elemento | Consulta en DynamoDB |
@@ -1553,6 +1561,10 @@ Para decidir: ¿quién abrió o cerró?, ¿la alarma se activó sola o por voz?,
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
+![Figura 2.11.2. Reporte 2, Puerta y alarma](anexos/p4/mockup-puerta-alarma.png)
+
+*Figura 2.11.2. Reporte 2, Puerta y alarma: quién movió la puerta y por qué sonó la alarma, aviso de aperturas fuera de horario (22:00–06:00), línea de tiempo de la semana coloreada por origen y últimos eventos con su motivo. Datos ilustrativos. Versión vectorial: [`mockup-puerta-alarma.svg`](anexos/p4/mockup-puerta-alarma.svg).*
+
 
 | Elemento | Consulta en DynamoDB |
 |---|---|
@@ -1580,6 +1592,10 @@ Para decidir: ¿el umbral está bien elegido?, ¿cuántas veces se bloqueó?, ¿
 │  Tiempo medio en bloqueo antes de volver a manual: 24 min             │
 └──────────────────────────────────────────────────────────────────────┘
 ```
+
+![Figura 2.11.3. Reporte 3, Bloqueos y configuración](anexos/p4/mockup-bloqueos.png)
+
+*Figura 2.11.3. Reporte 3, Bloqueos y configuración: recomendación sobre max_detecciones, bloqueos de la Nube, falsas alarmas probables, tiempo medio en bloqueo, bloqueos por día, bloqueos estimados con otros umbrales y detalle de cada bloqueo. Datos ilustrativos. Versión vectorial: [`mockup-bloqueos.svg`](anexos/p4/mockup-bloqueos.svg).*
 
 
 | Elemento | Consulta en DynamoDB |
@@ -2310,6 +2326,8 @@ Antes de guardar una captura se tapan el ID de cuenta (12 dígitos), el endpoint
 | [`p4/circuito.png`](anexos/p4/circuito.png), [`p4/circuito.svg`](anexos/p4/circuito.svg) | Alejandro | Diagrama de conexiones con el buzzer en el GPIO 26 | §2.3 |
 | [`p4/circuito-3d.svg`](anexos/p4/circuito-3d.svg), [`p4/circuito-3d.png`](anexos/p4/circuito-3d.png), [`p4/circuito-3d-oscuro.png`](anexos/p4/circuito-3d-oscuro.png) | Alejandro | Montaje isométrico con el buzzer (tema claro y oscuro) | §2.3 |
 | [`p4/montaje-buzzer.jpg`](anexos/p4/montaje-buzzer.jpg) | Alejandro | Foto del prototipo de la P4 | §2.3 |
+| [`p4/mockup-actividad.png`](anexos/p4/mockup-actividad.png), [`p4/mockup-puerta-alarma.png`](anexos/p4/mockup-puerta-alarma.png), [`p4/mockup-bloqueos.png`](anexos/p4/mockup-bloqueos.png) y sus `.svg` | Rubén | Mockups de los tres reportes (RF15), con datos ilustrativos | §2.11 |
+| [`../tools/mockups-rf15/`](../tools/mockups-rf15/) | Rubén | Fuente de los mockups: generador de los datos ilustrativos (semilla fija) y exportación a PNG y SVG | §2.11 |
 | [`p4/ru-lambda-logica-config.png`](anexos/p4/ru-lambda-logica-config.png) | Rubén | `vigilante-logica`: disparador, variable `IOT_ENDPOINT` y rol | §3.2.2 |
 | [`p4/lu-almacenamiento-guardado.png`](anexos/p4/lu-almacenamiento-guardado.png), [`p4/lu-tabla-lectura-prueba.png`](anexos/p4/lu-tabla-lectura-prueba.png), [`p4/lu-almacenamiento-descartado.png`](anexos/p4/lu-almacenamiento-descartado.png) | Luciana | Guardado y descarte en la Lambda real | §4.4 |
 | [`p4/lu-regresion-skill.txt`](anexos/p4/lu-regresion-skill.txt), [`p4/lu-regresion-logica.txt`](anexos/p4/lu-regresion-logica.txt), [`p4/lu-pruebas-almacenamiento.txt`](anexos/p4/lu-pruebas-almacenamiento.txt), [`p4/lu-pruebas-firmware.txt`](anexos/p4/lu-pruebas-firmware.txt) | Luciana | Salidas de las pruebas automáticas del 24/11/2026 | §4.2 |

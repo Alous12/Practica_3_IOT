@@ -9,6 +9,8 @@ Objeto inteligente que vigila un objeto valioso con un **sensor PIR HC-SR501**, 
 
 Evidencias: [`docs/anexos/`](docs/anexos/) (Práctica 3) y [`docs/anexos/p4/`](docs/anexos/p4/) (Práctica 4).
 
+Reportes (RF15): mockups de las tres pantallas en [`docs/anexos/p4/`](docs/anexos/p4/) (`mockup-*.png`), descritos en el informe (§2.11); su fuente está en [`tools/mockups-rf15/`](tools/mockups-rf15/).
+
 ## Qué agregó la Práctica 4
 
 La Práctica 3 controlaba el servo **solo por voz**. La Práctica 4 extiende el mismo objeto, Shadow, skill y vinculación para que el objeto **decida por sí mismo** y **guarde su historia**:
@@ -66,6 +68,7 @@ Practica_3_IOT/
 ├── test/luciana/             pruebas C++ de SmartObject, reglas del Edge y alarma con dobles de hardware
 ├── test/ruben/               prueba C++ del filtro del PIR y la calibración del servo
 ├── tools/prueba_hardware/    banco de pruebas en la placa: PIR + servo sin WiFi (RNF2, calibración)
+├── tools/mockups-rf15/       fuente de los mockups de los reportes (RF15) y sus datos ilustrativos
 ├── lambda/                   Lambda vigilante-skill: backend de la skill (Python 3.13, ASK SDK)
 │   ├── lambda_function.py    punto de entrada: lambda_function.lambda_handler
 │   ├── vigilante/            config, link_repository, device_gateway, device_state,
@@ -79,7 +82,7 @@ Practica_3_IOT/
 ├── alexa/interaction-model.es-US.json   modelo de interacción (JSON Editor de la consola)
 ├── aws/                      política de IoT, políticas de los roles de las Lambdas y tablas de DynamoDB
 │   └── iot-rules/            (P4) SQL de las reglas vigilante_lecturas, _eventos y _deteccion
-└── docs/                     informes de las prácticas 3 y 4, y anexos
+└── docs/                     informes de las prácticas 3 y 4, y anexos (con los mockups de RF15)
 ```
 
 ## Puesta en marcha
